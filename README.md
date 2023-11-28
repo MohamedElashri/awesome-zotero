@@ -18,6 +18,7 @@ Your help is much appericiated. If you want to add something or fix a problem lo
     - [Developer](#developer)
     - [Miscellaneous](#miscellaneous)
     - [Reports](#reports)
+    - [Translations](#translations)
     - [Website Integrations](#website-integrations)
   - [Themes](#themes)
     - [Dark Themes](#dark-themes)
@@ -42,6 +43,8 @@ Your help is much appericiated. If you want to add something or fix a problem lo
 
 ### Reports
 
+### Translations
+- [Zotero PDF translate](https://github.com/windingwind/zotero-pdf-translate) -  Translate PDF, EPub, webpage, metadata, annotations, notes to the target language. Support 20+ translate services. 
 ### Website Integrations
 
 ## Themes
