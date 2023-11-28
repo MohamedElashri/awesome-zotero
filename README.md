@@ -36,6 +36,7 @@ Your help is much appericiated. If you want to add something or fix a problem lo
 ### Editors Integrations
 
 ### Citations
+- [Zotero DOI Manager](https://github.com/bwiernik/zotero-shortdoi) - A Zotero plugin to retrieve and manage DOIs for references. 
 
 ### Developer
 
