@@ -9,19 +9,48 @@ Your help is much appericiated. If you want to add something or fix a problem lo
 
 ## Table of contents
 
-- [Extensions](#extensions)
-  - [File Management](#file-management)
-  - [Editors Integrations](#editors)
-  - [citations](#citations)
-  - [Developer](#developer)
-  - [Miscellaneous](#miscellaneous)
-  - [Reports](#reports)
-  - [Website Integrations](#websites)
-- [Themes](#themes)
-  - [Dark Themes](#dark-themes)
-  - [Light Themes](#light-themes)
-- [Contributing](#contributing)
-- [License](#license) 
+- [awesome-zotero](#awesome-zotero)
+  - [Table of contents](#table-of-contents)
+  - [Extensions](#extensions)
+    - [File Management](#file-management)
+    - [Editors Integrations](#editors-integrations)
+    - [Citations](#citations)
+    - [Developer](#developer)
+    - [Miscellaneous](#miscellaneous)
+    - [Reports](#reports)
+    - [Website Integrations](#website-integrations)
+  - [Themes](#themes)
+    - [Dark Themes](#dark-themes)
+    - [Light Themes](#light-themes)
+  - [Contributing](#contributing)
+  - [License](#license)
+
+
+## Extensions
+
+### File Management
+- [Zotfile](https://github.com/jlegewie/zotfile) - Zotero plugin to automatically rename, move, and attach PDFs (or other files) to Zotero items.
+
+
+### Editors Integrations
+
+### Citations
+
+### Developer
+
+### Miscellaneous
+
+### Reports
+
+### Website Integrations
+
+## Themes
+
+### Dark Themes
+
+### Light Themes
+
+
 
 ## Contributing
 
