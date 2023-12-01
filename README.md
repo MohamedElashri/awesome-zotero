@@ -17,6 +17,7 @@ Your help is much appericiated. If you want to add something or fix a problem lo
     - [Citations](#citations)
     - [Developer](#developer)
     - [Miscellaneous](#miscellaneous)
+    - [Productivity](#productivity)
     - [Reports](#reports)
     - [Translations](#translations)
     - [Website Integrations](#website-integrations)
@@ -42,6 +43,9 @@ Your help is much appericiated. If you want to add something or fix a problem lo
 ### Developer
 
 ### Miscellaneous
+
+### Productivity
+- [Zotero Better Notes](https://github.com/windingwind/zotero-better-notes) -  Everything about note management. All in Zotero. 
 
 ### Reports
 
