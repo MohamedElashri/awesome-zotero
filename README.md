@@ -52,6 +52,7 @@ Your help is much appericiated. If you want to add something or fix a problem lo
 ### Translations
 - [Zotero PDF translate](https://github.com/windingwind/zotero-pdf-translate) -  Translate PDF, EPub, webpage, metadata, annotations, notes to the target language. Support 20+ translate services. 
 ### Website Integrations
+- [zotpress](https://wordpress.org/plugins/zotpress/) - Zotpress brings publication broadcasting and scholarly blogging to WordPress through Zotero, a free, cross-platform reference manager.
 
 ## Themes
 
