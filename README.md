@@ -56,6 +56,9 @@ Your help is much appericiated. If you want to add something or fix a problem lo
 
 ## Themes
 
+- [Zotero-style](https://github.com/MuiseDestiny/zotero-style) - The plugin modifies some of Zotero's existing columns and adds some interesting ones, and I'll introduce them one by one.
+
+
 ### Dark Themes
 
 ### Light Themes
