@@ -13,10 +13,10 @@ Your help is much appericiated. If you want to add something or fix a problem lo
   - [Table of contents](#table-of-contents)
   - [Extensions](#extensions)
     - [Customization](#customization)
-    - [File Management](#file-management)
-    - [Integrations](#integrations)
     - [Citations](#citations)
     - [Developer](#developer)
+    - [File Management](#file-management)
+    - [Integrations](#integrations)
     - [Miscellaneous](#miscellaneous)
     - [Productivity](#productivity)
     - [Translations](#translations)
@@ -41,6 +41,21 @@ Your help is much appericiated. If you want to add something or fix a problem lo
 - [Zotero-pdf-preview](https://github.com/windingwind/zotero-pdf-preview) - Preview Zotero attachments in the library view.
 - [Zutilo](https://github.com/wshanks/Zutilo) - Zotero plugin providing some additional editing features
 
+### Citations
+- [Better BibTeX for Zotero](https://github.com/retorquere/zotero-better-bibtex) -  Make Zotero effective for us LaTeX holdouts 
+- [Jasminum](https://github.com/l0o0/jasminum) - A Zotero add-on to retrive CNKI meta
+- [Scite-zotero-plugin](https://github.com/scitedotai/scite-zotero-plugin) - Add citations from Scite to Zotero
+- [Zotero-citation](https://github.com/MuiseDestiny/zotero-citation) -  Make Zotero's citation in Word easier and clearer.
+- [Zotero DOI Manager](https://github.com/bwiernik/zotero-shortdoi) - Zotero plugin to retrieve and manage DOIs for references. 
+- [Zotero Better BibTeX](https://github.com/retorquere/zotero-better-bibtex) - Make Zotero effective for us LaTeX holdouts.
+- [Zotero-citationcounts](https://github.com/eschnett/zotero-citationcounts) - Zotero plugin for auto-fetching citation counts from various sources 
+- [Zotero-inspire](https://github.com/fkguo/zotero-inspire) - Fetch publication information from INSPIRE-HEP and add it to Zotero
+- [Zotero-pmcid-fetcher](https://github.com/retorquere/zotero-pmcid-fetcher) - Fetch PMCID/PMID for items with a DOI. Select items, right-click, Fetch PMCID
+- [Zotero TL;DR](https://github.com/syt2/Zotero-TLDR) -  Zotero addon to automatically fetch TL;DR from Sematic scholar for items.
+  
+### Developer
+- [Generator-zotero-plugin](https://www.npmjs.com/package/generator-zotero-plugin) - Generate a Zotero Plugin scaffold
+- [Scaffold](https://www.zotero.org/support/dev/translators/scaffold) - An IDE for Zotero translators
 
 
 ### File Management
@@ -57,22 +72,6 @@ Your help is much appericiated. If you want to add something or fix a problem lo
 - [notero](https://github.com/dvanoni/notero) - Zotero plugin for syncing items and notes into Notion
 - [Zotodo](https://github.com/wbthomason/zotodo) - Zotero plugin to make Todoist tasks for papers added to Zotero
  
-
-### Citations
-- [Better BibTeX for Zotero](https://github.com/retorquere/zotero-better-bibtex) -  Make Zotero effective for us LaTeX holdouts 
-- [Jasminum](https://github.com/l0o0/jasminum) - A Zotero add-on to retrive CNKI meta
-- [Scite-zotero-plugin](https://github.com/scitedotai/scite-zotero-plugin) - Add citations from Scite to Zotero
-- [Zotero-citation](https://github.com/MuiseDestiny/zotero-citation) -  Make Zotero's citation in Word easier and clearer.
-- [Zotero DOI Manager](https://github.com/bwiernik/zotero-shortdoi) - Zotero plugin to retrieve and manage DOIs for references. 
-- [Zotero Better BibTeX](https://github.com/retorquere/zotero-better-bibtex) - Make Zotero effective for us LaTeX holdouts.
-- [Zotero-citationcounts](https://github.com/eschnett/zotero-citationcounts) - Zotero plugin for auto-fetching citation counts from various sources 
-- [Zotero-inspire](https://github.com/fkguo/zotero-inspire) - Fetch publication information from INSPIRE-HEP and add it to Zotero
-- [Zotero-pmcid-fetcher](https://github.com/retorquere/zotero-pmcid-fetcher) - Fetch PMCID/PMID for items with a DOI. Select items, right-click, Fetch PMCID
-- [Zotero TL;DR](https://github.com/syt2/Zotero-TLDR) -  Zotero addon to automatically fetch TL;DR from Sematic scholar for items. 
-
-### Developer
-- [Generator-zotero-plugin](https://www.npmjs.com/package/generator-zotero-plugin) - Generate a Zotero Plugin scaffold
-- [Scaffold](https://www.zotero.org/support/dev/translators/scaffold) - An IDE for Zotero translators
 
 
 ### Miscellaneous
