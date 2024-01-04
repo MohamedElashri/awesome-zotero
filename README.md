@@ -10,7 +10,7 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 
 - [Awesome Zotero ](#awesome-zotero-)
   - [Table of contents](#table-of-contents)
-  - [Contributing](#contributing)
+  
   - [Extensions](#extensions)
     - [Citations](#citations)
     - [Customization](#customization)
@@ -21,10 +21,11 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
     - [Productivity](#productivity)
     - [Translations](#translations)
     - [Website Integrations](#website-integrations)
-  - [License](#license)
   - [Themes](#themes)
     - [Dark Themes](#dark-themes)
     - [Light Themes](#light-themes)
+  - [Contributing](#contributing)
+  - [License](#license)
 
 ## Extensions
 
