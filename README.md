@@ -61,6 +61,7 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 - [Zotero-pdf-preview](https://github.com/windingwind/zotero-pdf-preview) -  Preview Zotero attachments in the library view. 
 - [Zotero-storage-scanner](https://github.com/retorquere/zotero-storage-scanner) - Zotero plugin to remove the broken & duplicate attachment link of the bibliography
 - [Zoplicate](https://github.com/ChenglongMa/zoplicate) - Detect and manage duplicate items in Zotero.
+- [Zotmoov](https://github.com/wileyyugioh/zotmoov) -  Zotero plugin to automatically move attachments and link them 
 
 ### Integrations
 - [lyz](https://github.com/wshanks/lyz) - Zotero plugin intended to make working with LyX/Zotero more pleasant. 
