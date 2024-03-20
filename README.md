@@ -56,6 +56,7 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 - [Scaffold](https://www.zotero.org/support/dev/translators/scaffold) - An IDE for Zotero translators
 
 ### File Management
+- [Zotero-attanger](https://github.com/MuiseDestiny/zotero-attanger) - Attachment Manager for Zotero 
 - [Zotfile](https://github.com/jlegewie/zotfile) - Zotero plugin to automatically rename, move, and attach PDFs (or other files) to Zotero items.
 - [Zotero-open-pdf](https://github.com/retorquere/zotero-open-pdf) - Open PDFs in external PDF viewer from Zotero
 - [Zotero-pdf-preview](https://github.com/windingwind/zotero-pdf-preview) -  Preview Zotero attachments in the library view. 
