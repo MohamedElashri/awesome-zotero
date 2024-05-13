@@ -83,7 +83,8 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 - [Zotero mdnotes](https://github.com/argenos/zotero-mdnotes) -  Zotero plugin to export item metadata and notes as markdown files 
 - [Zotero-markdb-connect](https://github.com/daeh/zotero-markdb-connect) - Zotero plugin that links your Markdown database to Zotero. Jump directly from Zotero Items to connected Markdown files. Automatically tags Zotero Items so you can easily see which papers you've made notes for.
 - [Zotcard](https://github.com/018/zotcard) - Card note-taking enhancement tool. It provides card templates (such as concept card, character card, golden sentence card, etc.
-- [zotxt](https://github.com/egh/zotxt) - Zotero extension for supporting utilities that deal with plain text files (e.g., markdown, reStructuredText, latex, etc.). 
+- [zotxt](https://github.com/egh/zotxt) - Zotero extension for supporting utilities that deal with plain text files (e.g., markdown, reStructuredText, latex, etc.).
+- [zotodo](https://github.com/wbthomason/zotodo) -  A Zotero plugin to make Todoist tasks for papers added to Zotero.
 
 ### Translations
 - [Zotero PDF translate](https://github.com/windingwind/zotero-pdf-translate) -  Translate PDF, EPub, webpage, metadata, annotations, notes to the target language. Support 20+ translate services. 
