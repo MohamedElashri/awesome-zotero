@@ -6,7 +6,7 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 
 --------------------
 
-## Table of contents
+## Contents
 
 - [Awesome Zotero ](#awesome-zotero-)
   - [Table of contents](#table-of-contents)
