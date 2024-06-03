@@ -24,7 +24,6 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
   - [Themes](#themes)
     - [Dark Themes](#dark-themes)
     - [Light Themes](#light-themes)
-  - [Contributing](#contributing)
   - [License](#license)
 
 ## Extensions
