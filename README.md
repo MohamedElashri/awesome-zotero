@@ -1,6 +1,4 @@
-# Awesome Zotero 
-
-[![Awesome](https://awesome.re/badge.svg)](https://github.com/MohamedElashri/awesome-zotero)
+# Awesome Zotero [![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
 
 Zotero is an amazing reference manager that is both free and open source. This repository aims to be the reference to all awesome additional tweaks that make Zotero better.
 
