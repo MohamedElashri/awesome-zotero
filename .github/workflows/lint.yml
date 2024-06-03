@@ -1,0 +1,17 @@
+name: Awesome Lint CI
+on:
+  push:
+    branches: ['main']
+  pull_request:
+    branches: ['**']
+  schedule:
+    - cron: "0 7 * * *"
+jobs:
+  Awesome_Lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Run Awesome Lint      
+        run: npx awesome-lint
