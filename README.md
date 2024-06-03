@@ -8,9 +8,7 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 
 ## Contents
 
-- [Awesome Zotero ](#awesome-zotero-)
-  - [Table of contents](#table-of-contents)
-  
+- [Awesome Zotero ](#awesome-zotero-)  
   - [Extensions](#extensions)
     - [Citations](#citations)
     - [Customization](#customization)
@@ -24,7 +22,6 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
   - [Themes](#themes)
     - [Dark Themes](#dark-themes)
     - [Light Themes](#light-themes)
-  - [Contributing](#contributing)
   - [License](#license)
 
 ## Extensions
@@ -101,21 +98,8 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 
 ## Contributing
 
-Please note that this project is released with a [Contributor Code of Conduct](code-of-conduct.md). By participating in this project you agree to abide by its terms.
+Please see [contributing.md](contributing.md) for details on how to contribute to this awesome list.
 
----
-
-Ensure your pull request adheres to the following guidelines:
-
-- Edit and modify the `README.md` file.
-- Ensure that the project you submit does not duplicate existing entries.
-- Ensuring that the items you submit have at least working documentation for the description.
-- Ensure that you add new item in alphabetical order
-- Ensure that the new item have correct category. suggest new one if you find suitable
-- Submit a separate PR for each item.
-- Format the PR title as `Add item: item name`/`Fix item: item name`.
-
-Thank you for your suggestions!
 
 ## License
 
