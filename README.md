@@ -4,7 +4,7 @@ Zotero is an amazing reference manager that is both free and open source. This r
 
 Your help is much appreciated. If you want to add something or fix a problem, look see [Contributing](#contributing).
 
----------------
+---
 
 ## Contents
 
@@ -61,7 +61,6 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 - [lyz](https://github.com/wshanks/lyz) - Zotero plugin intended to make working with LyX/Zotero more pleasant.
 - [notero](https://github.com/dvanoni/notero) - Zotero plugin for syncing items and notes into Notion.
 - [Obsidian-Zotlit](https://github.com/PKM-er/obsidian-zotlit) - ZotLit is a third-party project that aims to facilitate the integration between Obsidian.md and Zotero.
-- [Zotodo](https://github.com/wbthomason/zotodo) - Zotero plugin to make Todoist tasks for papers added to Zotero.
 
 ### Miscellaneous
 - [Awesome GPT](https://github.com/MuiseDestiny/zotero-gpt) - Zotero plugin to provide GPT backend into Zotero using API.
@@ -77,7 +76,6 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 - [Zotero-markdb-connect](https://github.com/daeh/zotero-markdb-connect) - Zotero plugin that links your Markdown database to Zotero.
 - [Zotcard](https://github.com/018/zotcard) - Card note-taking enhancement tool with card templates.
 - [zotxt](https://github.com/egh/zotxt) - Zotero extension for supporting utilities that deal with plain text files.
-- [zotodo](https://github.com/wbthomason/zotodo) - A Zotero plugin to make Todoist tasks for papers added to Zotero.
 
 ### Translations
 - [Zotero PDF translate](https://github.com/windingwind/zotero-pdf-translate) - Translate PDF, EPub, webpage, metadata, annotations, notes to the target language.
@@ -95,6 +93,3 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 ## Contributing
 
 Please see [contributing.md](contributing.md) for details on how to contribute to this awesome list.
-
-[cc0-badge]: http://mirrors.creativecommons.org/presskit/buttons/88x31/svg/cc-zero.svg
-[cc0-link]: https://creativecommons.org/publicdomain/zero/1.0/
