@@ -40,6 +40,7 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 - [Tara](https://github.com/l0o0/tara) - Zotero add-on for backup and restore preferences, add-ons, translators, styles, and locate between two machines.
 - [Zotero-actions-tags](https://github.com/windingwind/zotero-actions-tags) - Automatic tagging of items based on actions performed on them.
 - [Zotero-better-authors](https://github.com/github-young/zotero-better-authors) - Customize the display of author names in Zotero.
+- [Zotero-date-from-last-modified](https://github.com/retorquere/zotero-date-from-last-modified) - Shows when the item was last modified.
 - [Zotero-format-metadata](https://github.com/northword/zotero-format-metadata) - Linter for Zotero to format item metadata.
 - [Zotero-reference](https://github.com/MuiseDestiny/zotero-reference) - PDF references add-on for Zotero.
 - [Zotero-pdf-preview](https://github.com/windingwind/zotero-pdf-preview) - Preview Zotero attachments in the library view.
