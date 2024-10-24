@@ -77,6 +77,8 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 - [Zotero-markdb-connect](https://github.com/daeh/zotero-markdb-connect) - Zotero plugin that links your Markdown database to Zotero.
 - [Zotcard](https://github.com/018/zotcard) - Card note-taking enhancement tool with card templates.
 - [zotxt](https://github.com/egh/zotxt) - Zotero extension for supporting utilities that deal with plain text files.
+- [zotcite](https://github.com/jalvesaq/zotcite) - Neovim plugin for integration with Zotero.
+- [cmp-zotcite](https://github.com/jalvesaq/cmp-zotcite) - Zotero completion source for nvim-cmp using zotcite as backend.
 
 ### Translations
 - [Zotero PDF translate](https://github.com/windingwind/zotero-pdf-translate) - Translate PDF, EPub, webpage, metadata, annotations, notes to the target language.
