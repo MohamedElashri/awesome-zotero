@@ -34,6 +34,7 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 - [Zotero-inspire](https://github.com/fkguo/zotero-inspire) - Fetch publication information from INSPIRE-HEP and add it to Zotero.
 - [Zotero-pmcid-fetcher](https://github.com/retorquere/zotero-pmcid-fetcher) - Fetch PMCID/PMID for items with a DOI.
 - [Zotero TL;DR](https://github.com/syt2/Zotero-TLDR) - Zotero addon to automatically fetch TL;DR from Semantic Scholar for items.
+- [inciteful-zotero-plugin](https://github.com/inciteful-xyz/inciteful-zotero-plugin) - A Zotero plugin which integrates Inciteful.xyz.
 
 ### Customization
 - [Delitemwithatt](https://github.com/redleafnew/delitemwithatt) - Remove attachment(s) when deleting the item(s) or collection in Zotero and JurisM.
