@@ -1,0 +1,34 @@
+name: Update README
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '_README.md'
+
+jobs:
+  update-readme:
+    if: ${{ github.actor != 'github-actions[bot]' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gawk
+
+      - name: Generate README.md
+        run: |
+          awk -f scripts/awk/addGithubShields.awk _README.md | awk -f scripts/awk/makeShieldsSquare.awk > README.md
+
+
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: 'Auto-update README.md [skip ci]'
+          file_pattern: README.md
+

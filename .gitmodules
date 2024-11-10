@@ -1,0 +1,4 @@
+[submodule "scripts/awk"]
+	path = scripts/awk
+	url = https://github.com/she3o/AWKward
+	branch = for-awesome-zotero
