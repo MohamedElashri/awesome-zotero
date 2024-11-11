@@ -3,23 +3,22 @@
 import re
 import sys
 
+
 def extract_repo(url):
     """Extract the GitHub repository name from the URL."""
     match = re.match(r'https://github\.com/([^/]+/[^/]+)', url)
-    return match.group(1) if match else ''
+    return match[1] if match else ''
 
 def add_badges(lines):
     """Add GitHub badges to lines containing GitHub repository URLs."""
     processed_lines = []
     for line in lines:
         if 'https://github.com/' in line:
-            # Extract the GitHub URL
-            url_match = re.search(r'https://github\.com/\S+', line)
-            if url_match:
-                repo_url = url_match.group(0)
+            if url_match := re.search(r'https://github\.com/\S+', line):
+                repo_url = url_match[0]
                 repo_name = extract_repo(repo_url)
+                processed_lines.append(line)
                 if repo_name:
-                    processed_lines.append(line)
                     processed_lines.append('')  # Add a blank line
                     # Add shields.io badges
                     badges = [
@@ -31,8 +30,6 @@ def add_badges(lines):
                         ''
                     ]
                     processed_lines.extend(badges)
-                else:
-                    processed_lines.append(line)
             else:
                 processed_lines.append(line)
         else:
@@ -44,10 +41,7 @@ def style_badges(lines):
     def replace_style(match):
         alt_text = match.group(1)
         url = match.group(2)
-        if '?' in url:
-            url += '&style=flat-square'
-        else:
-            url += '?style=flat-square'
+        url += '&style=flat-square' if '?' in url else '?style=flat-square'
         return f'![{alt_text}]({url})'
 
     styled_lines = []
