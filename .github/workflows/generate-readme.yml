@@ -16,14 +16,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y gawk
-
       - name: Generate README.md
         run: |
-          awk -f scripts/awk/addGithubShields.awk _README.md | awk -f scripts/awk/makeShieldsSquare.awk > README.md
+          python3 generate_readme.py _README.md > README.md
 
 
       - name: Commit changes
