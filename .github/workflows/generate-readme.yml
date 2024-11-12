@@ -7,6 +7,9 @@ on:
     paths:
       - '_README.md'
 
+  pull_request:
+    branches: ['**']
+
 jobs:
   update-readme:
     if: ${{ github.actor != 'github-actions[bot]' }}
