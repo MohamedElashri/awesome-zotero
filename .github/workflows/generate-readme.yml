@@ -1,0 +1,32 @@
+name: Update README
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '_README.md'
+
+  pull_request:
+    branches: ['**']
+
+jobs:
+  update-readme:
+    if: ${{ github.actor != 'github-actions[bot]' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Generate README.md
+        run: |
+          python3 generate_readme.py _README.md > README.md
+
+
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: 'Auto-update README.md [skip ci]'
+          file_pattern: README.md
+

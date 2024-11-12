@@ -96,4 +96,4 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 
 ## Contributing
 
-Please see [contributing.md](contributing.md) for details on how to contribute to this awesome list.
+Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to contribute to this awesome list.
