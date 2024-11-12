@@ -1,0 +1,18 @@
+name: Test README Generation
+on:
+  pull_request:
+    branches: ['**']
+    paths:
+      - '_README.md'
+jobs:
+  test-readme:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Generate README.md (Test Only)
+        run: |
+          python3 generate_readme.py _README.md > README.md
+      - name: Show README.md output
+        run: |
+          cat README.md
