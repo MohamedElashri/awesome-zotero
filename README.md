@@ -285,6 +285,14 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 ![Stars](https://img.shields.io/github/stars/syt2/zotero-addons?style=flat-square)
 ![Forks](https://img.shields.io/github/forks/syt2/zotero-addons?style=flat-square)
 
+- [zotero-arxiv-workflow](https://github.com/AllanChain/zotero-arxiv-workflow) - Zotero plugin to help you manage adding and updating papers from arXiv.
+
+  ![Last Commit](https://img.shields.io/github/last-commit/AllanChain/zotero-arxiv-workflow?style=flat-square)
+![License](https://img.shields.io/github/license/AllanChain/zotero-arxiv-workflow?style=flat-square)
+![Issues](https://img.shields.io/github/issues/AllanChain/zotero-arxiv-workflow?style=flat-square)
+![Stars](https://img.shields.io/github/stars/AllanChain/zotero-arxiv-workflow?style=flat-square)
+![Forks](https://img.shields.io/github/forks/AllanChain/zotero-arxiv-workflow?style=flat-square)
+
 
 ### Productivity
 - [Chartero](https://github.com/volatile-static/Chartero) - Zotero plugin to provide charts in Zotero.
