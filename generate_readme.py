@@ -59,11 +59,13 @@ def remove_extra_parentheses(lines):
 
 def add_awesome_badge(lines):
     """Ensure the Awesome badge is correctly added."""
-    badge = '[![Awesome](https://awesome.re/badge-flat.svg)](https://awesome.re)'
-    # Check if the badge already exists
-    if any(badge in line for line in lines):
-        return lines
+    # Check for an existing "Awesome" badge in the lines
+    for line in lines:
+        if "https://awesome.re" in line:
+            return lines  # Badge already exists; do nothing
+
     # Add the badge at the top if not present
+    badge = '[![Awesome](https://awesome.re/badge-flat.svg)](https://awesome.re)'
     lines.insert(0, badge)
     return lines
 
@@ -83,10 +85,11 @@ def remove_duplicate_links(lines):
     seen_links = set()
     deduplicated_lines = []
     for line in lines:
+        # Check for links in the current line
         if match := re.search(r'\((https?://[^\)]+)\)', line):
             link = match.group(1)
-            if link in seen_links:
-                continue  # Skip duplicate link
+            if link in seen_links and "https://awesome.re" not in line:
+                continue  # Skip duplicate links (but don't remove Awesome badge)
             seen_links.add(link)
         deduplicated_lines.append(line)
     return deduplicated_lines
