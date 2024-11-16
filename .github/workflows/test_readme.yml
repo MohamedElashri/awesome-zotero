@@ -5,7 +5,8 @@ on:
     branches: ['**']
     paths:
       - '_README.md'
-
+  workflow_dispatch:
+  
 jobs:
   test-readme:
     runs-on: ubuntu-latest
