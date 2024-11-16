@@ -60,8 +60,10 @@ def remove_extra_parentheses(lines):
 def add_awesome_badge(lines):
     """Ensure the Awesome badge is correctly added."""
     badge = '[![Awesome](https://awesome.re/badge-flat.svg)](https://awesome.re)'
+    # Check if the badge already exists
     if any(badge in line for line in lines):
         return lines
+    # Add the badge at the top if not present
     lines.insert(0, badge)
     return lines
 
