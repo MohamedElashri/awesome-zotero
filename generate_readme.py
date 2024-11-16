@@ -42,7 +42,6 @@ def ensure_punctuation(lines):
     """Ensure all list item descriptions end with a period."""
     punctuated_lines = []
     for line in lines:
-        # Match lines that start with list items and have descriptions
         if re.match(r'- \[.*?\]\(.*?\) - .*[^.]$', line):
             line += '.'  # Append a period
         punctuated_lines.append(line)
@@ -61,9 +60,34 @@ def remove_extra_parentheses(lines):
 def add_awesome_badge(lines):
     """Ensure the Awesome badge is correctly added."""
     badge = '[![Awesome](https://awesome.re/badge-flat.svg)](https://awesome.re)'
-    if lines and badge not in lines[0]:
-        lines.insert(0, badge)
+    if any(badge in line for line in lines):
+        return lines
+    lines.insert(0, badge)
     return lines
+
+
+def fix_list_item_format(lines):
+    """Ensure list items use a dash separator between link and description."""
+    formatted_lines = []
+    for line in lines:
+        if re.match(r'- \[.*?\]\(.*?\) .*', line):
+            line = re.sub(r'(\]\(.*?\)) ', r'\1 - ', line)  # Ensure a dash after the link
+        formatted_lines.append(line)
+    return formatted_lines
+
+
+def remove_duplicate_links(lines):
+    """Remove duplicate links in the markdown."""
+    seen_links = set()
+    deduplicated_lines = []
+    for line in lines:
+        if match := re.search(r'\((https?://[^\)]+)\)', line):
+            link = match.group(1)
+            if link in seen_links:
+                continue  # Skip duplicate link
+            seen_links.add(link)
+        deduplicated_lines.append(line)
+    return deduplicated_lines
 
 
 def main():
@@ -79,6 +103,8 @@ def main():
     lines = add_awesome_badge(lines)
     lines = add_badges(lines)
     lines = ensure_punctuation(lines)
+    lines = fix_list_item_format(lines)
+    lines = remove_duplicate_links(lines)
     lines = remove_extra_parentheses(lines)
 
     for line in lines:
