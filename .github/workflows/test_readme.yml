@@ -5,6 +5,8 @@ on:
     branches: ['**']
     paths:
       - '_README.md'
+      - 'generate_readme.py'
+      - '.github/workflows/test-readme.yml'
   workflow_dispatch:
   
 jobs:
