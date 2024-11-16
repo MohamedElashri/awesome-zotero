@@ -179,6 +179,14 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 ![Stars](https://img.shields.io/github/stars/wshanks/Zutilo?style=flat-square)
 ![Forks](https://img.shields.io/github/forks/wshanks/Zutilo?style=flat-square)
 
+- [zotero-style](https://github.com/MuiseDestiny/zotero-style) - Zotero plugin to provide ethereal Style
+
+  ![Last Commit](https://img.shields.io/github/last-commit/MuiseDestiny/zotero-style?style=flat-square)
+![License](https://img.shields.io/github/license/MuiseDestiny/zotero-style?style=flat-square)
+![Issues](https://img.shields.io/github/issues/MuiseDestiny/zotero-style?style=flat-square)
+![Stars](https://img.shields.io/github/stars/MuiseDestiny/zotero-style?style=flat-square)
+![Forks](https://img.shields.io/github/forks/MuiseDestiny/zotero-style?style=flat-square)
+
 
 ### Developer
 - [Generator-zotero-plugin](https://www.npmjs.com/package/generator-zotero-plugin) - Generate a Zotero Plugin scaffold.

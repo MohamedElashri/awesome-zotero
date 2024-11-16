@@ -46,6 +46,7 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 - [Zotero-reference](https://github.com/MuiseDestiny/zotero-reference) - PDF references add-on for Zotero.
 - [Zotero-pdf-preview](https://github.com/windingwind/zotero-pdf-preview) - Preview Zotero attachments in the library view.
 - [Zutilo](https://github.com/wshanks/Zutilo) - Zotero plugin providing some additional editing features.
+- [zotero-style](https://github.com/MuiseDestiny/zotero-style) - Zotero plugin to provide ethereal Style
 
 ### Developer
 - [Generator-zotero-plugin](https://www.npmjs.com/package/generator-zotero-plugin) - Generate a Zotero Plugin scaffold.
