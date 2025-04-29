@@ -18,6 +18,7 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
   - [Productivity](#productivity)
   - [Translations](#translations)
   - [Website Integrations](#website-integrations)
+  - [AI Integrations](ai-integrations)
 - [Themes](#themes)
   - [Dark Themes](#dark-themes)
   - [Light Themes](#light-themes)
@@ -88,6 +89,10 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 
 ### Website Integrations
 - [zotpress](https://wordpress.org/plugins/zotpress/) - Zotpress brings publication broadcasting and scholarly blogging to WordPress through Zotero.
+
+### AI Integrations
+- [Zotero-MCP](https://github.com/54yyyu/zotero-mcp) - Connects your Zotero research library with Claude and other AI assistants via the Model Context Protocol
+
 
 ## Themes
 
