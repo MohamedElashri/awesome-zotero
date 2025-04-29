@@ -18,7 +18,7 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
   - [Productivity](#productivity)
   - [Translations](#translations)
   - [Website Integrations](#website-integrations)
-  - [AI Integrations](ai-integrations)
+  - [AI Integrations](#ai-integrations)
 - [Themes](#themes)
   - [Dark Themes](#dark-themes)
   - [Light Themes](#light-themes)
