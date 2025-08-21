@@ -23,11 +23,11 @@ def add_badges(lines):
                     processed_lines.append('')  # Add a blank line
                     # Add shields.io badges
                     badges = [
-                        f'  ![Last Commit](https://img.shields.io/github/last-commit/{repo_name}?style=flat-square)',
-                        f'![License](https://img.shields.io/github/license/{repo_name}?style=flat-square)',
-                        f'![Issues](https://img.shields.io/github/issues/{repo_name}?style=flat-square)',
-                        f'![Stars](https://img.shields.io/github/stars/{repo_name}?style=flat-square)',
-                        f'![Forks](https://img.shields.io/github/forks/{repo_name}?style=flat-square)',
+                        f'  ![Last Commit](https://img.shields.io/github/last-commit/{repo_name})',
+                        f'![License](https://img.shields.io/github/license/{repo_name})',
+                        f'![Issues](https://img.shields.io/github/issues/{repo_name})',
+                        f'![Stars](https://img.shields.io/github/stars/{repo_name})',
+                        f'![Forks](https://img.shields.io/github/forks/{repo_name})',
                         ''
                     ]
                     processed_lines.extend(badges)
