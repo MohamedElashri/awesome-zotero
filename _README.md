@@ -72,6 +72,7 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 - [KeepZotero](https://github.com/yhmtsai/KeepZotero) - Zotero plugin to keep Zotero in the taskbar by changing close to minimize or disabling shortcuts.
 - [Zotero Addons](https://github.com/syt2/zotero-addons) - Zotero add-on to list and install add-ons in Zotero.
 - [zotero-arxiv-workflow](https://github.com/AllanChain/zotero-arxiv-workflow) - Zotero plugin to help you manage adding and updating papers from arXiv.
+- [zotero-addons](https://github.com/syt2/zotero-addons) -  Zotero Add-on Market, browse, install, and review plugins within Zotero 
 
 ### Productivity
 - [Chartero](https://github.com/volatile-static/Chartero) - Zotero plugin to provide charts in Zotero.
