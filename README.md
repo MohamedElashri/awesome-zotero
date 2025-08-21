@@ -278,6 +278,14 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 ![Stars](https://img.shields.io/github/stars/MuiseDestiny/zotero-gpt)?style=flat-square)
 ![Forks](https://img.shields.io/github/forks/MuiseDestiny/zotero-gpt)?style=flat-square)
 
+- [Aria](https://github.com/lifan0127/ai-research-assistant) - - Aria is Your AI Research Assistant for zotero.
+
+  ![Last Commit](https://img.shields.io/github/last-commit/lifan0127/ai-research-assistant)?style=flat-square)
+![License](https://img.shields.io/github/license/lifan0127/ai-research-assistant)?style=flat-square)
+![Issues](https://img.shields.io/github/issues/lifan0127/ai-research-assistant)?style=flat-square)
+![Stars](https://img.shields.io/github/stars/lifan0127/ai-research-assistant)?style=flat-square)
+![Forks](https://img.shields.io/github/forks/lifan0127/ai-research-assistant)?style=flat-square)
+
 - [KeepZotero](https://github.com/yhmtsai/KeepZotero) - - Zotero plugin to keep Zotero in the taskbar by changing close to minimize or disabling shortcuts.
 
   ![Last Commit](https://img.shields.io/github/last-commit/yhmtsai/KeepZotero)?style=flat-square)
