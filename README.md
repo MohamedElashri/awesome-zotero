@@ -409,6 +409,14 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 ![Stars](https://img.shields.io/github/stars/MuiseDestiny/zotero-gpt)
 ![Forks](https://img.shields.io/github/forks/MuiseDestiny/zotero-gpt)
 
+- [PapersGPT](https://github.com/papersgpt/papersgpt-for-zotero) - - The Ultimate Zotero AI Plugin.
+
+  ![Last Commit](https://img.shields.io/github/last-commit/papersgpt/papersgpt-for-zotero)
+![License](https://img.shields.io/github/license/papersgpt/papersgpt-for-zotero)
+![Issues](https://img.shields.io/github/issues/papersgpt/papersgpt-for-zotero)
+![Stars](https://img.shields.io/github/stars/papersgpt/papersgpt-for-zotero)
+![Forks](https://img.shields.io/github/forks/papersgpt/papersgpt-for-zotero)
+
 - [Zotero-MCP](https://github.com/54yyyu/zotero-mcp) - - Connects your Zotero research library with Claude and other AI assistants via the Model Context Protocol.
 
   ![Last Commit](https://img.shields.io/github/last-commit/54yyyu/zotero-mcp)
