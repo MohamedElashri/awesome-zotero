@@ -67,8 +67,6 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 - [Obsidian-Zotlit](https://github.com/PKM-er/obsidian-zotlit) - ZotLit is a third-party project that aims to facilitate the integration between Obsidian.md and Zotero.
 
 ### Miscellaneous
-- [Awesome GPT](https://github.com/MuiseDestiny/zotero-gpt) - Zotero plugin to provide GPT backend into Zotero using API.
-- [Aria](https://github.com/lifan0127/ai-research-assistant) - Aria is Your AI Research Assistant for zotero
 - [KeepZotero](https://github.com/yhmtsai/KeepZotero) - Zotero plugin to keep Zotero in the taskbar by changing close to minimize or disabling shortcuts.
 - [Zotero Addons](https://github.com/syt2/zotero-addons) - Zotero add-on to list and install add-ons in Zotero.
 - [zotero-arxiv-workflow](https://github.com/AllanChain/zotero-arxiv-workflow) - Zotero plugin to help you manage adding and updating papers from arXiv.
@@ -93,6 +91,8 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 - [zotpress](https://wordpress.org/plugins/zotpress/) - Zotpress brings publication broadcasting and scholarly blogging to WordPress through Zotero.
 
 ### AI Integrations
+- [Aria](https://github.com/lifan0127/ai-research-assistant) - Aria is Your AI Research Assistant for zotero
+- [Awesome GPT](https://github.com/MuiseDestiny/zotero-gpt) - Zotero plugin to provide GPT backend into Zotero using API.
 - [Zotero-MCP](https://github.com/54yyyu/zotero-mcp) - Connects your Zotero research library with Claude and other AI assistants via the Model Context Protocol
 
 
