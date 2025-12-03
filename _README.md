@@ -28,6 +28,7 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 ### Citations
 - [Better BibTeX for Zotero](https://github.com/retorquere/zotero-better-bibtex) - Make Zotero effective for us LaTeX holdouts.
 - [Jasminum](https://github.com/l0o0/jasminum) - A Zotero add-on to retrieve CNKI meta.
+- [cite-non-english](https://github.com/boan-anbo/cite-non-english) - Zotero extension to provide all-in-one support for non-English citations
 - [Scite-zotero-plugin](https://github.com/scitedotai/scite-zotero-plugin) - Add citations from Scite to Zotero.
 - [Zotero-citation](https://github.com/MuiseDestiny/zotero-citation) - Make Zotero's citation in Word easier and clearer.
 - [Zotero DOI Manager](https://github.com/bwiernik/zotero-shortdoi) - Zotero plugin to retrieve and manage DOIs for references.
