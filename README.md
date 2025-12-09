@@ -42,6 +42,14 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 ![Stars](https://img.shields.io/github/stars/l0o0/jasminum)
 ![Forks](https://img.shields.io/github/forks/l0o0/jasminum)
 
+- [cite-non-english](https://github.com/boan-anbo/cite-non-english) - - Zotero extension to provide all-in-one support for non-English citations.
+
+  ![Last Commit](https://img.shields.io/github/last-commit/boan-anbo/cite-non-english)
+![License](https://img.shields.io/github/license/boan-anbo/cite-non-english)
+![Issues](https://img.shields.io/github/issues/boan-anbo/cite-non-english)
+![Stars](https://img.shields.io/github/stars/boan-anbo/cite-non-english)
+![Forks](https://img.shields.io/github/forks/boan-anbo/cite-non-english)
+
 - [Scite-zotero-plugin](https://github.com/scitedotai/scite-zotero-plugin) - - Add citations from Scite to Zotero.
 
   ![Last Commit](https://img.shields.io/github/last-commit/scitedotai/scite-zotero-plugin)
@@ -424,6 +432,14 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 ![Issues](https://img.shields.io/github/issues/54yyyu/zotero-mcp)
 ![Stars](https://img.shields.io/github/stars/54yyyu/zotero-mcp)
 ![Forks](https://img.shields.io/github/forks/54yyyu/zotero-mcp)
+
+- [zotero-arxiv-daily](https://github.com/TideDra/zotero-arxiv-daily) - - Recommend new arxiv papers of your interest daily according to your Zotero libarary. .
+
+  ![Last Commit](https://img.shields.io/github/last-commit/TideDra/zotero-arxiv-daily)
+![License](https://img.shields.io/github/license/TideDra/zotero-arxiv-daily)
+![Issues](https://img.shields.io/github/issues/TideDra/zotero-arxiv-daily)
+![Stars](https://img.shields.io/github/stars/TideDra/zotero-arxiv-daily)
+![Forks](https://img.shields.io/github/forks/TideDra/zotero-arxiv-daily)
 
 
 

@@ -28,6 +28,7 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 ### Citations
 - [Better BibTeX for Zotero](https://github.com/retorquere/zotero-better-bibtex) - Make Zotero effective for us LaTeX holdouts.
 - [Jasminum](https://github.com/l0o0/jasminum) - A Zotero add-on to retrieve CNKI meta.
+- [cite-non-english](https://github.com/boan-anbo/cite-non-english) - Zotero extension to provide all-in-one support for non-English citations
 - [Scite-zotero-plugin](https://github.com/scitedotai/scite-zotero-plugin) - Add citations from Scite to Zotero.
 - [Zotero-citation](https://github.com/MuiseDestiny/zotero-citation) - Make Zotero's citation in Word easier and clearer.
 - [Zotero DOI Manager](https://github.com/bwiernik/zotero-shortdoi) - Zotero plugin to retrieve and manage DOIs for references.
@@ -95,6 +96,7 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 - [Awesome GPT](https://github.com/MuiseDestiny/zotero-gpt) - Zotero plugin to provide GPT backend into Zotero using API.
 - [PapersGPT](https://github.com/papersgpt/papersgpt-for-zotero) - The Ultimate Zotero AI Plugin
 - [Zotero-MCP](https://github.com/54yyyu/zotero-mcp) - Connects your Zotero research library with Claude and other AI assistants via the Model Context Protocol
+- [zotero-arxiv-daily](https://github.com/TideDra/zotero-arxiv-daily) - Recommend new arxiv papers of your interest daily according to your Zotero libarary. 
 
 
 ## Themes
