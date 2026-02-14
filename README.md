@@ -433,6 +433,14 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 ![Stars](https://img.shields.io/github/stars/papersgpt/papersgpt-for-zotero)
 ![Forks](https://img.shields.io/github/forks/papersgpt/papersgpt-for-zotero)
 
+- [seerai](https://github.com/dralkh/seerai) - - Intelligent research assistant plugin for Zotero that integrates AI-powered chat, advanced search, and data extraction capabilities directly into your research workflow.
+
+  ![Last Commit](https://img.shields.io/github/last-commit/dralkh/seerai)
+![License](https://img.shields.io/github/license/dralkh/seerai)
+![Issues](https://img.shields.io/github/issues/dralkh/seerai)
+![Stars](https://img.shields.io/github/stars/dralkh/seerai)
+![Forks](https://img.shields.io/github/forks/dralkh/seerai)
+
 - [Zotero-MCP](https://github.com/54yyyu/zotero-mcp) - - Connects your Zotero research library with Claude and other AI assistants via the Model Context Protocol.
 
   ![Last Commit](https://img.shields.io/github/last-commit/54yyyu/zotero-mcp)
