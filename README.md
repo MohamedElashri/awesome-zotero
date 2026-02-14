@@ -457,6 +457,13 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 ![Stars](https://img.shields.io/github/stars/TideDra/zotero-arxiv-daily)
 ![Forks](https://img.shields.io/github/forks/TideDra/zotero-arxiv-daily)
 
+- [ZotSeek](https://github.com/introfini/ZotSeek) - - Zotero plugin to find similar papers by meaning, not just keywords. 100% local, no data leaves your machine.
+
+  ![Last Commit](https://img.shields.io/github/last-commit/introfini/ZotSeek)
+![License](https://img.shields.io/github/license/introfini/ZotSeek)
+![Issues](https://img.shields.io/github/issues/introfini/ZotSeek)
+![Stars](https://img.shields.io/github/stars/introfini/ZotSeek)
+![Forks](https://img.shields.io/github/forks/introfini/ZotSeek)
 
 
 ## Themes
