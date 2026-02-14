@@ -417,6 +417,14 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 ![Stars](https://img.shields.io/github/stars/MuiseDestiny/zotero-gpt)
 ![Forks](https://img.shields.io/github/forks/MuiseDestiny/zotero-gpt)
 
+- [Beaver](https://github.com/jlegewie/beaver-zotero/) - - Academic research assistant with native Zotero integration. Instantly searches through all your documents and explains complex concepts as you read.
+
+  ![Last Commit](https://img.shields.io/github/last-commit/jlegewie/beaver-zotero)
+![License](https://img.shields.io/github/license/jlegewie/beaver-zotero)
+![Issues](https://img.shields.io/github/issues/jlegewie/beaver-zotero)
+![Stars](https://img.shields.io/github/stars/jlegewie/beaver-zotero)
+![Forks](https://img.shields.io/github/forks/jlegewie/beaver-zotero)
+
 - [PapersGPT](https://github.com/papersgpt/papersgpt-for-zotero) - - The Ultimate Zotero AI Plugin.
 
   ![Last Commit](https://img.shields.io/github/last-commit/papersgpt/papersgpt-for-zotero)
