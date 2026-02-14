@@ -97,7 +97,7 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 - [PapersGPT](https://github.com/papersgpt/papersgpt-for-zotero) - The Ultimate Zotero AI Plugin
 - [Zotero-MCP](https://github.com/54yyyu/zotero-mcp) - Connects your Zotero research library with Claude and other AI assistants via the Model Context Protocol
 - [zotero-arxiv-daily](https://github.com/TideDra/zotero-arxiv-daily) - Recommend new arxiv papers of your interest daily according to your Zotero libarary. 
-
+- [ZotSeek](https://github.com/introfini/ZotSeek) - Zotero plugin to find similar papers by meaning, not just keywords. 100% local, no data leaves your machine.
 
 ## Themes
 
