@@ -417,6 +417,14 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 ![Stars](https://img.shields.io/github/stars/MuiseDestiny/zotero-gpt)
 ![Forks](https://img.shields.io/github/forks/MuiseDestiny/zotero-gpt)
 
+- [Beaver](https://github.com/jlegewie/beaver-zotero/) - - Academic research assistant with native Zotero integration. Instantly searches through all your documents and explains complex concepts as you read.
+
+  ![Last Commit](https://img.shields.io/github/last-commit/jlegewie/beaver-zotero)
+![License](https://img.shields.io/github/license/jlegewie/beaver-zotero)
+![Issues](https://img.shields.io/github/issues/jlegewie/beaver-zotero)
+![Stars](https://img.shields.io/github/stars/jlegewie/beaver-zotero)
+![Forks](https://img.shields.io/github/forks/jlegewie/beaver-zotero)
+
 - [PapersGPT](https://github.com/papersgpt/papersgpt-for-zotero) - - The Ultimate Zotero AI Plugin.
 
   ![Last Commit](https://img.shields.io/github/last-commit/papersgpt/papersgpt-for-zotero)
@@ -424,6 +432,14 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 ![Issues](https://img.shields.io/github/issues/papersgpt/papersgpt-for-zotero)
 ![Stars](https://img.shields.io/github/stars/papersgpt/papersgpt-for-zotero)
 ![Forks](https://img.shields.io/github/forks/papersgpt/papersgpt-for-zotero)
+
+- [seerai](https://github.com/dralkh/seerai) - - Intelligent research assistant plugin for Zotero that integrates AI-powered chat, advanced search, and data extraction capabilities directly into your research workflow.
+
+  ![Last Commit](https://img.shields.io/github/last-commit/dralkh/seerai)
+![License](https://img.shields.io/github/license/dralkh/seerai)
+![Issues](https://img.shields.io/github/issues/dralkh/seerai)
+![Stars](https://img.shields.io/github/stars/dralkh/seerai)
+![Forks](https://img.shields.io/github/forks/dralkh/seerai)
 
 - [Zotero-MCP](https://github.com/54yyyu/zotero-mcp) - - Connects your Zotero research library with Claude and other AI assistants via the Model Context Protocol.
 
