@@ -94,6 +94,7 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 ### AI Integrations
 - [Aria](https://github.com/lifan0127/ai-research-assistant) - Aria is Your AI Research Assistant for zotero
 - [Awesome GPT](https://github.com/MuiseDestiny/zotero-gpt) - Zotero plugin to provide GPT backend into Zotero using API.
+- [Beaver](https://github.com/jlegewie/beaver-zotero/) - Academic research assistant with native Zotero integration. Instantly searches through all your documents and explains complex concepts as you read.
 - [PapersGPT](https://github.com/papersgpt/papersgpt-for-zotero) - The Ultimate Zotero AI Plugin
 - [Zotero-MCP](https://github.com/54yyyu/zotero-mcp) - Connects your Zotero research library with Claude and other AI assistants via the Model Context Protocol
 - [zotero-arxiv-daily](https://github.com/TideDra/zotero-arxiv-daily) - Recommend new arxiv papers of your interest daily according to your Zotero libarary. 
