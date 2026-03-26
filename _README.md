@@ -39,6 +39,7 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 - [inciteful-zotero-plugin](https://github.com/inciteful-xyz/inciteful-zotero-plugin) - A Zotero plugin which integrates Inciteful.xyz.
 
 ### Customization
+- [Annotation Links](https://github.com/mobench/zotero-annotation-links) - Clickable cross-reference links between PDF annotations in Zotero.
 - [Delitemwithatt](https://github.com/redleafnew/delitemwithatt) - Remove attachment(s) when deleting the item(s) or collection in Zotero and JurisM.
 - [Tara](https://github.com/l0o0/tara) - Zotero add-on for backup and restore preferences, add-ons, translators, styles, and locate between two machines.
 - [Zotero-actions-tags](https://github.com/windingwind/zotero-actions-tags) - Automatic tagging of items based on actions performed on them.
