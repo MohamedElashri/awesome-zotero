@@ -156,6 +156,14 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 ![Stars](https://img.shields.io/github/stars/retorquere/zotero-date-from-last-modified)
 ![Forks](https://img.shields.io/github/forks/retorquere/zotero-date-from-last-modified)
 
+- [Zotero Focused Mode](https://github.com/dschaehi/Zotero-Focused-Mode) - - A plugin that enables a distraction-free workspace for focused reading.
+
+  ![Last Commit](https://img.shields.io/github/last-commit/dschaehi/Zotero-Focused-Mode)
+![License](https://img.shields.io/github/license/dschaehi/Zotero-Focused-Mode)
+![Issues](https://img.shields.io/github/issues/dschaehi/Zotero-Focused-Mode)
+![Stars](https://img.shields.io/github/stars/dschaehi/Zotero-Focused-Mode)
+![Forks](https://img.shields.io/github/forks/dschaehi/Zotero-Focused-Mode)
+
 - [Zotero-format-metadata](https://github.com/northword/zotero-format-metadata) - - Linter for Zotero to format item metadata.
 
   ![Last Commit](https://img.shields.io/github/last-commit/northword/zotero-format-metadata)
@@ -301,7 +309,6 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 ![Issues](https://img.shields.io/github/issues/AllanChain/zotero-arxiv-workflow)
 ![Stars](https://img.shields.io/github/stars/AllanChain/zotero-arxiv-workflow)
 ![Forks](https://img.shields.io/github/forks/AllanChain/zotero-arxiv-workflow)
-
 
 
 
