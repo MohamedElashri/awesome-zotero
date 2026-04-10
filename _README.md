@@ -94,6 +94,7 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 
 ### AI Integrations
 - [Aria](https://github.com/lifan0127/ai-research-assistant) - Aria is Your AI Research Assistant for zotero
+- [cli-anything-zotero](https://github.com/PiaoyangGuohai1/cli-anything-zotero) - Full-featured CLI for Zotero 7/8 with 40+ commands. Let AI agents (Claude Code, Cursor, Codex) manage your library through natural language — search, import, export, PDF, BibTeX, annotations, and more.
 - [Awesome GPT](https://github.com/MuiseDestiny/zotero-gpt) - Zotero plugin to provide GPT backend into Zotero using API.
 - [Beaver](https://github.com/jlegewie/beaver-zotero/) - Academic research assistant with native Zotero integration. Instantly searches through all your documents and explains complex concepts as you read.
 - [PapersGPT](https://github.com/papersgpt/papersgpt-for-zotero) - The Ultimate Zotero AI Plugin
