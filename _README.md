@@ -53,6 +53,7 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 
 ### Developer
 - [Generator-zotero-plugin](https://www.npmjs.com/package/generator-zotero-plugin) - Generate a Zotero Plugin scaffold.
+- [MCP Server Zotero Dev](https://github.com/introfini/mcp-server-zotero-dev) - MCP server exposing a running Zotero over the Remote Debugging Protocol for AI-assisted plugin development (run JS, inspect DOM, read logs, hot-reload).
 - [Scaffold](https://www.zotero.org/support/dev/translators/scaffold) - An IDE for Zotero translators.
 
 ### File Management
