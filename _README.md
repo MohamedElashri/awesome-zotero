@@ -35,6 +35,7 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 - [Zotero-citationcounts](https://github.com/eschnett/zotero-citationcounts) - Zotero plugin for auto-fetching citation counts from various sources.
 - [Zotero DOI Manager](https://github.com/bwiernik/zotero-shortdoi) - Zotero plugin to retrieve and manage DOIs for references.
 - [Zotero-inspire](https://github.com/fkguo/zotero-inspire) - Fetch publication information from INSPIRE-HEP and add it to Zotero.
+- [zotero-marker](https://github.com/lelelelelelelelelelelelele/zotero_marker) - Resolve the real publication venue, CORE/CCF tier, and citation count of arXiv preprints and write them back as proper metadata, so impact-factor / CCF / citation plugins recognize them.
 - [Zotero-pmcid-fetcher](https://github.com/retorquere/zotero-pmcid-fetcher) - Fetch PMCID/PMID for items with a DOI.
 - [Zotero TL;DR](https://github.com/syt2/Zotero-TLDR) - Zotero addon to automatically fetch TL;DR from Semantic Scholar for items.
 
