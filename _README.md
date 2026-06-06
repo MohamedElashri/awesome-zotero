@@ -100,6 +100,7 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 - [seerai](https://github.com/dralkh/seerai) - Intelligent research assistant plugin for Zotero that integrates AI-powered chat, advanced search, and data extraction capabilities directly into your research workflow.
 - [zotero-arxiv-daily](https://github.com/TideDra/zotero-arxiv-daily) - Recommend new arxiv papers of your interest daily according to your Zotero libarary. 
 - [Zotero-MCP](https://github.com/54yyyu/zotero-mcp) - Connects your Zotero research library with Claude and other AI assistants via the Model Context Protocol
+- [Zoteus](https://github.com/oscardvs/zoteus) - A Zotero MCP server for Claude and other AI assistants. It can search your library, add and edit items safely, pull in papers by DOI, ISBN, PMID, or arXiv, build citations and bibliographies in ~2,800 styles, and search your PDFs by meaning. Runs on your own computer. MIT.
 - [ZotSeek](https://github.com/introfini/ZotSeek) - Zotero plugin to find similar papers by meaning, not just keywords. 100% local, no data leaves your machine.
 
 ## Themes
