@@ -346,6 +346,14 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 ![Stars](https://img.shields.io/github/stars/windingwind/zotero-better-notes)
 ![Forks](https://img.shields.io/github/forks/windingwind/zotero-better-notes)
 
+- [Zotero Docling](https://github.com/max3925vats/zotero-docling) - - Convert PDF attachments to structured Markdown using the Docling document converter, with OCR and table extraction.
+
+  ![Last Commit](https://img.shields.io/github/last-commit/max3925vats/zotero-docling)
+![License](https://img.shields.io/github/license/max3925vats/zotero-docling)
+![Issues](https://img.shields.io/github/issues/max3925vats/zotero-docling)
+![Stars](https://img.shields.io/github/stars/max3925vats/zotero-docling)
+![Forks](https://img.shields.io/github/forks/max3925vats/zotero-docling)
+
 - [Zotero-markdb-connect](https://github.com/daeh/zotero-markdb-connect) - - Zotero plugin that links your Markdown database to Zotero.
 
   ![Last Commit](https://img.shields.io/github/last-commit/daeh/zotero-markdb-connect)
