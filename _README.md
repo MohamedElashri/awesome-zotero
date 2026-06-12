@@ -41,6 +41,7 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 ### Customization
 - [Delitemwithatt](https://github.com/redleafnew/delitemwithatt) - Remove attachment(s) when deleting the item(s) or collection in Zotero and JurisM.
 - [Tara](https://github.com/l0o0/tara) - Zotero add-on for backup and restore preferences, add-ons, translators, styles, and locate between two machines.
+- [Weavero](https://github.com/mjthoraval/Weavero) - Clickable links in annotation comments and notes, plus a fast filter pane and items-tree columns.
 - [Zotero-actions-tags](https://github.com/windingwind/zotero-actions-tags) - Automatic tagging of items based on actions performed on them.
 - [Zotero-better-authors](https://github.com/github-young/zotero-better-authors) - Customize the display of author names in Zotero.
 - [Zotero-date-from-last-modified](https://github.com/retorquere/zotero-date-from-last-modified) - Shows when the item was last modified.
