@@ -26,6 +26,7 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 ## Extensions
 
 ### Citations
+- [arxiv-marker](https://github.com/lelelelelelelelelelelelele/arxiv-marker) - Resolve arXiv preprints to their real publication venue, CORE/CCF tier, and citation count, and write them back as proper metadata so citation / impact-factor plugins recognize them.
 - [Better BibTeX for Zotero](https://github.com/retorquere/zotero-better-bibtex) - Make Zotero effective for us LaTeX holdouts.
 - [cite-non-english](https://github.com/boan-anbo/cite-non-english) - Zotero extension to provide all-in-one support for non-English citations
 - [inciteful-zotero-plugin](https://github.com/inciteful-xyz/inciteful-zotero-plugin) - A Zotero plugin which integrates Inciteful.xyz.
