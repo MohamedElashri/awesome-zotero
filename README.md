@@ -250,6 +250,14 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 ![Stars](https://img.shields.io/github/stars/retorquere/zotero-storage-scanner)
 ![Forks](https://img.shields.io/github/forks/retorquere/zotero-storage-scanner)
 
+- [Zotero Watch Folder](https://github.com/josesiqueira/zotero-watch-folder) - - Watch a folder and auto-import PDFs with metadata, content-hash dedup, smart rules, and optional two-way collection sync with recoverable safe delete.
+
+  ![Last Commit](https://img.shields.io/github/last-commit/josesiqueira/zotero-watch-folder)
+![License](https://img.shields.io/github/license/josesiqueira/zotero-watch-folder)
+![Issues](https://img.shields.io/github/issues/josesiqueira/zotero-watch-folder)
+![Stars](https://img.shields.io/github/stars/josesiqueira/zotero-watch-folder)
+![Forks](https://img.shields.io/github/forks/josesiqueira/zotero-watch-folder)
+
 - [Zoplicate](https://github.com/ChenglongMa/zoplicate) - - Detect and manage duplicate items in Zotero.
 
   ![Last Commit](https://img.shields.io/github/last-commit/ChenglongMa/zoplicate)
