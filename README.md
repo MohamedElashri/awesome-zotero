@@ -260,6 +260,14 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 
 
 ### Integrations
+- [Causal Map for Zotero](https://github.com/stevepowell99/causalmap-zotero) - - Send Zotero items to the Causal Map web app to build and analyse causal maps from your library.
+
+  ![Last Commit](https://img.shields.io/github/last-commit/stevepowell99/causalmap-zotero)
+![License](https://img.shields.io/github/license/stevepowell99/causalmap-zotero)
+![Issues](https://img.shields.io/github/issues/stevepowell99/causalmap-zotero)
+![Stars](https://img.shields.io/github/stars/stevepowell99/causalmap-zotero)
+![Forks](https://img.shields.io/github/forks/stevepowell99/causalmap-zotero)
+
 - [lyz](https://github.com/wshanks/lyz) - - Zotero plugin intended to make working with LyX/Zotero more pleasant.
 
   ![Last Commit](https://img.shields.io/github/last-commit/wshanks/lyz)
