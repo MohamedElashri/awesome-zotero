@@ -61,6 +61,7 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 - [Zotmoov](https://github.com/wileyyugioh/zotmoov) - Zotero plugin to automatically move attachments and link them.
 - [Zotero-open-pdf](https://github.com/retorquere/zotero-open-pdf) - Open PDFs in external PDF viewer from Zotero.
 - [Zotero-storage-scanner](https://github.com/retorquere/zotero-storage-scanner) - Zotero plugin to remove the broken & duplicate attachment links of the bibliography.
+- [Zotero Watch Folder](https://github.com/josesiqueira/zotero-watch-folder) - Zotero plugin to watch a folder and auto-import PDFs with metadata retrieval and content-hash deduplication, plus optional two-way collection-to-folder sync with recoverable safe-delete.
 - [Zoplicate](https://github.com/ChenglongMa/zoplicate) - Detect and manage duplicate items in Zotero.
 
 ### Integrations
