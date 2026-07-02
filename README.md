@@ -90,6 +90,14 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 ![Stars](https://img.shields.io/github/stars/bwiernik/zotero-shortdoi)
 ![Forks](https://img.shields.io/github/forks/bwiernik/zotero-shortdoi)
 
+- [Zotero Metadata Hunter](https://github.com/federicotorrielli/zotero-metadata-hunter) - - Finds missing DOIs and abstracts, replaces preprints with their published versions, and enriches sparse items with metadata from CrossRef, DBLP, Semantic Scholar, arXiv, PubMed, and OpenAlex.
+
+  ![Last Commit](https://img.shields.io/github/last-commit/federicotorrielli/zotero-metadata-hunter)
+![License](https://img.shields.io/github/license/federicotorrielli/zotero-metadata-hunter)
+![Issues](https://img.shields.io/github/issues/federicotorrielli/zotero-metadata-hunter)
+![Stars](https://img.shields.io/github/stars/federicotorrielli/zotero-metadata-hunter)
+![Forks](https://img.shields.io/github/forks/federicotorrielli/zotero-metadata-hunter)
+
 - [Zotero-inspire](https://github.com/fkguo/zotero-inspire) - - Fetch publication information from INSPIRE-HEP and add it to Zotero.
 
   ![Last Commit](https://img.shields.io/github/last-commit/fkguo/zotero-inspire)
