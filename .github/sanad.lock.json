@@ -1,0 +1,45 @@
+{
+  "version": 2,
+  "generated_by": "sanad",
+  "entries": [
+    {
+      "file": ".github/workflows/generate-readme.yml",
+      "node": "jobs.update-readme.steps[0].uses",
+      "owner": "actions",
+      "repo": "checkout",
+      "path": "",
+      "kind": "github-action",
+      "logical_ref": "v7.0.1",
+      "pinned_sha": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+      "resolved_at": "2026-08-01T01:18:56Z",
+      "timestamp": "2026-07-20T15:10:05Z",
+      "timestamp_source": "release"
+    },
+    {
+      "file": ".github/workflows/generate-readme.yml",
+      "node": "jobs.update-readme.steps[3].uses",
+      "owner": "stefanzweifel",
+      "repo": "git-auto-commit-action",
+      "path": "",
+      "kind": "github-action",
+      "logical_ref": "v7.2.0",
+      "pinned_sha": "4a55954c782fc1ea30b9056cd3e7a2b40ca8887d",
+      "resolved_at": "2026-08-01T01:18:56Z",
+      "timestamp": "2026-06-28T09:32:56Z",
+      "timestamp_source": "release"
+    },
+    {
+      "file": ".github/workflows/test_readme.yml",
+      "node": "jobs.test-readme.steps[0].uses",
+      "owner": "actions",
+      "repo": "checkout",
+      "path": "",
+      "kind": "github-action",
+      "logical_ref": "v7.0.1",
+      "pinned_sha": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+      "resolved_at": "2026-08-01T01:18:56Z",
+      "timestamp": "2026-07-20T15:10:05Z",
+      "timestamp_source": "release"
+    }
+  ]
+}
