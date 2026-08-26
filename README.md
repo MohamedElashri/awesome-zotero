@@ -418,6 +418,14 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 ![Stars](https://img.shields.io/github/stars/jalvesaq/zotcite)
 ![Forks](https://img.shields.io/github/forks/jalvesaq/zotcite)
 
+- [zotero-syllabus](https://github.com/janbaykara/zotero-syllabus) - - Zotero plugin to manage course syllabi and organize course materials.
+
+  ![Last Commit](https://img.shields.io/github/last-commit/janbaykara/zotero-syllabus)
+![License](https://img.shields.io/github/license/janbaykara/zotero-syllabus)
+![Issues](https://img.shields.io/github/issues/janbaykara/zotero-syllabus)
+![Stars](https://img.shields.io/github/stars/janbaykara/zotero-syllabus)
+![Forks](https://img.shields.io/github/forks/janbaykara/zotero-syllabus)
+
 - [zotxt](https://github.com/egh/zotxt) - - Zotero extension for supporting utilities that deal with plain text files.
 
   ![Last Commit](https://img.shields.io/github/last-commit/egh/zotxt)
