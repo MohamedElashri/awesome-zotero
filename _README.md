@@ -28,6 +28,7 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 ### Citations
 - [Better BibTeX for Zotero](https://github.com/retorquere/zotero-better-bibtex) - Make Zotero effective for us LaTeX holdouts.
 - [cite-non-english](https://github.com/boan-anbo/cite-non-english) - Zotero extension to provide all-in-one support for non-English citations
+- [CiteStamp](https://github.com/citestamp/zotero-plugin) - Checks whether each reference resolves, is retracted, or has recorded refutations, from the item pane.
 - [inciteful-zotero-plugin](https://github.com/inciteful-xyz/inciteful-zotero-plugin) - A Zotero plugin which integrates Inciteful.xyz.
 - [Jasminum](https://github.com/l0o0/jasminum) - A Zotero add-on to retrieve CNKI meta.
 - [Scite-zotero-plugin](https://github.com/scitedotai/scite-zotero-plugin) - Add citations from Scite to Zotero.
