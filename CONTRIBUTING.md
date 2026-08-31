@@ -4,7 +4,7 @@ Please note that this project is released with a [Contributor Code of Conduct](c
 
 This repository is a curated list of Zotero plugins, integrations, and related tools. Inclusion is not automatic just because a project exists.
 
-Contribution quality is expected by default. Using LLMs during development is fine, but every submitted entry must be useful, documented, Zotero-relevant, and human-reviewed before opening a PR.
+Contribution quality is expected by default. A submitted project may use LLMs during its own development, but every submitted entry must be useful, documented, Zotero-relevant, and human-reviewed before opening a PR. The contribution and all pull request content must be created entirely by the human contributor.
 
 ## Required PR workflow
 
@@ -52,14 +52,12 @@ New or AI-assisted tools can still be accepted when they demonstrate real value:
 
 ## AI-assistance policy
 
-- AI-generated code and recommendations are allowed.
+- AI coding agents and other AI agents must not be used to work on this repository or prepare a contribution to it.
+- All pull request content must be written entirely by the human contributor. This includes the PR title, description, answers to the PR template, comments, review replies, commit messages, and changelog or documentation text included in the contribution.
+- Do not use an LLM, generative AI system, coding agent, chatbot, or AI writing assistant to draft, rewrite, paraphrase, translate, autocomplete, or polish any part of that content. Human review or editing of AI-generated text does not make it acceptable.
+- A project submitted for inclusion may have used AI during its own development, but that does not permit AI assistance when preparing its contribution to this repository.
 - Completely AI-generated or "vibe coded" tools are not accepted as list entries unless they meet the same curation bar as any other project.
-- PRs that are entirely copy-paste AI output without meaningful curation, local reasoning, or manual review are not accepted.
-- If AI was used, the author must:
-  - review the proposed changes line-by-line,
-  - adapt wording and implementation to the project’s conventions,
-  - verify assumptions against project context.
-- PR descriptions and comments must be authored/edited by a human contributor. Submitting unchanged, AI-generated PR text is not accepted and will result in a ban.
+- Submitting AI-authored or AI-assisted pull request content violates this policy. The pull request will be closed and the contributor may be banned.
 - Submissions that fail to demonstrate understanding of the changes (for example, adding a new item without proper documentation) are low-effort and will be closed.
 
 ## Minimum evidence expected in every PR
@@ -67,7 +65,7 @@ New or AI-assisted tools can still be accepted when they demonstrate real value:
 - What changed and why.
 - Where it is documented (or why documentation is not needed).
 - What was verified (manual test, smoke check, or automated test).
-- If AI assisted, a short note describing what was delegated and what was manually validated.
+- Confirmation that the pull request content and repository changes were prepared without an AI agent or AI writing assistance.
 
 Low-effort PRs are often rejected even if technically correct.
 

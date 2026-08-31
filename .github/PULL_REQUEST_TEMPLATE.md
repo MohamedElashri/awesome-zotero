@@ -1,6 +1,10 @@
 <!--
 MANDATORY: This pull request MUST follow this exact template. PRs missing required sections/checklists may be closed.
+All PR content and repository changes must be prepared by the human contributor without AI or agent assistance. Do not use AI to draft, rewrite, paraphrase, translate, autocomplete, or polish this PR.
 -->
+
+> [!IMPORTANT]
+> This pull request must be written entirely by you, the human contributor. AI and coding-agent assistance is prohibited for the PR title, description, template responses, comments, review replies, commit messages, and repository changes. Human editing of AI-generated text does not make it acceptable.
 
 ## Types of Changes
 
@@ -46,11 +50,11 @@ Put an x in the boxes once you've completed each step. You can also fill these o
 - [ ] I have confirmed the submitted project is usable and not only a placeholder/demo repository
 - [ ] I have described the submitted project's Zotero-specific value
 
-### AI-assisted contribution checklist
+### Human authorship checklist
 
-- [ ] I used AI tooling where helpful, but this PR was reviewed and edited manually before submission.
-- [ ] The PR title/body and changelog text were written or substantially edited by a human contributor (not raw AI output).
-- [ ] If AI was used, I included what was delegated and what I validated myself.
+- [ ] I prepared this contribution without using an AI or coding agent to inspect, change, or otherwise work on this repository.
+- [ ] I wrote the PR title, description, template responses, comments, review replies, commit messages, and repository text entirely myself.
+- [ ] I did not use AI to draft, rewrite, paraphrase, translate, autocomplete, or polish any part of this contribution or its PR content.
 - [ ] If the submitted project used AI during development, it still has clear documentation, maintainer ownership, and evidence of usefulness.
 - [ ] If the submitted project is AI-assisted, it is not mostly unreviewed generated boilerplate or a low-effort vibe coded tool.
 - [ ] This PR is not low-effort (clear rationale, focused scope, and concrete verification).
@@ -70,4 +74,3 @@ Put an x in the boxes once you've completed each step. You can also fill these o
 ## Further Comments
 
 If this is a relatively large or complex change, describe why you chose this solution and any alternatives you considered.
-Also include what you delegated to AI and what you changed manually.
