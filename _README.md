@@ -87,6 +87,7 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 - [Zotero mdnotes](https://github.com/argenos/zotero-mdnotes) - Zotero plugin to export item metadata and notes as markdown files.
 - [Zotero-OCR](https://github.com/UB-Mannheim/zotero-ocr) - OCR PDFs in Zotero.
 - [Zotero-reading-list](https://github.com/Dominic-DallOsto/zotero-reading-list) - Keep track of whether you've read items in Zotero.
+- [Zotero-Syllabus](https://github.com/janbaykara/zotero-syllabus) - For students to turn collections into organised class-by-class reading lists and track reading progress across the weeks and terms.
 - [zotcite](https://github.com/jalvesaq/zotcite) - Neovim plugin for integration with Zotero.
 - [zotxt](https://github.com/egh/zotxt) - Zotero extension for supporting utilities that deal with plain text files.
 
