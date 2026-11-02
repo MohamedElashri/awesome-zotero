@@ -86,6 +86,7 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 - [Zotero-markdb-connect](https://github.com/daeh/zotero-markdb-connect) - Zotero plugin that links your Markdown database to Zotero.
 - [Zotero mdnotes](https://github.com/argenos/zotero-mdnotes) - Zotero plugin to export item metadata and notes as markdown files.
 - [Zotero-OCR](https://github.com/UB-Mannheim/zotero-ocr) - OCR PDFs in Zotero.
+- [Zotero-OpenReader](https://github.com/xujialiu/Zotero-OpenReader) - Zotero plugin for customizing Zotero Read Aloud with more voices, word-and-sentence highlighting in your colors and keyboard shortcuts.
 - [Zotero-reading-list](https://github.com/Dominic-DallOsto/zotero-reading-list) - Keep track of whether you've read items in Zotero.
 - [Zotero-Syllabus](https://github.com/janbaykara/zotero-syllabus) - For students to turn collections into organised class-by-class reading lists and track reading progress across the weeks and terms.
 - [zotcite](https://github.com/jalvesaq/zotcite) - Neovim plugin for integration with Zotero.
