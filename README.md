@@ -402,6 +402,14 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 ![Stars](https://img.shields.io/github/stars/UB-Mannheim/zotero-ocr)
 ![Forks](https://img.shields.io/github/forks/UB-Mannheim/zotero-ocr)
 
+- [Zotero-OpenReader](https://github.com/xujialiu/Zotero-OpenReader) - - Zotero plugin for customizing Zotero Read Aloud with more voices, word-and-sentence highlighting in your colors and keyboard shortcuts.
+
+  ![Last Commit](https://img.shields.io/github/last-commit/xujialiu/Zotero-OpenReader)
+![License](https://img.shields.io/github/license/xujialiu/Zotero-OpenReader)
+![Issues](https://img.shields.io/github/issues/xujialiu/Zotero-OpenReader)
+![Stars](https://img.shields.io/github/stars/xujialiu/Zotero-OpenReader)
+![Forks](https://img.shields.io/github/forks/xujialiu/Zotero-OpenReader)
+
 - [Zotero-reading-list](https://github.com/Dominic-DallOsto/zotero-reading-list) - - Keep track of whether you've read items in Zotero.
 
   ![Last Commit](https://img.shields.io/github/last-commit/Dominic-DallOsto/zotero-reading-list)
