@@ -22,7 +22,7 @@ and the exact tested Zotero version, with the real check and outcome.
 Projects must be at least two calendar months old. Plugins need a valid stable
 .xpi artifact whose manifest declares compatibility with the tested and current
 Zotero versions. Public HTTPS documentation hosts can be checked automatically.
-Fixable omissions receive a 48-hour correction window. See .github/CURATION.md.
+Fixable omissions receive a 48-hour correction window. See CONTRIBUTING.md.
 -->
 
 Project URL: <plain HTTPS URL matching the entry>

@@ -4,7 +4,7 @@ Please note that this project is released with a [Contributor Code of Conduct](c
 
 This repository is a curated list of Zotero plugins, integrations, and related tools. Inclusion is not automatic just because a project exists.
 
-Contribution quality is expected by default. A submitted project may use LLMs during its own development, but every submitted entry must be useful, documented, Zotero-relevant, and human-reviewed before opening a PR. Ordinary contributions and their pull request content must be created entirely by the human contributor. Explicitly authorized maintainer work and the deterministic curation bots are exceptions; see [automated curation](.github/CURATION.md).
+Contribution quality is expected by default. A submitted project may use LLMs during its own development, but every submitted entry must be useful, documented, Zotero-relevant, and human-reviewed before opening a PR. Ordinary contributions and their pull request content must be created entirely by the human contributor. Explicitly authorized maintainer work and the deterministic curation bots are exceptions.
 
 ## Required PR workflow
 
@@ -22,27 +22,12 @@ instead and must not attest to human authorship.
 - Use one PR per new item unless changes are tightly related.
 - Format the PR title as `Add item: item name` or `Fix item: item name`.
 
-## Curation policy
+## Curation and automated checks
 
-Newly created tools, experimental projects, and AI-generated projects are not accepted by default. A submitted project should have enough substance for readers to trust that it is useful.
-
-New projects must be at least **two calendar months old**. New submissions are
-checked automatically against [the admission rules](.github/CURATION.md), and PRs
-with definite violations receive an explanation and are closed. Fixable evidence
-or formatting omissions receive a 48-hour correction window and automated daily
-rechecks. Complete the template's admission evidence block before marking a PR
-ready for review, including the exact tested project and Zotero versions. Plugin
-release archives receive bounded static manifest and compatibility checks. Passing
-these checks does not establish working behavior or guarantee inclusion.
-
-Before submitting a new item, make sure it has:
-
-- A clear Zotero-related purpose.
-- Working documentation that explains what the tool does and how to use it.
-- A public source or project page with enough detail to evaluate it.
-- Evidence of maintenance, usability, or real-world usefulness.
-
-Low-effort or speculative submissions may be closed even when the linked project is technically related to Zotero.
+- New projects must be at least **two calendar months old**, documented, and usable. Complete the PR template with tested project/Zotero versions; plugin releases receive static artifact and compatibility checks.
+- Definite violations are explained and closed. Fixable omissions get **48 hours** and daily rechecks; network failures remain inconclusive.
+- Weekly cleanup proposes removing entries inactive for **365 days**, archived projects, persistently missing projects/downloads, and duplicates. Maintainers decide inclusion and merge removals.
+- Settings and inactivity exceptions live in [`.github/curation.json`](.github/curation.json). The `curation:override` label bypasses admission checks only. Passing automation does not guarantee inclusion.
 
 ## Tool quality policy
 
@@ -80,14 +65,5 @@ AI-assisted tools can still be accepted when they demonstrate real value: clear 
 - Confirmation that the pull request content and repository changes were prepared without an AI agent or AI writing assistance.
 
 Low-effort PRs are often rejected even if technically correct.
-
-## Existing entries
-
-The weekly bot proposes removals for 365-day inactivity, archived repositories,
-persistently missing links or previously available plugin downloads, and duplicate
-entries. It maintains one cleanup PR and never automatically merges it. Quiet but
-useful projects can receive a persistent inactivity exception in
-`.github/curation.json`. See [the maintenance policy](.github/CURATION.md) for the
-exact rules and operator setup.
 
 Thank you for your suggestions!

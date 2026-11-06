@@ -488,7 +488,7 @@ def weekly(api, repo, policy, dry_run):
             raise
         previous = {}
     updated, observations, findings, unknown = maintenance(api, source, previous, policy, utcnow())
-    body = MARKER + "\n\nWeekly curation under [the maintenance policy](https://github.com/" + repo + "/blob/" + default + "/.github/CURATION.md).\n\n"
+    body = MARKER + "\n\nWeekly curation under [the maintenance policy](https://github.com/" + repo + "/blob/" + default + "/CONTRIBUTING.md#curation-and-automated-checks).\n\n"
     body += "| Project | Action | Evidence |\n| --- | --- | --- |\n"
     for item, action, reason in findings:
         body += f"| [{markdown(item.name)}]({item.url}) | {action} | {markdown(reason)} |\n"
@@ -965,7 +965,7 @@ def admission(api, repo, event, policy):
                  "Update this PR to address the corrections; the bot rechecks edits and open submissions automatically. " if verdict.fixable else
                  "The bot will retry these inconclusive checks automatically. ")
     body += ("\n\nSee [the admission policy](https://github.com/" + repo + "/blob/" + pr["base"]["ref"]
-             + "/.github/CURATION.md). " + next_step
+             + "/CONTRIBUTING.md#curation-and-automated-checks). " + next_step
              + "A maintainer can apply `" + policy["override_label"] + "` for a documented exception. "
              "AI authorship is not inferred from coding style, commit volume, or contributor count.")
     update_admission_comment(api, repo, number, body)
