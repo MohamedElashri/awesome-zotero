@@ -1,0 +1,30 @@
+name: Project admission
+
+# Inspect fork content as data using trusted code from the base revision.
+# Never check out a PR head or run a submitted project's code here.
+on:
+  pull_request_target:
+    types: [opened, edited, synchronize, reopened, ready_for_review, labeled, unlabeled]
+
+permissions:
+  contents: read
+  pull-requests: write
+  statuses: write
+
+concurrency:
+  group: admission-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
+jobs:
+  admit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # sanad: ref=v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          persist-credentials: false
+      - name: Evaluate new projects and explain rejections
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 .github/scripts/curation.py admission
