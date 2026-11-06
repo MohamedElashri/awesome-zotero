@@ -29,6 +29,14 @@ A previously confirmed removal stays in the same PR, marked **awaiting recheck**
 and its admission/maintenance statuses become pending. A conclusive recovery
 withdraws it. If no changes remain after conclusive checks, the bot closes the
 obsolete PR. Transient failures do not close and recreate the cleanup PR.
+The weekly workflow alone publishes decisions for its cleanup commits.
+Event-triggered admission skips verified cleanup PRs and other PRs reusing a
+commit already owned by maintenance, identified by this repository's maintenance
+status or reserved branch reference. Daily selection excludes verified cleanup
+PRs and commits with maintenance statuses. A fork, branch name, or body marker
+alone cannot claim that role. An admission override does not waive a pending
+maintenance decision. Ownership is checked again before publishing a final
+ordinary-admission verdict, so concurrent maintenance decisions stay protected.
 Missing streaks that have not yet established a removal restart after an
 inconclusive check; manual runs cannot accelerate the six-day interval.
 
@@ -77,6 +85,10 @@ that deadline. Daily checks close unresolved submissions at the first recheck
 following the deadline; this is not a guarantee of closure exactly at hour 48.
 A corrected submission updates the existing bot comment and clears its deadline.
 Transient API/download failures alone never become closure reasons.
+An inconclusive scan preserves the original deadline even when it replaces the
+visible bot report. Recovery does not start another 48-hour window. A conclusive
+pass or explicit admission override clears the deadline; an expired deadline alone
+does not close a submission whose corrections cannot yet be assessed.
 
 Supply the template's plain fields, once each:
 
@@ -103,6 +115,9 @@ source Zotero manifests, published `.xpi` assets, and an entry explicitly descri
 a Zotero plugin/add-on trigger artifact verification. Three common source manifest
 locations are inspected. This is bounded static inspection, not a general code
 classifier; an undetected or deliberately concealed plugin still needs human review.
+The specifically declared tested release is also checked for `.xpi` assets,
+including when recent releases contain none and the submitter selected another
+project type. Empty or invalid XPIs cannot claim a non-plugin exemption.
 
 The bot downloads up to three `.xpi` candidates from the declared stable release,
 through GitHub's asset API. It never installs, imports, or executes those files.
@@ -164,7 +179,7 @@ exception or a higher configured budget rather than an unsupported removal claim
 - Daily admission rechecks run at 07:43 UTC. Up to ten ready PRs with missing,
   pending, failed, or inconclusive admission statuses are selected, oldest attempts first.
   Rechecks share per-PR concurrency with event-triggered inspection. Closed PRs are
-  not automatically reopened, and drafts are excluded.
+  not automatically reopened; drafts and verified weekly cleanup PRs are excluded.
 - Correct a closed submission and request reopening, or resubmit when eligible.
   A maintainer can apply `curation:override` for a documented exception and reopen
   the PR. This bypasses admission, not other checks; removing it resumes evaluation.

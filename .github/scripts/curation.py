@@ -690,6 +690,11 @@ def _inspect_project(api, repo, item, evidence, policy, now, verdict, existing):
                 verdict.fixable.append("Tested version does not identify an accessible release or full commit SHA in this project")
             else:
                 raise
+    # The declared release is authoritative evidence too. It may be older than
+    # the recent activity snapshot and contain a plugin that initial hints missed.
+    if release:
+        plugin = plugin or any(asset.get("name", "").lower().endswith(".xpi")
+                               for asset in release.get("assets", []))
     if plugin and release:
         candidates = [a for a in release.get("assets", []) if a.get("name", "").lower().endswith(".xpi") and a.get("size", 0) > 0]
         if not candidates:
@@ -839,16 +844,63 @@ def admission_verdict(api, before, after, body, policy, now):
     return verdict
 
 
+def is_cleanup_pr(repo, pr):
+    """Only the repository's own Actions-authored reserved branch is exempt.
+
+    Weekly curation owns its statuses. A fork, body marker, or branch name alone
+    cannot claim this role, and admission overrides cannot waive maintenance.
+    """
+    head = pr.get("head") or {}
+    origin = head.get("repo") or {}
+    author = pr.get("user") or {}
+    return (head.get("ref") == CLEANUP_BRANCH
+            and (origin.get("full_name") or "").casefold() == repo.casefold()
+            and author.get("type") == "Bot"
+            and author.get("login") == "github-actions[bot]")
+
+
+def maintenance_owns_commit(api, repo, sha, fresh=False):
+    """Statuses belong to commits, so duplicate/fork PRs cannot overwrite them."""
+    read = api.request if fresh else api.get
+    statuses = read(f"/repos/{repo}/commits/{sha}/status").get("statuses", [])
+    if any(row["context"] == "curation/maintenance" for row in statuses):
+        return True
+    try:
+        reference = read(f"/repos/{repo}/git/ref/heads/{CLEANUP_BRANCH}")
+    except Unavailable as exc:
+        if exc.status == 404:
+            return False
+        raise
+    # Protect the short interval between branch publication and status creation.
+    return reference.get("object", {}).get("sha") == sha
+
+
+def admission_ownership_unavailable(api, repo, sha, error):
+    status(api, repo, sha, "curation/admission", "error",
+           "Maintenance ownership unavailable; awaiting recheck: " + str(error))
+
+
 def admission(api, repo, event, policy):
     api.reporting = False
     number = event["pull_request"]["number"]
     pr = api.get(f"/repos/{repo}/pulls/{number}")
     if pr["state"] != "open" or pr.get("draft"):
         return
+    if is_cleanup_pr(repo, pr):
+        return
     sha = pr["head"]["sha"]
+    try:
+        if maintenance_owns_commit(api, repo, sha):
+            return
+    except Unavailable as exc:
+        admission_ownership_unavailable(api, repo, sha, exc)
+        return
     overridden = any(label["name"] == policy["override_label"] for label in pr.get("labels", []))
     if overridden:
         status(api, repo, sha, "curation/admission", "success", "Maintainer applied curation override")
+        update_admission_comment(api, repo, number,
+                                 MARKER + "\n\nA maintainer applied the admission override. Other repository checks still apply.",
+                                 create=False, clear_deadline=True)
         return
     status(api, repo, sha, "curation/admission", "pending", "Checking new project evidence")
     try:
@@ -877,14 +929,21 @@ def admission(api, repo, event, policy):
     if (current["head"]["sha"] != sha or current.get("body") != pr.get("body")
             or current["state"] != "open"
             or current.get("draft")
+            or is_cleanup_pr(repo, current)
             or any(label["name"] == policy["override_label"] for label in current.get("labels", []))):
+        return
+    try:
+        if maintenance_owns_commit(api, repo, sha, fresh=True):
+            return
+    except Unavailable as exc:
+        admission_ownership_unavailable(api, repo, sha, exc)
         return
     if not verdict.rejected and not verdict.uncertain and not verdict.fixable:
         status(api, repo, sha, "curation/admission", "success", "Automated admission criteria satisfied; editorial review still required")
         body = MARKER + "\n\nThe submission satisfies the automated admission criteria. Maintainer review is still required.\n\n"
         body += "\n".join(f"- {markdown(row)}" for row in verdict.verified)
         body += "\n\nArtifact checks verify structure and declared compatibility, not working behavior. AI provenance is self-declared; no percentage is inferred."
-        update_admission_comment(api, repo, number, body, create=bool(verdict.verified))
+        update_admission_comment(api, repo, number, body, create=bool(verdict.verified), clear_deadline=True)
         return
     deadline = None
     if verdict.fixable and not verdict.rejected:
@@ -902,9 +961,12 @@ def admission(api, repo, event, policy):
         body += f"\n\nCorrection deadline: **{iso(deadline)}**. The bot rechecks edits immediately and open submissions daily; unresolved corrections are closed at the first recheck after this deadline.\n<!-- awesome-zotero:correction-deadline {iso(deadline)} -->"
     if verdict.uncertain:
         body += "\n\nInconclusive checks (not closure reasons):\n" + "\n".join(f"- {markdown(reason)}" for reason in dict.fromkeys(verdict.uncertain))
+    next_step = ("Correct the reasons above and ask a maintainer to reopen, or resubmit once eligible. " if rejected else
+                 "Update this PR to address the corrections; the bot rechecks edits and open submissions automatically. " if verdict.fixable else
+                 "The bot will retry these inconclusive checks automatically. ")
     body += ("\n\nSee [the admission policy](https://github.com/" + repo + "/blob/" + pr["base"]["ref"]
-             + "/.github/CURATION.md). Correct the reasons above and ask a maintainer to reopen, or resubmit once eligible. "
-             "A maintainer can apply `" + policy["override_label"] + "` for a documented exception. "
+             + "/.github/CURATION.md). " + next_step
+             + "A maintainer can apply `" + policy["override_label"] + "` for a documented exception. "
              "AI authorship is not inferred from coding style, commit volume, or contributor count.")
     update_admission_comment(api, repo, number, body)
     state = "failure" if rejected else "pending" if verdict.fixable else "error"
@@ -921,10 +983,15 @@ def bot_comment(comments):
                  and comment["user"].get("login", "github-actions[bot]") == "github-actions[bot]"), None)
 
 
-def update_admission_comment(api, repo, number, body, create=True):
+def update_admission_comment(api, repo, number, body, create=True, clear_deadline=False):
     comments = api.pages(f"/repos/{repo}/issues/{number}/comments")
     existing = bot_comment(comments)
     if existing:
+        # An inconclusive check can replace the visible report without erasing
+        # persistent state. Only a conclusive pass or explicit override clears it.
+        deadline = re.search(r"<!-- awesome-zotero:correction-deadline ([\dTZ:+.\-]+) -->", existing["body"])
+        if deadline and "<!-- awesome-zotero:correction-deadline " not in body and not clear_deadline:
+            body += f"\n\nExisting correction deadline: **{markdown(deadline[1])}**. Inconclusive checks alone do not cause closure.\n" + deadline[0]
         if existing["body"] != body:
             api.request(f"/repos/{repo}/issues/comments/{existing['id']}", "PATCH", {"body": body})
     elif create:
@@ -935,9 +1002,11 @@ def pending_admission(api, repo, policy):
     """Oldest attempted inspections first, so a daily cap cannot starve later PRs."""
     pending = []
     for pr in api.pages(f"/repos/{repo}/pulls?state=open"):
-        if pr.get("draft"):
+        if pr.get("draft") or is_cleanup_pr(repo, pr):
             continue
         statuses = api.get(f"/repos/{repo}/commits/{pr['head']['sha']}/status")["statuses"]
+        if any(row["context"] == "curation/maintenance" for row in statuses):
+            continue
         last = next((row for row in statuses if row["context"] == "curation/admission"), None)
         if not last or last["state"] in {"error", "pending", "failure"}:
             pending.append((last.get("created_at", "") if last else "", pr["number"]))

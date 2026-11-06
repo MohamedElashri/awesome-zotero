@@ -75,6 +75,36 @@ class AdmissionRegressionTests(unittest.TestCase):
         result = self.verdict(body=BODY.replace("Project type: plugin", "Project type: integration"))
         self.assertTrue(any(".xpi" in reason for reason in result.rejected))
 
+    def test_xpi_in_tested_release_is_inspected_when_recent_releases_have_none(self):
+        self.api.source_manifest = None
+        latest = dict(self.api.releases[0], tag_name="v2.0.0", assets=[])
+        self.api.release_pages = lambda repo: iter([[latest]])
+        self.api.asset_bytes = b"x"
+        self.api.releases[0]["assets"][0]["size"] = 1
+        self.api.asset = Mock(return_value=b"x")
+        result = self.verdict(after=BASE + ITEM.replace("plugin", "integration"),
+                              body=BODY.replace("Project type: plugin", "Project type: integration"))
+        self.api.asset.assert_called_once()
+        self.assertTrue(any("artifact verification failed" in row for row in result.rejected))
+
+    def test_valid_xpi_in_older_tested_release_records_verified_digest(self):
+        self.api.source_manifest = None
+        latest = dict(self.api.releases[0], tag_name="v2.0.0", assets=[])
+        self.api.release_pages = lambda repo: iter([[latest]])
+        result = self.verdict(after=BASE + ITEM.replace("plugin", "integration"),
+                              body=BODY.replace("Project type: plugin", "Project type: integration"))
+        self.assertEqual(result, c.Verdict())
+        self.assertTrue(any("SHA-256" in row for row in result.verified))
+
+    def test_empty_xpi_in_tested_release_cannot_claim_non_plugin_exemption(self):
+        self.api.source_manifest = None
+        latest = dict(self.api.releases[0], tag_name="v2.0.0", assets=[])
+        self.api.release_pages = lambda repo: iter([[latest]])
+        self.api.releases[0]["assets"][0]["size"] = 0
+        result = self.verdict(after=BASE + ITEM.replace("plugin", "integration"),
+                              body=BODY.replace("Project type: plugin", "Project type: integration"))
+        self.assertTrue(any("no nonempty .xpi" in row for row in result.rejected))
+
     def test_source_manifest_detects_plugin_even_without_description_hint(self):
         self.api.releases[0]["assets"] = []
         result = self.verdict(after=BASE + ITEM.replace("plugin", "integration"),
@@ -191,7 +221,8 @@ class CorrectionWindowTests(unittest.TestCase):
             c.admission(self.api, "list/repo", {"pull_request": {"number": 12}}, POLICY)
 
     def remember_comment(self):
-        body = next(data["body"] for path, _, data in reversed(self.api.writes) if path.endswith("/comments"))
+        body = next(data["body"] for path, _, data in reversed(self.api.writes)
+                    if path.endswith("/comments") or path.endswith("/comments/44"))
         self.api.comments = [{"id": 44, "body": body, "user": {"type": "Bot", "login": "github-actions[bot]"}}]
         self.api.writes.clear()
 
@@ -224,6 +255,59 @@ class CorrectionWindowTests(unittest.TestCase):
         self.assertFalse(any(data == {"state": "closed"} for _, _, data in self.api.writes))
         updated = next(data["body"] for path, _, data in self.api.writes if path.endswith("/comments/44"))
         self.assertNotIn("correction-deadline", updated)
+
+    def test_inconclusive_file_scan_preserves_original_deadline_until_recovery(self):
+        self.api.pr["body"] = ""
+        self.run_at()
+        self.remember_comment()
+        pages = self.api.pages
+
+        def unavailable(path):
+            if path.endswith("/files"):
+                raise c.Unavailable("Temporary file-list outage", 503)
+            return pages(path)
+
+        self.api.pages = unavailable
+        self.run_at(NOW + timedelta(hours=24))
+        self.remember_comment()
+        self.assertIn(c.iso(NOW + timedelta(hours=48)), self.api.comments[0]["body"])
+        self.api.pages = pages
+        self.run_at(NOW + timedelta(hours=49))
+        self.assertTrue(any(data == {"state": "closed"} for _, _, data in self.api.writes))
+        body = next(data["body"] for path, _, data in self.api.writes if path.endswith("/comments/44"))
+        self.assertNotIn(c.iso(NOW + timedelta(hours=97)), body)
+
+    def test_corrected_submission_is_not_closed_when_recovery_is_after_deadline(self):
+        self.api.pr["body"] = ""
+        self.run_at()
+        self.remember_comment()
+        self.api.pr["body"] = BODY
+        pages = self.api.pages
+
+        def unavailable(path):
+            if path.endswith("/files"):
+                raise c.Unavailable("Temporary file-list outage", 503)
+            return pages(path)
+
+        self.api.pages = unavailable
+        self.run_at(NOW + timedelta(hours=49))
+        self.remember_comment()
+        self.assertIn("correction-deadline", self.api.comments[0]["body"])
+        self.api.pages = pages
+        self.run_at(NOW + timedelta(hours=50))
+        self.assertFalse(any(data == {"state": "closed"} for _, _, data in self.api.writes))
+        body = next(data["body"] for path, _, data in self.api.writes if path.endswith("/comments/44"))
+        self.assertNotIn("correction-deadline", body)
+
+    def test_explicit_admission_override_clears_ordinary_submission_deadline(self):
+        self.api.pr["body"] = ""
+        self.run_at()
+        self.remember_comment()
+        self.api.pr["labels"] = [{"name": POLICY["override_label"]}]
+        self.run_at(NOW + timedelta(hours=49))
+        body = next(data["body"] for path, _, data in self.api.writes if path.endswith("/comments/44"))
+        self.assertNotIn("correction-deadline", body)
+        self.assertFalse(any(data == {"state": "closed"} for _, _, data in self.api.writes))
 
     def test_generated_readme_and_generator_touch_do_not_bypass_gate(self):
         self.api.files = [{"filename": "README.md"}, {"filename": "generate_readme.py"}]

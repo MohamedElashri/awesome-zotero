@@ -117,6 +117,8 @@ class FakeAPI:
     def request(self, path, method="GET", data=None):
         if method == "GET" and path == "/repos/list/repo/pulls/12":
             return copy.deepcopy(self.current or self.pr)
+        if method == "GET":
+            return self.get(path)
         self.writes.append((path, method, data))
         return {"sha": "written"}
 
@@ -532,7 +534,11 @@ class WeeklyAPI(FakeAPI):
             self.save_state(branch, data["sha"])
             return {}
         if path.endswith("/pulls"):
-            self.open_pulls.append(dict(data, number=50))
+            self.open_pulls.append(dict(data, number=50, state="open",
+                                       user={"type": "Bot", "login": "github-actions[bot]"},
+                                       head={"ref": data["head"], "sha": self.branches[data["head"]],
+                                             "repo": {"full_name": "list/repo"}},
+                                       base={"ref": data["base"], "sha": self.branches[data["base"]]}))
             return {"number": 50}
         if path.endswith("/pulls/50"):
             self.open_pulls[0].update(data)
