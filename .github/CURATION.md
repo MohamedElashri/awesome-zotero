@@ -1,124 +1,176 @@
 # Automated curation
 
-This is a selective recommendation list. Passing automated checks makes a project
-eligible for editorial review; it does not guarantee inclusion. Stars, forks,
-contributor counts, and commit volume are not quality requirements.
+This is a selective recommendation list. Automation screens submissions and
+prepares maintenance changes; passing checks is not an endorsement or a guarantee
+of working behavior. Stars, forks, contributor counts, and commit volume are not
+quality requirements. Inclusion still requires a maintainer's editorial decision.
 
 ## Weekly maintenance
 
-Every Monday at 06:23 UTC, the bot checks `_README.md` and maintains a single draft
-PR on `automation/weekly-curation`. It proposes removal when:
+Every Monday at 06:23 UTC, the bot checks `_README.md` and maintains one draft PR
+on `automation/weekly-curation`. It proposes removal for:
 
-- Both the latest default-branch commit and the latest published release are at
-  least 365 days old. Projects without releases use their default-branch commit.
-- A project is archived or disabled.
-- A project link returns 404 or 410 in three spaced checks.
-- A project previously published `.xpi` assets, but none remain across three
-  spaced checks. This verifies assets exposed by GitHub's release API, not an
-  installation or download of the plugin.
-- The same project URL appears more than once (the first occurrence is kept).
+- No default-branch commits or published releases within 365 days. Projects
+  without releases use their default-branch commit date.
+- An archived or disabled repository.
+- A project link returning 404 or 410 across three checks at least six days apart.
+- Previously observed `.xpi` assets disappearing from published GitHub releases
+  across three spaced checks. This checks release metadata, not installation.
+- Duplicate project URLs, keeping the first occurrence.
 
-Repository transfers produce URL corrections. Missing checks must be at least six
-days apart, so repeated manual runs cannot accelerate removal. A successful check
-or an inconclusive check resets the missing streak. Timeouts, rate limits, 403s,
-server errors, unsupported URL hosts, or unavailable commit/release history never
-cause removals. A published release, including a prerelease, counts as activity.
-This is deliberately a date rule: the bot does not judge commit substance or
-claim that inactivity proves a project is broken.
+Repository moves produce URL corrections. These are housekeeping signals, not
+proof of poor quality or broken compatibility. A prerelease counts as activity.
+Archived and quiet projects can still be useful; review the proposed changes
+before merging. Nothing is automatically merged.
 
-The bot regenerates `README.md`, runs its rule tests, and includes evidence in the
-PR. A recovered project is withdrawn from the next update. If nothing needs
-changing, no PR is created, and an obsolete cleanup PR is closed. Nothing is
-automatically merged.
+Missing-link counters, observed downloads, and confirmed findings persist on
+`automation/curation-state`. An inconclusive run never establishes a new removal.
+A previously confirmed removal stays in the same PR, marked **awaiting recheck**,
+and its admission/maintenance statuses become pending. A conclusive recovery
+withdraws it. If no changes remain after conclusive checks, the bot closes the
+obsolete PR. Transient failures do not close and recreate the cleanup PR.
+Missing streaks that have not yet established a removal restart after an
+inconclusive check; manual runs cannot accelerate the six-day interval.
 
-Missing-link counters and previously observed downloads are stored on the reserved
-`automation/curation-state` branch. This avoids weekly state-only PRs. Do not edit
-either automation branch; the bot refuses to write over a non-automation commit.
-Changes to the source list or exceptions belong on the default branch.
+The bot regenerates `README.md` from the trusted generator and runs its rule tests.
+It writes only its reserved branches and refuses to overwrite a branch whose
+latest commit is not an automation commit. Do not edit these branches manually.
+Source-list changes and policy exceptions belong on the default branch.
 
-For a quiet project that remains useful, add its lowercase `owner/repo` to
-`inactivity_exemptions` in `.github/curation.json`, with an explanatory string.
-For example: `"owner/project": "Finished tool; verified useful on supported Zotero"`.
-This exemption persists until removed and only suppresses inactivity removals.
-External projects can have their HTTPS hosts added to `external_link_hosts`;
-their link availability is checked, but GitHub activity rules do not apply.
+A quiet but useful project can receive a persistent inactivity exception in
+`inactivity_exemptions` in `.github/curation.json`, keyed by lowercase `owner/repo`
+and accompanied by a reason. This only suppresses inactivity removals. External
+project URLs receive safe link checks; GitHub activity rules do not apply to them.
 
 ## New-project admission
 
-Ready-for-review PRs introducing new source-list entries are checked automatically.
-Draft PRs are left alone until marked ready. Fixes, removals, and infrastructure
-changes do not require new-project evidence. Pre-existing duplicate entries do not
-cause unrelated submissions to be closed.
+Draft PRs are left alone until marked ready. Existing-project description changes,
+removals, and verified repository URL moves do not need new-project evidence.
+Unresolved URL moves stay inconclusive rather than being assumed to be new tools.
+Pre-existing duplicates do not cause unrelated submissions to be closed.
 
-The bot comments with exact reasons and closes a PR for any of these violations:
+Entries must use `- [Name](https://...) - Description` in `_README.md`. New
+reference links, angle-bracket links, HTML links, and alternate list formats get
+correction requests rather than silently bypassing checks. Entries added to the
+generated `README.md` must exist in the proposed source, even when the PR also
+changes the generator or touches `_README.md`.
 
-- Repository created less than **two calendar months** ago (not a star or commit
-  threshold, and not an estimate based on the project's README).
-- Duplicate project, including an extra duplicate of an existing entry, or more
-  than one unrelated new project in the same PR.
-- Archived, disabled, or empty repository, or no activity within 365 days.
-- Missing README or fewer than 200 non-whitespace characters of documentation.
-- A declared plugin without a published stable release containing a nonempty
-  `.xpi` asset. Integrations, themes, and developer tools need installation evidence
-  but are not required to publish `.xpi` files.
-- Missing required evidence, missing documentation or installation targets,
-  placeholder or identical copy-pasted responses, incorrectly formatted new
-  entries, or additions made only to the generated README.
-- No documented Zotero-specific purpose in either the entry or project README.
-- An explicit `AI-generated code: majority` declaration in the PR evidence or
-  the project's README. “Majority” means more than half of the project code.
+Definite policy violations receive an explanation and immediate closure:
 
-The new-project evidence block in the PR template must contain one plain value per
-line. Verification, distinct value, and data handling each need at least 12 words.
-Describe a real manual check with its version and outcome, the practical difference
-from existing tools, and what data leaves Zotero (or explain why none does).
-Length checks screen empty submissions; they cannot verify the truth of claims.
+- Repository created less than **two calendar months** ago. This is a cooling-off
+  period measured from GitHub repository creation, not proof of project maturity.
+- Duplicate projects, or multiple unrelated new projects in one PR.
+- An archived/disabled repository, reported zero repository size, or no inspected
+  activity within 365 days.
+- A declared tested release that is draft/prerelease, an absent plugin asset in
+  that release, or a conclusively invalid plugin archive/compatibility declaration.
+- An explicit majority-AI-generated declaration in the submission or project
+  README. Recognized plain statements that most or all source code was generated
+  by AI also count; code examples, quotations, and negative statements do not.
 
-AI provenance declarations are `none`, `some`, `majority`, or `unknown`. AI-assisted
-development is allowed when the project meets the bar. The bot does not infer the
-percentage of generated code from style, an `AGENTS.md`, AI-related features,
-commit messages, or a single contributor. `unknown` keeps the PR open with an
-inconclusive admission status; it is not an accusation of AI authorship.
+## Verifiable evidence and correction window
 
-GitHub failures, non-GitHub projects, and unsupported evidence URLs keep the PR open
-with an inconclusive status. Supported GitHub evidence links include repository
-roots, `blob`/`tree` documents, and release/tag/download pages. Branch names with
-slashes and custom documentation hosts may need an override. The bot never
-executes submitted projects or contributor code. It cannot establish working
-behavior or compatibility through metadata alone. Editorial inclusion still
-requires maintainer approval.
+Missing fields, documentation problems, placeholder or identical copied answers,
+and entry formatting errors get a **48-hour correction window**. The PR stays
+open with a pending admission status. Edits trigger rechecks without restarting
+that deadline. Daily checks close unresolved submissions at the first recheck
+following the deadline; this is not a guarantee of closure exactly at hour 48.
+A corrected submission updates the existing bot comment and clears its deadline.
+Transient API/download failures alone never become closure reasons.
 
-Open PRs with pending or inconclusive admission statuses are retried by the weekly
-workflow. Rejected PRs are not automatically reopened. Fixed submissions update
-the existing bot comment instead of adding a new comment on every run.
+Supply the template's plain fields, once each:
 
-Correct a rejected submission and ask for reopening, or resubmit once eligible.
-A maintainer can apply the `curation:override` label for an exception, then reopen
-the PR. Keep a brief human explanation in the PR. This bypasses admission, not
-other repository checks. Removing the label re-enables evaluation.
+- `Project URL` and `Project type`.
+- `Documentation URL` and `Installation URL` pointing to accessible HTTPS targets.
+- `Tested version`: an exact published stable release tag in this repository.
+  Non-plugin integrations, themes, and developer tools may instead use
+  `commit:` followed by a full 40-character commit SHA.
+- `Tested Zotero version`: the exact numeric version used during verification.
+- `Verification`: the actual check and outcome, naming both declared versions.
+- `Distinct value` and `Data handling`: specific explanations of the benefit and
+  relevant uploads, permissions, costs, and destructive operations (or their absence).
+- `AI-generated code`: `none`, `some`, `majority`, or `unknown`.
+
+The 200-character README floor screens placeholders; it does not measure quality.
+There is no arbitrary minimum word count for explanation fields. Verified versions
+and artifacts provide the stronger evidence. Claims of usefulness, real-world
+usage, human review, and privacy still require editorial judgment.
+
+## Plugin artifact inspection
+
+Plugin classification is checked independently of the submitter's selected type:
+source Zotero manifests, published `.xpi` assets, and an entry explicitly describing
+a Zotero plugin/add-on trigger artifact verification. Three common source manifest
+locations are inspected. This is bounded static inspection, not a general code
+classifier; an undetected or deliberately concealed plugin still needs human review.
+
+The bot downloads up to three `.xpi` candidates from the declared stable release,
+through GitHub's asset API. It never installs, imports, or executes those files.
+Archives must be valid ZIP files containing nonempty root `manifest.json` and
+`bootstrap.js`, manifest version 2, a plugin name/version/ID, and Zotero minimum and
+maximum compatibility bounds. When the source declares a literal plugin ID, it
+must match the release artifact. The comment records the release, actual plugin
+version and ID, declared compatibility range, and SHA-256 digest.
+
+The range must include both the declared tested Zotero version and the current
+stable version identified from Zotero's official changelog. An unavailable or
+unrecognized changelog keeps inspection inconclusive. If an embedded range is
+outdated, the bot can use the artifact's published update manifest when it matches
+the exact plugin version and SHA-256 (or the same GitHub asset URL when no digest
+is published). Unverifiable overrides and unsupported Mozilla version syntax stay
+inconclusive. Range checks establish declared compatibility, not runtime behavior.
+
+Downloads default to 25 MiB. ZIP inspection limits member count, expanded size,
+and manifest size and rejects unsafe paths, symlinks, encrypted/duplicate entries,
+and malformed metadata. Files are never extracted into the workspace.
+
+## Provenance, links, and bounded requests
+
+AI provenance is self-declared. The bot cannot estimate generated-code percentage
+or detect dishonest declarations. `unknown` does not block otherwise valid evidence.
+Coding style, AI-related functionality, `AGENTS.md`, a single contributor, and
+commit volume are not authorship evidence. The majority rule is an explicit
+provenance policy, not an effective substitute for artifact and quality checks.
+
+Custom documentation hosts can be checked automatically. Public HTTPS requests
+use port 443, validate every redirect, reject non-public DNS addresses, connect
+to the validated address with hostname-verified TLS, ignore environment proxies,
+and never carry the GitHub token. GitHub document links resolve slash-containing
+refs and percent-encoded paths before declaring a target missing. Unsupported or
+ambiguous URLs remain inconclusive.
+
+Inspections default to 24 read requests per project and 600 per workflow invocation,
+plus a small reporting reserve. Individual projects have a 90-second inspection
+budget, and the inspection phase has an eight-minute budget, checked before new
+requests. Pagination and archive candidates are bounded;
+release history stops once enough activity/download evidence exists. Exhausted
+budgets remain inconclusive. These limits do not coordinate every workflow's use
+of GitHub's shared repository token allowance. Heavy histories may need an explicit
+exception or a higher configured budget rather than an unsupported removal claim.
 
 ## Setup and operation
 
-- Merge the workflow, script, policy, and tests together into the default branch.
-- In Actions settings, enable **Allow GitHub Actions to create and approve pull
-  requests**. The workflows use the built-in `GITHUB_TOKEN`; no paid API or extra
-  secret is required. Organization settings may restrict this permission.
-- Add `curation/admission` as a required status check for merging new submissions.
-  A metadata pass is not an automated endorsement and never merges a PR.
+- Merge workflows, scripts, policy, and tests together into the default branch.
+- Enable **Allow GitHub Actions to create and approve pull requests** in Actions
+  settings. The workflows use `GITHUB_TOKEN`; no paid API or extra secret is needed.
+- Require `curation/admission` for merging. The weekly bot publishes this status
+  itself so its maintenance PR does not depend on another token-triggered workflow.
 - Reserve `automation/weekly-curation` and `automation/curation-state` for the bot.
-  If rulesets restrict branch creation or commits, allow the maintenance workflow
-  to write these branches without granting it default-branch bypass permissions.
-- Use **Weekly curation → Run workflow** with `dry_run: true` to preview current
-  findings. Manual runs default to dry-run; scheduled runs write their results.
-  Dry runs never advance counters or modify branches, statuses, comments, or PRs.
+  Allow writes to those branches where rulesets require it, without granting a
+  default-branch bypass.
+- Weekly curation's manual dispatch defaults to `dry_run: true`; it never advances
+  counters or modifies remote branches, PRs, statuses, or comments. It can preview
+  local branch code against the latest source without changing GitHub.
+- Daily admission rechecks run at 07:43 UTC. Up to ten ready PRs with missing,
+  pending, failed, or inconclusive admission statuses are selected, oldest attempts first.
+  Rechecks share per-PR concurrency with event-triggered inspection. Closed PRs are
+  not automatically reopened, and drafts are excluded.
+- Correct a closed submission and request reopening, or resubmit when eligible.
+  A maintainer can apply `curation:override` for a documented exception and reopen
+  the PR. This bypasses admission, not other checks; removing it resumes evaluation.
 - Run local checks with `python3 -m unittest discover -s tests -v`.
 
-The weekly run validates its own generated changes and publishes
-`curation/maintenance` and `curation/admission` on its commit. Do not rely on a token-created PR to trigger
-another workflow automatically: GitHub may require approval for those runs.
-The admission workflow uses `pull_request_target` solely with trusted base code
-and reads submitted files as data through the API. It never checks out a PR head,
-installs its dependencies, or interpolates PR text into a shell command.
-
-If GitHub disables scheduled workflows on an inactive public repository, re-enable
-the workflow in Actions. Scheduled delivery is managed by GitHub and may be delayed.
+Privileged admission jobs use trusted base/default-branch code and read PR content
+as data. They never check out a PR head or run a submitted project's code. GitHub
+can delay scheduled runs and disable public-repository schedules after inactivity;
+re-enable them in Actions if necessary. Automatic merging is never enabled here.

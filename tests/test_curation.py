@@ -7,10 +7,12 @@ import json
 from pathlib import Path
 import sys
 import unittest
+import zipfile
 from unittest.mock import patch
 
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / ".github/scripts"))
 spec = importlib.util.spec_from_file_location("curation", ROOT / ".github/scripts/curation.py")
 c = importlib.util.module_from_spec(spec)
 sys.modules[spec.name] = c
@@ -19,11 +21,13 @@ POLICY = json.loads((ROOT / ".github/curation.json").read_text())
 NOW = datetime(2026, 11, 6, tzinfo=timezone.utc)
 BASE = "# Awesome Zotero\n\n## Extensions\n"
 ITEM = "- [Tool](https://github.com/owner/tool) - A useful Zotero plugin.\n"
-WORDS = "Checked the released plugin with a temporary Zotero library and verified the documented task completed successfully."
+WORDS = "Checked Tool v1.0.0 in Zotero 10.0.8 with a temporary library and verified the documented task completed successfully."
 BODY = f"""Project URL: https://github.com/owner/tool
 Project type: plugin
 Documentation URL: https://github.com/owner/tool/blob/main/README.md
 Installation URL: https://github.com/owner/tool/releases
+Tested version: v1.0.0
+Tested Zotero version: 10.0.8
 Verification: {WORDS}
 Distinct value: This plugin adds collection-specific automation missing from the built-in Zotero interface and the tools already listed here.
 Data handling: The plugin processes metadata locally and does not send attachments or credentials to external services or delete library files.
@@ -36,8 +40,15 @@ class FakeAPI:
         self.meta = {"full_name": "owner/tool", "created_at": "2025-01-01T00:00:00Z",
                      "default_branch": "main", "size": 20, "archived": False}
         self.last_commit = "2026-10-01T00:00:00Z"
-        self.releases = [{"published_at": "2026-10-01T00:00:00Z", "draft": False,
-                          "prerelease": False, "assets": [{"name": "tool.xpi", "size": 123}]}]
+        self.source_manifest = {"manifest_version": 2, "name": "Tool", "version": "1.0.0", "applications": {
+            "zotero": {"id": "tool@example.org", "strict_min_version": "6.999", "strict_max_version": "10.*"}}}
+        output = io.BytesIO()
+        with zipfile.ZipFile(output, "w") as archive:
+            archive.writestr("manifest.json", json.dumps(self.source_manifest))
+            archive.writestr("bootstrap.js", "function startup() {}")
+        self.asset_bytes = output.getvalue()
+        self.releases = [{"tag_name": "v1.0.0", "published_at": "2026-10-01T00:00:00Z", "draft": False,
+                          "prerelease": False, "assets": [{"id": 1, "name": "tool.xpi", "size": len(self.asset_bytes)}]}]
         self.readme_text = "Working Zotero installation and usage documentation. " * 20
         self.failure = None
         self.commit_failure = None
@@ -54,7 +65,14 @@ class FakeAPI:
     def get(self, path):
         if path == "/repos/list/repo/pulls/12":
             return copy.deepcopy(self.pr)
-        if path.startswith("/repos/owner/") and "/commits?" not in path:
+        if "/releases/tags/" in path:
+            release = next((row for row in self.releases if row["tag_name"] == path.rsplit("/", 1)[1]), None)
+            if release is None:
+                raise c.Unavailable("No release", 404)
+            return copy.deepcopy(release)
+        if "/commits/" in path:
+            return {"sha": "project-head"}
+        if path.startswith("/repos/") and "/commits?" not in path:
             if self.failure:
                 raise self.failure
             return copy.deepcopy(self.meta)
@@ -84,7 +102,17 @@ class FakeAPI:
         return self.link_result
 
     def text(self, repo, path, ref):
+        if path in {"manifest.json", "src/manifest.json", "addon/manifest.json"}:
+            if path == "manifest.json" and self.source_manifest:
+                return json.dumps(self.source_manifest)
+            raise c.Unavailable("No manifest", 404)
         return self.before if ref == "base" else self.after
+
+    def asset(self, repo, asset, limit):
+        return self.asset_bytes
+
+    def zotero_version(self):
+        return "10.0.8"
 
     def request(self, path, method="GET", data=None):
         if method == "GET" and path == "/repos/list/repo/pulls/12":
@@ -235,35 +263,38 @@ class AdmissionTests(unittest.TestCase):
         self.api.readme_text += "\n<!--\nAI-generated code: majority\n-->\n```text\nAI-generated code: majority\n```\n"
         self.assertEqual(self.verdict(), c.Verdict())
 
-    def test_copy_pasted_evidence_is_rejected(self):
+    def test_copy_pasted_evidence_requests_correction(self):
         fields = c.evidence_fields(BODY)
         body = BODY.replace(fields["Distinct value"], WORDS)
-        self.assertTrue(any("copy-pasted" in row for row in self.verdict(body).rejected))
+        self.assertTrue(any("copy-pasted" in row for row in self.verdict(body).fixable))
 
     def test_unrelated_project_without_zotero_purpose_is_rejected(self):
         self.api.readme_text = "A generic calculator with installation and usage instructions. " * 20
         result = self.verdict(after=BASE + ITEM.replace("Zotero ", ""))
-        self.assertTrue(any("Zotero-specific" in row for row in result.rejected))
+        self.assertTrue(any("Zotero-specific" in row for row in result.fixable))
 
-    def test_unknown_authorship_stays_inconclusive(self):
+    def test_unknown_authorship_does_not_block_otherwise_valid_evidence(self):
         result = self.verdict(BODY.replace("AI-generated code: some", "AI-generated code: unknown"))
         self.assertFalse(result.rejected)
-        self.assertTrue(result.uncertain)
+        self.assertFalse(result.uncertain or result.fixable)
 
-    def test_missing_readme_or_placeholder_documentation_rejected(self):
+    def test_missing_readme_or_placeholder_documentation_requests_correction(self):
         for readme in [c.Unavailable("no readme", 404), "# Tool\nComing soon!", "<!--" + "x" * 300 + "-->"]:
             with self.subTest(readme=readme):
                 self.api.readme_text = readme
-                self.assertTrue(any("README" in row for row in self.verdict().rejected))
+                self.assertTrue(any("README" in row for row in self.verdict().fixable))
 
     def test_no_stable_plugin_download_rejected_but_integration_allowed(self):
         self.api.releases[0]["prerelease"] = True
-        self.assertTrue(any(".xpi" in row for row in self.verdict().rejected))
-        self.assertFalse(self.verdict(BODY.replace("Project type: plugin", "Project type: integration")).rejected)
+        self.assertTrue(any("stable" in row for row in self.verdict().rejected))
+        self.api.releases[0]["prerelease"] = False
+        self.api.releases[0]["assets"] = []
+        self.api.source_manifest = None
+        self.assertFalse(self.verdict(BODY.replace("Project type: plugin", "Project type: integration"), after=BASE + ITEM.replace("plugin", "integration")).rejected)
 
     def test_draft_releases_do_not_satisfy_plugin_gate(self):
         self.api.releases[0]["draft"] = True
-        self.assertTrue(any(".xpi" in row for row in self.verdict().rejected))
+        self.assertTrue(any("stable" in row for row in self.verdict().rejected))
 
     def test_empty_xpi_is_not_usable_release(self):
         self.api.releases[0]["assets"][0]["size"] = 0
@@ -272,10 +303,10 @@ class AdmissionTests(unittest.TestCase):
     def test_missing_or_placeholder_evidence_rejected(self):
         for body in ["", BODY.replace(WORDS, "TODO"), BODY + "Project URL: https://example.com\n"]:
             with self.subTest(body=body):
-                self.assertTrue(self.verdict(body).rejected)
+                self.assertTrue(self.verdict(body).fixable)
 
     def test_template_comment_does_not_satisfy_evidence(self):
-        self.assertTrue(self.verdict("<!--\n" + BODY + "\n-->").rejected)
+        self.assertTrue(self.verdict("<!--\n" + BODY + "\n-->").fixable)
 
     def test_duplicate_added_to_existing_project_rejected(self):
         result = self.verdict(before=BASE + ITEM, after=BASE + ITEM + ITEM)
@@ -308,7 +339,7 @@ class AdmissionTests(unittest.TestCase):
         for line in [ITEM.replace(") - A", ") A"), ITEM.replace("- [", "* ["), "  " + ITEM]:
             with self.subTest(line=line):
                 result = self.verdict(after=BASE + line)
-                self.assertTrue(any("Description" in row for row in result.rejected))
+                self.assertTrue(any("Description" in row for row in result.fixable))
 
     def test_metadata_canonical_name_catches_transferred_duplicate(self):
         before = BASE + ITEM.replace("owner/tool", "new/tool")
@@ -372,10 +403,11 @@ class RemoteActionTests(unittest.TestCase):
         self.assertIn("satisfies", update["body"])
         self.assertFalse(any(data == {"state": "closed"} for _, _, data in self.api.writes))
 
-    def test_generated_readme_only_additions_are_rejected(self):
+    def test_generated_readme_only_additions_request_correction(self):
         self.api.files = [{"filename": "README.md"}]
         self.run_admission()
-        self.assertTrue(any(data == {"state": "closed"} for _, _, data in self.api.writes))
+        self.assertFalse(any(data == {"state": "closed"} for _, _, data in self.api.writes))
+        self.assertTrue(any(data.get("state") == "pending" for _, _, data in self.api.writes))
 
     def test_infrastructure_changes_do_not_require_new_project_evidence(self):
         self.api.files = [{"filename": ".github/scripts/curation.py"}]
@@ -402,10 +434,10 @@ class SecurityTests(unittest.TestCase):
             with self.subTest(url=url), self.assertRaises(c.Unavailable):
                 handler.redirect_request(None, None, 302, "", {}, url)
 
-    def test_external_hosts_are_explicit_and_no_private_url_is_requested(self):
-        api = c.GitHub("secret", POLICY["external_link_hosts"])
-        for url in ["http://127.0.0.1/", "https://127.0.0.1/", "https://example.com/", "https://github.com.evil.example/a/b"]:
-            with self.subTest(url=url), self.assertRaises(c.Unavailable):
+    def test_private_urls_are_inconclusive(self):
+        api = c.GitHub("secret")
+        for url in ["http://127.0.0.1/", "https://127.0.0.1/"]:
+            with self.subTest(url=url), patch.object(c, "public_fetch", side_effect=c.UnsafeURL("Private host")), self.assertRaises(c.Unavailable):
                 api.link(url)
 
     def test_repository_identity_cannot_escape_api_path(self):
@@ -417,7 +449,7 @@ class SecurityTests(unittest.TestCase):
         self.assertNotIn("<script>", c.markdown("<script>"))
 
     def test_large_api_pages_retry_at_a_smaller_size(self):
-        api = c.GitHub("unused", [])
+        api = c.GitHub("unused")
         paths = []
 
         def get(path):
@@ -431,7 +463,7 @@ class SecurityTests(unittest.TestCase):
         self.assertEqual(len(paths), 3)
 
     def test_truncated_pagination_is_never_reported_as_complete(self):
-        api = c.GitHub("unused", [])
+        api = c.GitHub("unused")
         api.get = lambda path: [None] * 100
         with self.assertRaises(c.Unavailable):
             api.pages("/releases")
@@ -490,10 +522,14 @@ class WeeklyAPI(FakeAPI):
             self.commits[sha] = {"message": data["message"], "tree": {"sha": data["tree"]}}
             return {"sha": sha}
         if path.endswith("/git/refs"):
-            self.branches[data["ref"].removeprefix("refs/heads/")] = data["sha"]
+            branch = data["ref"].removeprefix("refs/heads/")
+            self.branches[branch] = data["sha"]
+            self.save_state(branch, data["sha"])
             return {}
         if "/git/refs/heads/" in path:
-            self.branches[path.split("/git/refs/heads/")[1]] = data["sha"]
+            branch = path.split("/git/refs/heads/")[1]
+            self.branches[branch] = data["sha"]
+            self.save_state(branch, data["sha"])
             return {}
         if path.endswith("/pulls"):
             self.open_pulls.append(dict(data, number=50))
@@ -504,6 +540,11 @@ class WeeklyAPI(FakeAPI):
         if "/statuses/" in path:
             return {}
         raise AssertionError(f"Unexpected request: {method} {path}")
+
+    def save_state(self, branch, sha):
+        if branch == c.STATE_BRANCH:
+            tree = self.trees[self.commits[sha]["tree"]["sha"]]
+            self.state = json.loads(next(row["content"] for row in tree["tree"] if row["path"] == c.STATE_FILE))
 
 
 class WeeklyIntegrationTests(unittest.TestCase):

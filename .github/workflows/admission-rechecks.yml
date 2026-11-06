@@ -1,0 +1,58 @@
+name: Recheck project admission
+
+on:
+  schedule:
+    - cron: '43 7 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: read
+  statuses: read
+
+concurrency:
+  group: admission-rechecks
+  cancel-in-progress: false
+
+jobs:
+  pending:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      numbers: ${{ steps.pending.outputs.numbers }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # sanad: ref=v7.0.1
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          persist-credentials: false
+      - id: pending
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 .github/scripts/curation.py pending
+  recheck:
+    needs: pending
+    if: needs.pending.outputs.numbers != '[]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pull-requests: write
+      statuses: write
+    strategy:
+      max-parallel: 2
+      fail-fast: false
+      matrix:
+        pr: ${{ fromJSON(needs.pending.outputs.numbers) }}
+    concurrency:
+      group: admission-${{ matrix.pr }}
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # sanad: ref=v7.0.1
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          persist-credentials: false
+      - name: Recheck submission with trusted code
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CURATION_PR_NUMBER: ${{ matrix.pr }}
+        run: python3 .github/scripts/curation.py admission

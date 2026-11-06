@@ -15,17 +15,22 @@ do not introduce a new project. Draft PRs are checked when marked ready.
 
 Project type: plugin | integration | theme | developer-tool
 AI-generated code: none | some | majority | unknown
-Majority means more than half of project code. Do not guess if unknown.
-Verification, Distinct value, and Data handling each need at least 12 words.
-Projects must be at least two calendar months old. Plugins need a stable .xpi
-release. Include supported GitHub documentation and installation URLs, or request
-a maintainer exception for other hosts. See .github/CURATION.md for the rules.
+Majority means more than half of project code. Use unknown rather than guessing.
+Tested version must identify a stable release tag in this repository; non-plugin
+tools may use commit:<full 40-character SHA>. Verification must name that version
+and the exact tested Zotero version, with the real check and outcome.
+Projects must be at least two calendar months old. Plugins need a valid stable
+.xpi artifact whose manifest declares compatibility with the tested and current
+Zotero versions. Public HTTPS documentation hosts can be checked automatically.
+Fixable omissions receive a 48-hour correction window. See .github/CURATION.md.
 -->
 
 Project URL: <plain HTTPS URL matching the entry>
 Project type: <choose one type>
 Documentation URL: <plain HTTPS URL to working documentation>
 Installation URL: <plain HTTPS URL to installation instructions or release>
+Tested version: <exact stable release tag, or commit:SHA for a non-plugin tool>
+Tested Zotero version: <exact numeric version used, such as 10.0.8>
 Verification: <describe the version, test performed, and actual outcome>
 Distinct value: <explain the practical benefit beyond Zotero and existing entries>
 Data handling: <explain data sent externally, permissions, costs, and destructive operations or why none apply>

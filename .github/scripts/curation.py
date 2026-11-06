@@ -4,8 +4,10 @@
 import base64
 import calendar
 from collections import Counter
+from contextlib import contextmanager, nullcontext
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
+from http.client import HTTPException
 import html
 import json
 import os
@@ -13,9 +15,13 @@ from pathlib import Path
 import re
 import subprocess
 import sys
+import time
 from urllib.error import HTTPError, URLError
-from urllib.parse import quote, urlencode, urlsplit
+from urllib.parse import quote, unquote, urlencode, urlsplit
 from urllib.request import HTTPRedirectHandler, Request, build_opener
+
+from curation_support import (CompatibilityMismatch, InvalidArtifact, NoRedirect, UnsupportedCompatibility,
+                              UnsafeURL, inspect_xpi, public_fetch, public_url)
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = "_README.md"
@@ -25,7 +31,6 @@ STATE_FILE = ".github/curation-state.json"
 MARKER = "<!-- awesome-zotero:curation -->"
 COMMIT_PREFIX = "automation: curation"
 ENTRY = re.compile(r"^- \[([^\]]+)\]\((https?://[^\s)]+)\)\s+-\s+(.+)$")
-ANY_ENTRY = re.compile(r"^\s*[-*+]\s+\[([^\]]+)\]\((https?://[^\s)]+)\)(.*)$")
 REPO = re.compile(r"^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$")
 MAX_BYTES = 2_000_000
 
@@ -54,7 +59,10 @@ def markdown(value):
 
 
 def github_repo(url):
-    parsed = urlsplit(url)
+    try:
+        parsed = urlsplit(url)
+    except ValueError:
+        return None
     if parsed.scheme != "https" or parsed.netloc.lower() not in {"github.com", "www.github.com"}:
         return None
     parts = parsed.path.strip("/").split("/")
@@ -102,14 +110,44 @@ class SafeRedirect(HTTPRedirectHandler):
 
 
 class GitHub:
-    def __init__(self, token, external_hosts):
+    def __init__(self, token, read_limit=600, project_limit=24):
         self.token = token
-        self.external_hosts = set(external_hosts)
         self.cache = {}
+        self.read_limit, self.project_limit = read_limit, project_limit
+        self.read_count, self.write_count, self.project_start = 0, 0, None
+        self.reporting = False
+        self.started, self.project_started = time.monotonic(), None
+
+    def read_budget(self):
+        if not self.reporting and (time.monotonic() - self.started > 480 or
+                                  self.project_started is not None and time.monotonic() - self.project_started > 90):
+            raise Unavailable("Inspection time budget exhausted; awaiting recheck")
+        if self.read_count >= self.read_limit + (40 if self.reporting else 0):
+            raise Unavailable("Read request budget exhausted; writes are reserved for reporting")
+        if not self.reporting and self.project_start is not None and self.read_count - self.project_start >= self.project_limit:
+            raise Unavailable("Per-project request budget exhausted; awaiting recheck")
+        self.read_count += 1
+
+    @contextmanager
+    def project_budget(self):
+        previous, previous_time = self.project_start, self.project_started
+        self.project_start = self.read_count
+        self.project_started = time.monotonic()
+        try:
+            yield
+        finally:
+            self.project_start = previous
+            self.project_started = previous_time
 
     def request(self, path, method="GET", data=None):
         if not path.startswith("/") or path.startswith("//"):
             raise ValueError("Expected a GitHub API path")
+        if method == "GET":
+            self.read_budget()
+        else:
+            if self.write_count >= 80:
+                raise Unavailable("Write request budget exhausted")
+            self.write_count += 1
         headers = {"Accept": "application/vnd.github+json", "User-Agent": "awesome-zotero-curation"}
         if self.token:
             headers["Authorization"] = f"Bearer {self.token}"
@@ -123,7 +161,7 @@ class GitHub:
                 return json.loads(raw) if raw else None
         except HTTPError as exc:
             raise Unavailable(f"GitHub API returned HTTP {exc.code}", exc.code) from exc
-        except (URLError, TimeoutError, OSError) as exc:
+        except (URLError, TimeoutError, OSError, HTTPException, json.JSONDecodeError) as exc:
             raise Unavailable("GitHub API temporarily unavailable") from exc
 
     def get(self, path):
@@ -131,20 +169,84 @@ class GitHub:
             self.cache[path] = self.request(path)
         return self.cache[path]
 
-    def pages(self, path, per_page=100):
-        result = []
-        # Bound resource use; never silently treat a truncated response as complete.
-        for page in range(1, 2000 // per_page + 1):
+    def iter_pages(self, path, per_page=100, max_pages=12):
+        page, attempts = 1, 0
+        while attempts < max_pages:
+            attempts += 1
             try:
                 rows = self.get(path + ("&" if "?" in path else "?") + urlencode({"per_page": per_page, "page": page}))
             except Unavailable as exc:
                 if str(exc) == "API response too large to inspect safely" and per_page > 1:
-                    return self.pages(path, max(1, per_page // 10))
+                    # Restart at the smaller size; callers must tolerate repeated rows.
+                    per_page, page = max(1, per_page // 10), 1
+                    continue
                 raise
-            result.extend(rows)
+            yield rows
             if len(rows) < per_page:
-                return result
+                return
+            page += 1
         raise Unavailable("Pagination limit reached; evidence is incomplete")
+
+    def pages(self, path, per_page=100):
+        result, seen = [], set()
+        for rows in self.iter_pages(path, per_page):
+            for row in rows:
+                identity = json.dumps(row, sort_keys=True)
+                if identity not in seen:
+                    seen.add(identity)
+                    result.append(row)
+        return result
+
+    def release_pages(self, repo):
+        return self.iter_pages(f"/repos/{repo}/releases", per_page=10, max_pages=6)
+
+    def asset(self, repo, asset, limit):
+        if asset.get("size", 0) > limit:
+            raise Unavailable("Release asset exceeds the configured download limit")
+        identifier = asset.get("id")
+        if not isinstance(identifier, int):
+            raise Unavailable("Release asset lacks an inspectable GitHub asset ID")
+        self.read_budget()
+        headers = {"Accept": "application/octet-stream", "User-Agent": "awesome-zotero-curation"}
+        if self.token:
+            headers["Authorization"] = f"Bearer {self.token}"
+        request = Request(f"https://api.github.com/repos/{repo}/releases/assets/{identifier}", headers=headers)
+        try:
+            try:
+                response = build_opener(NoRedirect()).open(request, timeout=25)
+            except HTTPError as exc:
+                if exc.code not in {301, 302, 303, 307, 308} or not exc.headers.get("Location"):
+                    raise
+                location = exc.headers["Location"]
+                exc.close()
+                return public_fetch(location, limit, self.read_budget, allowed_hosts={
+                    "release-assets.githubusercontent.com", "objects.githubusercontent.com",
+                    "github-releases.githubusercontent.com"})
+            with response:
+                raw = response.read(limit + 1)
+                if len(raw) > limit:
+                    raise Unavailable("Release asset exceeds the configured download limit")
+                return raw
+        except (HTTPError, URLError, OSError, UnsafeURL, HTTPException) as exc:
+            raise Unavailable("Release asset could not be downloaded safely") from exc
+
+    def zotero_version(self):
+        if "zotero_version" not in self.cache:
+            try:
+                raw = public_fetch("https://www.zotero.org/support/changelog", MAX_BYTES, self.read_budget)
+                match = re.search(r"Changes in\s+(\d+\.\d+(?:\.\d+){0,2})", raw.decode("utf-8"))
+                if not match:
+                    raise Unavailable("Official Zotero release version could not be identified")
+                self.cache["zotero_version"] = match[1]
+            except (HTTPError, URLError, OSError, UnicodeError, UnsafeURL, HTTPException) as exc:
+                raise Unavailable("Official Zotero version temporarily unavailable") from exc
+        return self.cache["zotero_version"]
+
+    def public_json(self, url):
+        try:
+            return json.loads(public_fetch(url, MAX_BYTES, self.read_budget))
+        except (HTTPError, URLError, OSError, UnsafeURL, HTTPException, ValueError) as exc:
+            raise Unavailable("Published update manifest could not be read safely") from exc
 
     def text(self, repo, path, ref):
         data = self.get(f"/repos/{repo}/contents/{quote(path, safe='/')}?{urlencode({'ref': ref})}")
@@ -166,7 +268,10 @@ class GitHub:
 
     def link(self, url):
         """True/False for accessible/missing, Unavailable for uncertain results."""
-        parsed = urlsplit(url)
+        try:
+            parsed = urlsplit(url)
+        except ValueError as exc:
+            raise Unavailable("Malformed HTTPS URL") from exc
         if parsed.scheme != "https" or parsed.username or parsed.password:
             raise Unavailable("Only public HTTPS evidence links are supported")
         if parsed.netloc.lower() == "github.com":
@@ -174,14 +279,31 @@ class GitHub:
             if not repo:
                 raise Unavailable("Expected a GitHub project link")
             self.get(f"/repos/{repo}")
-            parts = parsed.path.strip("/").split("/")
+            parts = unquote(parsed.path).strip("/").split("/")
             # Use fixed API endpoints, never fetch contributor-supplied download URLs.
             if len(parts) == 2:
                 return True
             if parts[2] in {"blob", "tree"} and len(parts) >= 5:
-                self.get(f"/repos/{repo}/contents/{quote('/'.join(parts[4:]), safe='/')}?"
-                         + urlencode({"ref": parts[3]}))
-                return True
+                tail = parts[3:]
+                if len(tail) > 9:
+                    raise Unavailable("Documentation path is too ambiguous to resolve automatically")
+                for split in range(len(tail) - 1, 0, -1):
+                    ref, path = "/".join(tail[:split]), "/".join(tail[split:])
+                    try:
+                        commit = self.get(f"/repos/{repo}/commits/{quote(ref, safe='')}")
+                    except Unavailable as exc:
+                        if exc.status == 404:
+                            continue
+                        raise
+                    try:
+                        self.get(f"/repos/{repo}/contents/{quote(path, safe='/')}?"
+                                 + urlencode({"ref": commit["sha"]}))
+                        return True
+                    except Unavailable as exc:
+                        if exc.status == 404:
+                            return False
+                        raise
+                raise Unavailable("Documentation ref could not be resolved; this is not proof the document is missing")
             if parts[2] == "releases":
                 suffix = parts[3:]
                 if not suffix:
@@ -190,35 +312,37 @@ class GitHub:
                     self.get(f"/repos/{repo}/releases/latest")
                     return True
                 if len(suffix) >= 2 and suffix[0] in {"tag", "download"}:
-                    release = self.get(f"/repos/{repo}/releases/tags/{quote(suffix[1], safe='')}")
+                    tag = "/".join(suffix[1:-1] if suffix[0] == "download" else suffix[1:])
+                    release = self.get(f"/repos/{repo}/releases/tags/{quote(tag, safe='')}")
                     if suffix[0] == "download":
-                        return len(suffix) == 3 and any(a["name"] == suffix[2] for a in release.get("assets", []))
+                        return any(a["name"] == suffix[-1] for a in release.get("assets", []))
                     return True
             raise Unavailable("This GitHub evidence URL needs maintainer review")
-        if parsed.netloc.lower() not in self.external_hosts:
-            raise Unavailable("Evidence host is not in external_link_hosts")
-        request = Request(url, headers={"User-Agent": "awesome-zotero-curation"})
         try:
-            # No GitHub token is ever attached to external requests.
-            with build_opener(SafeRedirect(self.external_hosts)).open(request, timeout=25):
-                return True
+            public_fetch(url, 0, self.read_budget, probe=True)
+            return True
         except HTTPError as exc:
             if exc.code in {404, 410}:
                 return False
             raise Unavailable(f"Link check returned HTTP {exc.code}", exc.code) from exc
-        except (URLError, TimeoutError, OSError) as exc:
+        except (URLError, TimeoutError, OSError, UnsafeURL, HTTPException) as exc:
             raise Unavailable("Link check temporarily unavailable") from exc
 
 
-def published_releases(api, repo):
-    return [r for r in api.pages(f"/repos/{repo}/releases") if not r.get("draft") and r.get("published_at")]
-
-
-def activity(api, repo, meta):
+def activity(api, repo, meta, now=None, need_download=False, inactive_days=365):
     rows = api.get(f"/repos/{repo}/commits?" + urlencode({"sha": meta["default_branch"], "per_page": 1}))
-    releases = published_releases(api, repo)
     commits = [date(rows[0]["commit"]["committer"]["date"])] if rows else []
-    dates = commits + [date(r["published_at"]) for r in releases]
+    dates, releases = commits[:], []
+    pages = api.release_pages(repo) if hasattr(api, "release_pages") else [api.pages(f"/repos/{repo}/releases")]
+    for page in pages:
+        published = [r for r in page if not r.get("draft") and r.get("published_at")]
+        releases.extend(published)
+        dates.extend(date(r["published_at"]) for r in published)
+        active = dates and now is not None and now - max(dates) < timedelta(days=inactive_days)
+        has_download = any(a.get("name", "").lower().endswith(".xpi") and a.get("size", 0) > 0
+                           for release in releases for a in release.get("assets", []))
+        if active and (not need_download or has_download):
+            break
     if not dates:
         raise Unavailable("No inspectable commit or release history")
     return max(dates), rows, releases
@@ -245,29 +369,31 @@ def maintenance(api, source, previous, policy, now):
             saved = previous.get(identity, {})
             observation = {"xpi_seen": True} if saved.get("xpi_seen") else {}
             project_found = False
+            uncertain = False
             try:
-                repo = github_repo(item.url)
-                if repo:
-                    meta = api.get(f"/repos/{repo}")
-                    project_found = True
-                    if meta.get("archived") or meta.get("disabled"):
-                        reason = "Repository archived or disabled"
-                    else:
-                        last, _, releases = activity(api, repo, meta)
-                        if any(a.get("name", "").lower().endswith(".xpi") and a.get("size", 0) > 0
-                               for r in releases for a in r.get("assets", [])):
-                            observation["xpi_seen"] = True
-                        elif saved.get("xpi_seen"):
-                            counter = missing_count(saved.get("download_missing"), now, policy)
-                            observation["download_missing"] = counter
-                            if counter["count"] >= policy["missing_checks"]:
-                                reason = f"Previously available .xpi downloads missing across {counter['count']} spaced checks"
-                        if now - last >= timedelta(days=policy["inactive_days"]) and identity not in policy["inactivity_exemptions"]:
-                            reason = f"No default-branch commits or published releases since {last.date()} ({policy['inactive_days']} day policy)"
-                    if not reason and meta["full_name"].lower() != repo.lower():
-                        replacement = "https://github.com/" + meta["full_name"]
-                elif not api.link(item.url):
-                    raise Unavailable("Project link missing", 404)
+                with api.project_budget() if hasattr(api, "project_budget") else nullcontext():
+                    repo = github_repo(item.url)
+                    if repo:
+                        meta = api.get(f"/repos/{repo}")
+                        project_found = True
+                        if meta.get("archived") or meta.get("disabled"):
+                            reason = "Repository archived or disabled"
+                        else:
+                            last, _, releases = activity(api, repo, meta, now, bool(saved.get("xpi_seen")), policy["inactive_days"])
+                            if any(a.get("name", "").lower().endswith(".xpi") and a.get("size", 0) > 0
+                                   for r in releases for a in r.get("assets", [])):
+                                observation["xpi_seen"] = True
+                            elif saved.get("xpi_seen"):
+                                counter = missing_count(saved.get("download_missing"), now, policy)
+                                observation["download_missing"] = counter
+                                if counter["count"] >= policy["missing_checks"]:
+                                    reason = f"Previously available .xpi downloads missing across {counter['count']} spaced checks"
+                            if now - last >= timedelta(days=policy["inactive_days"]) and identity not in policy["inactivity_exemptions"]:
+                                reason = f"No default-branch commits or published releases since {last.date()} ({policy['inactive_days']} day policy)"
+                        if not reason and meta["full_name"].lower() != repo.lower():
+                            replacement = "https://github.com/" + meta["full_name"]
+                    elif not api.link(item.url):
+                        raise Unavailable("Project link missing", 404)
             except Unavailable as exc:
                 if exc.status in {404, 410} and not project_found:
                     counter = missing_count(saved.get("project_missing"), now, policy)
@@ -278,6 +404,18 @@ def maintenance(api, source, previous, policy, now):
                     # An uncertain run breaks the missing streak rather than deleting an entry.
                     observation = {"xpi_seen": True} if saved.get("xpi_seen") else {}
                     unknown.append(f"{identity}: {exc}")
+                    uncertain = True
+            if reason or replacement:
+                observation["confirmed"] = {"reason": reason, "replacement": replacement}
+            elif saved.get("confirmed") and (uncertain or observation.get("project_missing")):
+                confirmed = saved["confirmed"]
+                # A deliberate policy exception can withdraw an inactivity finding.
+                exempt = identity in policy["inactivity_exemptions"] and (confirmed.get("reason") or "").startswith("No default-branch")
+                if not exempt:
+                    observation["confirmed"] = confirmed
+                    reason = "Awaiting recheck: " + confirmed["reason"] if confirmed.get("reason") else None
+                    replacement = confirmed.get("replacement")
+                    unknown.append(f"{identity}: retaining the previous confirmed proposal until a conclusive recheck")
             if observation:
                 observations[identity] = observation
         if reason:
@@ -340,7 +478,7 @@ def weekly(api, repo, policy, dry_run):
     base = api.get(f"/repos/{repo}/git/ref/heads/{quote(default, safe='/')}")["object"]["sha"]
     # Ensure generation uses the same trusted base revision we inspected.
     checkout = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
-    if checkout != base:
+    if checkout != base and not dry_run:
         raise Unavailable("Default branch changed after checkout; rerun against the latest revision")
     source = api.text(repo, SOURCE, base)
     try:
@@ -362,12 +500,19 @@ def weekly(api, repo, policy, dry_run):
         Path(os.environ["GITHUB_STEP_SUMMARY"]).write_text(body)
     if dry_run:
         return
+    api.reporting = True
     if observations != previous:
         branch_commit(api, repo, STATE_BRANCH, base, {STATE_FILE: json.dumps(observations, indent=2) + "\n"})
     pulls = api.pages(f"/repos/{repo}/pulls?" + urlencode({"state": "open", "head": f"{repo.split('/')[0]}:{CLEANUP_BRANCH}", "base": default}))
     if any(MARKER not in (pr.get("body") or "") for pr in pulls):
         raise Unavailable("Cleanup branch has an unrecognized PR; refusing to modify it")
     if updated == source:
+        if unknown and pulls:
+            for pr in pulls:
+                # Upgrade safety for proposals created before confirmed findings were persisted.
+                sha = pr["head"]["sha"]
+                status(api, repo, sha, "curation/admission", "pending", "Awaiting conclusive maintenance recheck")
+            return
         for pr in pulls:
             api.request(f"/repos/{repo}/pulls/{pr['number']}", "PATCH", {"state": "closed", "body": body + "\nNo cleanup changes remain; closing this obsolete proposal.\n"})
         return
@@ -375,8 +520,10 @@ def weekly(api, repo, policy, dry_run):
     if not any(line.startswith("# Awesome Zotero") for line in generated.splitlines()) or len(entries(updated)) > len(entries(source)):
         raise ValueError("Generated README failed cleanup validation")
     sha = branch_commit(api, repo, CLEANUP_BRANCH, base, {SOURCE: updated, "README.md": generated})
-    status(api, repo, sha, "curation/maintenance", "success", "Rules tested; cleanup and README generation validated")
-    status(api, repo, sha, "curation/admission", "success", "Maintenance-only changes; no new projects introduced")
+    pending = any(reason.startswith("Awaiting recheck:") for _, _, reason in findings)
+    state = "pending" if pending else "success"
+    status(api, repo, sha, "curation/maintenance", state, "Awaiting maintenance recheck" if pending else "Rules tested; cleanup and README generation validated")
+    status(api, repo, sha, "curation/admission", state, "Awaiting maintenance recheck" if pending else "Maintenance-only changes; no new projects introduced")
     payload = {"title": "Maintain curated entries: remove stale projects and fix links", "body": body}
     if pulls:
         api.request(f"/repos/{repo}/pulls/{pulls[0]['number']}", "PATCH", payload)
@@ -388,10 +535,12 @@ def weekly(api, repo, policy, dry_run):
 class Verdict:
     rejected: list = field(default_factory=list)
     uncertain: list = field(default_factory=list)
+    fixable: list = field(default_factory=list)
+    verified: list = field(default_factory=list, compare=False)
 
 
 FIELDS = {"Project URL", "Project type", "Documentation URL", "Installation URL",
-          "Verification", "Distinct value", "Data handling", "AI-generated code"}
+          "Tested version", "Tested Zotero version", "Verification", "Distinct value", "Data handling", "AI-generated code"}
 
 
 def evidence_fields(body):
@@ -411,8 +560,22 @@ def evidence_fields(body):
 def majority_disclosure(text):
     # Deliberately narrow: do not infer authorship from style, agents files, or commits.
     text = re.sub(r"<!--.*?-->", "", text, flags=re.S)
-    text = re.sub(r"(?ms)^```[^\n]*\n.*?^```[^\n]*$", "", text)
-    return bool(re.search(r"(?im)^\s*AI-generated code:\s*majority\s*$", text))
+    plain, fence = [], None
+    for line in text.splitlines():
+        marker = re.match(r"^ {0,3}(`{3,}|~{3,})(.*)$", line)
+        if fence:
+            if marker and marker[1][0] == fence[0] and len(marker[1]) >= len(fence) and not marker[2].strip():
+                fence = None
+            continue
+        if marker:
+            fence = marker[1]
+            continue
+        if not re.match(r"^(?: {4}|\t|\s*>)", line):
+            plain.append(line)
+    text = "\n".join(plain)
+    declaration = r"AI-generated code:\s*majority"
+    explicit = r"(?:all|most|the majority) (?:of )?(?:the )?(?:source )?code(?: in this project)? (?:was|is|has been) (?:generated|written) by (?:AI|an? LLM|ChatGPT|Claude|GitHub Copilot)"
+    return bool(re.search(r"(?im)^\s*(?:" + declaration + "|" + explicit + r")[.!\s]*$", text))
 
 
 def inspect_project(api, item, evidence, policy, now, verdict, existing):
@@ -421,52 +584,203 @@ def inspect_project(api, item, evidence, policy, now, verdict, existing):
         verdict.uncertain.append("Non-GitHub project: repository age and release evidence need maintainer review")
         return
     try:
-        meta = api.get(f"/repos/{repo}")
-        if meta["full_name"].lower() in existing:
-            verdict.rejected.append("Project resolves to a repository already present in the list")
-        if date(meta["created_at"]) > months_ago(now, policy["minimum_age_months"]):
-            verdict.rejected.append(f"Repository created {meta['created_at'][:10]}; projects must be at least {policy['minimum_age_months']} calendar months old")
-        if meta.get("archived") or meta.get("disabled"):
-            verdict.rejected.append("Project repository is archived or disabled")
-        if meta.get("size") == 0:
-            verdict.rejected.append("Project repository is empty")
-        branch = meta["default_branch"]
+        with api.project_budget() if hasattr(api, "project_budget") else nullcontext():
+            _inspect_project(api, repo, item, evidence, policy, now, verdict, existing)
+    except Unavailable as exc:
+        verdict.uncertain.append(f"Cannot complete project inspection: {exc}")
+
+
+def verify_plugin(api, content, asset, tested_zotero, current_zotero, limit):
+    try:
+        return inspect_xpi(content, tested_zotero, current_zotero, limit)
+    except CompatibilityMismatch as exc:
+        settings = exc.manifest["applications"]["zotero"]
+        update_url = settings.get("update_url")
+        if not update_url:
+            raise
+        updates = api.public_json(update_url)
         try:
-            readme = api.readme(repo, branch)
-            text = re.sub(r"<!--.*?-->", "", readme, flags=re.S)
-            if len(re.sub(r"\s", "", text)) < policy["minimum_readme_characters"]:
-                verdict.rejected.append(f"Project README lacks the minimum documentation ({policy['minimum_readme_characters']} non-whitespace characters)")
-            if not re.search(r"\bzotero\b", text + " " + item.description, re.I):
-                verdict.rejected.append("Neither the project README nor its entry documents a Zotero-specific purpose")
-            if majority_disclosure(readme):
-                verdict.rejected.append("Project README explicitly declares 'AI-generated code: majority'")
+            rows = updates["addons"][settings["id"]]["updates"]
+            for row in rows:
+                if row.get("version") != exc.manifest["version"]:
+                    continue
+                digest = row.get("update_hash")
+                same_asset = (digest == "sha256:" + exc.digest if digest else
+                              bool(asset.get("browser_download_url")) and row.get("update_link") == asset["browser_download_url"])
+                if not same_asset:
+                    continue
+                override = row.get("applications", {}).get("zotero", {})
+                override = {name: override[name] for name in ("strict_min_version", "strict_max_version") if name in override}
+                result = inspect_xpi(content, tested_zotero, current_zotero, limit, overrides=override)
+                result["published_override"] = True
+                return result
+        except (KeyError, TypeError, AttributeError, InvalidArtifact) as error:
+            raise Unavailable("Published update manifest did not establish compatibility for this exact artifact") from error
+        raise Unavailable("Published update manifest did not identify this exact plugin version and artifact")
+
+
+def _inspect_project(api, repo, item, evidence, policy, now, verdict, existing):
+    meta = api.get(f"/repos/{repo}")
+    if meta["full_name"].lower() in existing:
+        verdict.rejected.append("Project resolves to a repository already present in the list")
+    if date(meta["created_at"]) > months_ago(now, policy["minimum_age_months"]):
+        verdict.rejected.append(f"Repository created {meta['created_at'][:10]}; projects must be at least {policy['minimum_age_months']} calendar months old")
+    if meta.get("archived") or meta.get("disabled"):
+        verdict.rejected.append("Project repository is archived or disabled")
+    if meta.get("size") == 0:
+        verdict.rejected.append("Project reports zero repository size")
+    if verdict.rejected:
+        return
+    branch = meta["default_branch"]
+    readme = ""
+    try:
+        readme = api.readme(repo, branch)
+        text = re.sub(r"<!--.*?-->", "", readme, flags=re.S)
+        if len(re.sub(r"\s", "", text)) < policy["minimum_readme_characters"]:
+            verdict.fixable.append(f"Project README lacks the minimum documentation ({policy['minimum_readme_characters']} non-whitespace characters)")
+        if not re.search(r"\bzotero\b", text + " " + item.description, re.I):
+            verdict.fixable.append("Neither the project README nor its entry documents a Zotero-specific purpose")
+        if majority_disclosure(readme):
+            verdict.rejected.append("Project README explicitly declares that most or all of its code was generated by AI")
+    except Unavailable as exc:
+        if exc.status == 404:
+            verdict.fixable.append("Project has no accessible README")
+        else:
+            raise
+    last, _, releases = activity(api, repo, meta, now, inactive_days=policy["inactive_days"])
+    if now - last >= timedelta(days=policy["inactive_days"]):
+        verdict.rejected.append(f"Project has no commits or published releases within {policy['inactive_days']} days")
+    source_id, source_plugin = None, False
+    for path in ("manifest.json", "src/manifest.json", "addon/manifest.json"):
+        try:
+            manifest = json.loads(api.text(repo, path, branch))
+            if isinstance(manifest, dict):
+                settings = manifest.get("applications", {}).get("zotero")
+                if isinstance(settings, dict):
+                    source_plugin = True
+                    identifier = settings.get("id")
+                    if isinstance(identifier, str) and not re.search(r"[{$}]|__", identifier):
+                        source_id = identifier or source_id
+                    break
+        except Unavailable as exc:
+            if exc.status != 404:
+                raise
+        except (ValueError, TypeError, AttributeError):
+            continue
+    plugin = (evidence.get("Project type") == "plugin" or source_plugin or
+              any(a.get("name", "").lower().endswith(".xpi") for r in releases for a in r.get("assets", [])) or
+              re.search(r"\bzotero (?:plug-?in|add-?on)\b|\b(?:plug-?in|add-?on) for zotero\b", item.description, re.I))
+    tested = evidence.get("Tested version", "")
+    tested_zotero = evidence.get("Tested Zotero version", "")
+    release = None
+    if tested and not tested.startswith("<"):
+        try:
+            if not plugin and re.fullmatch(r"commit:[a-fA-F0-9]{40}", tested):
+                api.get(f"/repos/{repo}/commits/{tested[7:]}")
+                verdict.verified.append(f"Tested project revision: {tested}")
+            else:
+                release = api.get(f"/repos/{repo}/releases/tags/{quote(tested, safe='')}")
+                if release.get("draft") or release.get("prerelease") or not release.get("published_at"):
+                    verdict.rejected.append("Tested version must identify a published stable release")
+                    release = None
+                else:
+                    verdict.verified.append(f"Tested project release: {tested}; tested Zotero version: {tested_zotero}")
         except Unavailable as exc:
             if exc.status == 404:
-                verdict.rejected.append("Project has no accessible README")
+                verdict.fixable.append("Tested version does not identify an accessible release or full commit SHA in this project")
             else:
                 raise
-        last, _, releases = activity(api, repo, meta)
-        if now - last >= timedelta(days=policy["inactive_days"]):
-            verdict.rejected.append(f"Project has no commits or published releases within {policy['inactive_days']} days")
-        if evidence.get("Project type") == "plugin":
-            usable = any(not r.get("prerelease") and any(
-                a.get("name", "").lower().endswith(".xpi") and a.get("size", 0) > 0
-                for a in r.get("assets", [])) for r in releases)
-            if not usable:
-                verdict.rejected.append("Plugin has no published stable release containing a nonempty .xpi download")
-        for name in ("Documentation URL", "Installation URL"):
-            if evidence.get(name, "").startswith("https://"):
+    if plugin and release:
+        candidates = [a for a in release.get("assets", []) if a.get("name", "").lower().endswith(".xpi") and a.get("size", 0) > 0]
+        if not candidates:
+            verdict.rejected.append("Plugin has no nonempty .xpi asset in the declared tested release")
+        elif re.fullmatch(r"\d+(?:\.\d+){1,3}", tested_zotero):
+            current_zotero = api.zotero_version()
+            errors, unavailable = [], []
+            for asset in candidates[:3]:
                 try:
-                    if not api.link(evidence[name]):
-                        verdict.rejected.append(f"{name} points to a missing document or download")
+                    inspected = verify_plugin(api, api.asset(repo, asset, policy["maximum_asset_bytes"]), asset,
+                                              tested_zotero, current_zotero, policy["maximum_asset_bytes"])
+                    if source_id and source_id != inspected["id"]:
+                        raise InvalidArtifact("Release plugin ID differs from the project's source manifest")
+                    verdict.verified.append(f"Release {tested}, asset {asset['name']}: plugin {inspected['id']} version {inspected['version']}; declared Zotero range {inspected['minimum']}–{inspected['maximum']}; current Zotero {current_zotero}; SHA-256 {inspected['sha256']}")
+                    if inspected.get("published_override"):
+                        verdict.verified.append("Compatibility verified through a published update manifest matching this plugin version and artifact")
+                    break
+                except InvalidArtifact as exc:
+                    errors.append(str(exc))
                 except Unavailable as exc:
-                    if exc.status in {404, 410}:
-                        verdict.rejected.append(f"{name} points to a missing document or download")
+                    unavailable.append(str(exc))
+                except UnsupportedCompatibility as exc:
+                    unavailable.append(str(exc))
+            else:
+                if unavailable or len(candidates) > 3:
+                    verdict.uncertain.append("Plugin artifact inspection incomplete: " + "; ".join(unavailable or ["asset inspection limit reached"]))
+                else:
+                    verdict.rejected.append("Plugin artifact verification failed: " + "; ".join(errors))
+    for name in ("Documentation URL", "Installation URL"):
+        if evidence.get(name, "").startswith("https://"):
+            try:
+                if not api.link(evidence[name]):
+                    verdict.fixable.append(f"{name} points to a missing document or download")
+            except Unavailable as exc:
+                if exc.status in {404, 410}:
+                    verdict.fixable.append(f"{name} points to a missing document or download")
+                else:
+                    verdict.uncertain.append(f"{name}: {exc}")
+
+
+def format_errors(before, after):
+    old_lines = set(before.splitlines())
+    errors = []
+    for line in after.splitlines():
+        if line in old_lines or ENTRY.fullmatch(line):
+            continue
+        # Fail closed on alternate Markdown/HTML links, including reference links.
+        candidate = re.match(r"^\s*(?:[-*+]|\d+[.)])\s+.*(?:\[[^\]]+\]|https?://|<a\b)", line, re.I)
+        reference = re.match(r"^\s*\[[^\]]+\]:\s*<?https?://", line)
+        anchor = re.fullmatch(r"\s*- \[[^\]]+\]\(#[^\s)]+\)\s*", line)
+        if (candidate and not anchor) or reference or re.search(r"<a\s+[^>]*href\s*=", line, re.I):
+            errors.append("New project entries must use '- [Name](https://...) - Description'; reference, HTML, and alternate list formats are not supported")
+    return errors
+
+
+def new_projects(api, old, new, verdict):
+    old_keys = {key(item.url) for item in old}
+    new_keys = {key(item.url) for item in new}
+    added = []
+    for item in new:
+        if key(item.url) in old_keys:
+            continue
+        candidates = [prior for prior in old if key(prior.url) not in new_keys or prior.name.casefold() == item.name.casefold()]
+        repo = github_repo(item.url)
+        if not candidates or not repo:
+            added.append(item)
+            continue
+        try:
+            with api.project_budget() if hasattr(api, "project_budget") else nullcontext():
+                target = api.get(f"/repos/{repo}")["full_name"].lower()
+                matched = False
+                unresolved = False
+                for prior in candidates:
+                    previous_repo = github_repo(prior.url)
+                    if not previous_repo:
+                        continue
+                    try:
+                        same_project = api.get(f"/repos/{previous_repo}")["full_name"].lower() == target
+                        matched |= same_project
+                        if same_project and key(prior.url) in new_keys:
+                            verdict.rejected.append("Project resolves to a repository already present in the list")
+                    except Unavailable:
+                        unresolved = True
+                if not matched:
+                    if unresolved:
+                        verdict.uncertain.append("Could not resolve a possible existing-project URL correction; awaiting recheck")
                     else:
-                        verdict.uncertain.append(f"{name}: {exc}")
-    except Unavailable as exc:
-        # API failure, including a private/missing submitted repository, is not proof of low effort.
-        verdict.uncertain.append(f"Cannot complete project inspection: {exc}")
+                        added.append(item)
+        except Unavailable as exc:
+            verdict.uncertain.append(f"Could not determine whether the URL change introduces a new project: {exc}")
+    return added
 
 
 def admission_verdict(api, before, after, body, policy, now):
@@ -474,15 +788,11 @@ def admission_verdict(api, before, after, body, policy, now):
     old, new = entries(before), entries(after)
     old_counts = Counter(key(item.url) for item in old)
     new_counts = Counter(key(item.url) for item in new)
-    added = [item for item in new if key(item.url) not in old_counts]
+    added = new_projects(api, old, new, verdict)
     for identity, count in new_counts.items():
         if count > max(1, old_counts[identity]):
             verdict.rejected.append(f"Duplicate entry: {identity}")
-    # Catch new malformed entries instead of allowing alternate formatting to bypass the gate.
-    old_lines = set(before.splitlines())
-    for line in after.splitlines():
-        if line not in old_lines and ANY_ENTRY.fullmatch(line) and not ENTRY.fullmatch(line):
-            verdict.rejected.append("New project entries must use '- [Name](https://...) - Description'")
+    verdict.fixable.extend(format_errors(before, after))
     if not added:
         return verdict
     if len(added) > 1:
@@ -491,36 +801,46 @@ def admission_verdict(api, before, after, body, policy, now):
     evidence = evidence_fields(body)
     for name in sorted(FIELDS):
         if not evidence.get(name) or evidence[name].startswith("<"):
-            verdict.rejected.append(f"Missing admission evidence: {name}")
+            verdict.fixable.append(f"Missing admission evidence: {name}")
     item = added[0]
     if not re.fullmatch(r"https://\S+", evidence.get("Project URL", "")):
-        verdict.rejected.append("Project URL must be a plain HTTPS URL")
+        verdict.fixable.append("Project URL must be a plain HTTPS URL")
     if key(evidence.get("Project URL", "")) != key(item.url):
-        verdict.rejected.append("Project URL declaration must match the new entry")
+        verdict.fixable.append("Project URL declaration must match the new entry")
     if evidence.get("Project type") not in {"plugin", "integration", "theme", "developer-tool"}:
-        verdict.rejected.append("Project type must be plugin, integration, theme, or developer-tool")
+        verdict.fixable.append("Project type must be plugin, integration, theme, or developer-tool")
     for name in ("Documentation URL", "Installation URL"):
         if not re.fullmatch(r"https://\S+", evidence.get(name, "")):
-            verdict.rejected.append(f"{name} must be a plain HTTPS URL")
+            verdict.fixable.append(f"{name} must be a plain HTTPS URL")
+    for name in ("Project URL", "Documentation URL", "Installation URL"):
+        try:
+            public_url(evidence.get(name, ""))
+        except UnsafeURL:
+            verdict.fixable.append(f"{name} must be a well-formed public HTTPS URL on port 443")
     for name in ("Verification", "Distinct value", "Data handling"):
         value = evidence.get(name, "")
-        if len(value.split()) < 12 or re.search(r"(?i)\b(?:todo|tbd|fill this|replace this)\b", value):
-            verdict.rejected.append(f"{name} must supply at least 12 words of concrete evidence, without template placeholders")
+        if not value.strip() or value.startswith("<") or re.search(r"(?i)\b(?:todo|tbd|fill this|replace this)\b", value):
+            verdict.fixable.append(f"{name} must supply concrete evidence without template placeholders")
     explanations = [evidence.get(name, "").strip().lower() for name in ("Verification", "Distinct value", "Data handling")]
     if all(explanations) and len(set(explanations)) != len(explanations):
-        verdict.rejected.append("Verification, Distinct value, and Data handling must provide different evidence; identical copy-pasted answers do not satisfy the template")
+        verdict.fixable.append("Verification, Distinct value, and Data handling must provide different evidence; identical copy-pasted answers do not satisfy the template")
+    if not re.fullmatch(r"\d+(?:\.\d+){1,3}", evidence.get("Tested Zotero version", "")):
+        verdict.fixable.append("Tested Zotero version must be an exact numeric version, for example 10.0.8")
+    for name in ("Tested version", "Tested Zotero version"):
+        value = evidence.get(name, "")
+        if value and not value.startswith("<") and value.casefold() not in evidence.get("Verification", "").casefold():
+            verdict.fixable.append(f"Verification must describe the outcome for the declared {name}")
     disclosure = evidence.get("AI-generated code", "").lower()
     if disclosure == "majority":
         verdict.rejected.append("Submission declares that most project code is AI-generated; this list does not accept majority-generated projects")
-    elif disclosure == "unknown":
-        verdict.uncertain.append("AI code provenance is declared unknown; maintainer decision required")
-    elif disclosure not in {"none", "some"}:
-        verdict.rejected.append("AI-generated code must be none, some, majority, or unknown")
+    elif disclosure not in {"none", "some", "unknown"}:
+        verdict.fixable.append("AI-generated code must be none, some, majority, or unknown")
     inspect_project(api, item, evidence, policy, now, verdict, old_counts)
     return verdict
 
 
 def admission(api, repo, event, policy):
+    api.reporting = False
     number = event["pull_request"]["number"]
     pr = api.get(f"/repos/{repo}/pulls/{number}")
     if pr["state"] != "open" or pr.get("draft"):
@@ -534,21 +854,24 @@ def admission(api, repo, event, policy):
     try:
         files = api.pages(f"/repos/{repo}/pulls/{number}/files")
         names = {f["filename"] for f in files}
-        if SOURCE in names:
+        if SOURCE in names or "README.md" in names:
             before = api.text(repo, SOURCE, pr["base"]["sha"])
             # GitHub exposes fork commit objects in the base repository. Never check them out.
-            after = api.text(repo, SOURCE, sha)
+            after = api.text(repo, SOURCE, sha) if SOURCE in names else before
             verdict = admission_verdict(api, before, after, pr.get("body"), policy, utcnow())
-        elif "README.md" in names and "generate_readme.py" not in names:
-            before = api.text(repo, "README.md", pr["base"]["sha"])
-            after = api.text(repo, "README.md", sha)
-            old = Counter(key(item.url) for item in entries(before))
-            new = Counter(key(item.url) for item in entries(after))
-            verdict = Verdict(rejected=["New entries must be submitted in _README.md; README.md is generated"] if new - old else [])
+            if "README.md" in names:
+                old_readme = api.text(repo, "README.md", pr["base"]["sha"])
+                new_readme = api.text(repo, "README.md", sha)
+                verdict.fixable.extend(format_errors(old_readme, new_readme))
+                allowed = Counter(key(item.url) for item in entries(after))
+                rendered = Counter(key(item.url) for item in entries(new_readme))
+                if rendered - allowed:
+                    verdict.fixable.append("New entries must be submitted in _README.md; README.md contains an entry absent from its source")
         else:
             verdict = Verdict()
     except Unavailable as exc:
         verdict = Verdict(uncertain=[str(exc)])
+    api.reporting = True
     # A contributor may have updated their PR while API requests were in flight.
     current = api.request(f"/repos/{repo}/pulls/{number}")
     if (current["head"]["sha"] != sha or current.get("body") != pr.get("body")
@@ -556,14 +879,27 @@ def admission(api, repo, event, policy):
             or current.get("draft")
             or any(label["name"] == policy["override_label"] for label in current.get("labels", []))):
         return
-    if not verdict.rejected and not verdict.uncertain:
+    if not verdict.rejected and not verdict.uncertain and not verdict.fixable:
         status(api, repo, sha, "curation/admission", "success", "Automated admission criteria satisfied; editorial review still required")
-        update_admission_comment(api, repo, number, MARKER + "\n\nThe updated submission satisfies the automated admission criteria. Maintainer review is still required.", create=False)
+        body = MARKER + "\n\nThe submission satisfies the automated admission criteria. Maintainer review is still required.\n\n"
+        body += "\n".join(f"- {markdown(row)}" for row in verdict.verified)
+        body += "\n\nArtifact checks verify structure and declared compatibility, not working behavior. AI provenance is self-declared; no percentage is inferred."
+        update_admission_comment(api, repo, number, body, create=bool(verdict.verified))
         return
-    rejected = bool(verdict.rejected)
+    deadline = None
+    if verdict.fixable and not verdict.rejected:
+        comments = api.pages(f"/repos/{repo}/issues/{number}/comments")
+        existing = bot_comment(comments)
+        match = re.search(r"<!-- awesome-zotero:correction-deadline ([\dTZ:+.\-]+) -->", existing["body"]) if existing else None
+        deadline = date(match[1]) if match else utcnow() + timedelta(hours=policy["correction_hours"])
+    rejected = bool(verdict.rejected) or bool(deadline and utcnow() >= deadline)
     body = MARKER + "\n\n" + ("This PR is being closed because it does not meet this list's admission policy:\n\n" if rejected
-                                 else "Automated inspection could not reach a decision. This PR remains open:\n\n")
+                                 else "This PR remains open while the following checks are resolved:\n\n")
     body += "\n".join(f"- {markdown(reason)}" for reason in dict.fromkeys(verdict.rejected))
+    if verdict.fixable:
+        body += "\n\nCorrections required:\n" + "\n".join(f"- {markdown(reason)}" for reason in dict.fromkeys(verdict.fixable))
+    if deadline:
+        body += f"\n\nCorrection deadline: **{iso(deadline)}**. The bot rechecks edits immediately and open submissions daily; unresolved corrections are closed at the first recheck after this deadline.\n<!-- awesome-zotero:correction-deadline {iso(deadline)} -->"
     if verdict.uncertain:
         body += "\n\nInconclusive checks (not closure reasons):\n" + "\n".join(f"- {markdown(reason)}" for reason in dict.fromkeys(verdict.uncertain))
     body += ("\n\nSee [the admission policy](https://github.com/" + repo + "/blob/" + pr["base"]["ref"]
@@ -571,16 +907,23 @@ def admission(api, repo, event, policy):
              "A maintainer can apply `" + policy["override_label"] + "` for a documented exception. "
              "AI authorship is not inferred from coding style, commit volume, or contributor count.")
     update_admission_comment(api, repo, number, body)
-    status(api, repo, sha, "curation/admission", "failure" if rejected else "error",
-           "Admission policy not satisfied" if rejected else "Evidence unavailable; retry or request maintainer override")
+    state = "failure" if rejected else "pending" if verdict.fixable else "error"
+    status(api, repo, sha, "curation/admission", state,
+           "Admission policy not satisfied" if rejected else "Corrections requested; awaiting recheck" if verdict.fixable else "Evidence unavailable; awaiting recheck")
     if rejected:
         # Comment is published before closing, so every automatic closure has its explanation.
         api.request(f"/repos/{repo}/pulls/{number}", "PATCH", {"state": "closed"})
 
 
+def bot_comment(comments):
+    return next((comment for comment in comments if MARKER in comment["body"]
+                 and comment["user"]["type"] == "Bot"
+                 and comment["user"].get("login", "github-actions[bot]") == "github-actions[bot]"), None)
+
+
 def update_admission_comment(api, repo, number, body, create=True):
     comments = api.pages(f"/repos/{repo}/issues/{number}/comments")
-    existing = next((comment for comment in comments if MARKER in comment["body"] and comment["user"]["type"] == "Bot"), None)
+    existing = bot_comment(comments)
     if existing:
         if existing["body"] != body:
             api.request(f"/repos/{repo}/issues/comments/{existing['id']}", "PATCH", {"body": body})
@@ -588,15 +931,17 @@ def update_admission_comment(api, repo, number, body, create=True):
         api.request(f"/repos/{repo}/issues/{number}/comments", "POST", {"body": body})
 
 
-def retry_admission(api, repo, policy):
-    """Retry transient/inconclusive inspections weekly without reopening rejected PRs."""
+def pending_admission(api, repo, policy):
+    """Oldest attempted inspections first, so a daily cap cannot starve later PRs."""
+    pending = []
     for pr in api.pages(f"/repos/{repo}/pulls?state=open"):
         if pr.get("draft"):
             continue
         statuses = api.get(f"/repos/{repo}/commits/{pr['head']['sha']}/status")["statuses"]
         last = next((row for row in statuses if row["context"] == "curation/admission"), None)
-        if last and last["state"] in {"error", "pending"}:
-            admission(api, repo, {"pull_request": {"number": pr["number"]}}, policy)
+        if not last or last["state"] in {"error", "pending", "failure"}:
+            pending.append((last.get("created_at", "") if last else "", pr["number"]))
+    return [number for _, number in sorted(pending)[:policy["maximum_daily_rechecks"]]]
 
 
 def main():
@@ -604,16 +949,19 @@ def main():
     repo = os.environ["GITHUB_REPOSITORY"]
     if not REPO.fullmatch(repo):
         raise ValueError("Invalid workflow repository")
-    api = GitHub(os.environ.get("GH_TOKEN"), policy["external_link_hosts"])
+    api = GitHub(os.environ.get("GH_TOKEN"), policy["maximum_read_requests"], policy["maximum_project_requests"])
     if sys.argv[1:] == ["weekly"]:
         dry_run = os.environ.get("CURATION_DRY_RUN", "true").lower() != "false"
         weekly(api, repo, policy, dry_run)
-        if not dry_run:
-            retry_admission(api, repo, policy)
+    elif sys.argv[1:] == ["pending"]:
+        numbers = pending_admission(api, repo, policy)
+        with open(os.environ["GITHUB_OUTPUT"], "a") as output:
+            output.write("numbers=" + json.dumps(numbers) + "\n")
     elif sys.argv[1:] == ["admission"]:
-        admission(api, repo, json.loads(Path(os.environ["GITHUB_EVENT_PATH"]).read_text()), policy)
+        event = {"pull_request": {"number": int(os.environ["CURATION_PR_NUMBER"])}} if os.environ.get("CURATION_PR_NUMBER") else json.loads(Path(os.environ["GITHUB_EVENT_PATH"]).read_text())
+        admission(api, repo, event, policy)
     else:
-        raise SystemExit("Usage: curation.py weekly|admission")
+        raise SystemExit("Usage: curation.py weekly|pending|admission")
 
 
 if __name__ == "__main__":

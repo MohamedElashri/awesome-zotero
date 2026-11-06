@@ -4,7 +4,11 @@
   "missing_checks": 3,
   "missing_check_interval_days": 6,
   "minimum_readme_characters": 200,
+  "correction_hours": 48,
+  "maximum_daily_rechecks": 10,
+  "maximum_read_requests": 600,
+  "maximum_project_requests": 24,
+  "maximum_asset_bytes": 26214400,
   "inactivity_exemptions": {},
-  "external_link_hosts": ["www.npmjs.com", "wordpress.org", "www.zotero.org"],
   "override_label": "curation:override"
 }

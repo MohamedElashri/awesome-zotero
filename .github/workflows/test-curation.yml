@@ -7,6 +7,7 @@ on:
       - '.github/curation.json'
       - '.github/workflows/*curation*'
       - '.github/workflows/admission.yml'
+      - '.github/workflows/admission-rechecks.yml'
       - 'tests/**'
   workflow_dispatch:
 
