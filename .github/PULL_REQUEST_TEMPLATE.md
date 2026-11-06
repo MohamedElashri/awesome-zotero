@@ -1,10 +1,35 @@
 <!--
-MANDATORY: This pull request MUST follow this exact template. PRs missing required sections/checklists may be closed.
-All PR content and repository changes must be prepared by the human contributor without AI or agent assistance. Do not use AI to draft, rewrite, paraphrase, translate, autocomplete, or polish this PR.
+MANDATORY: Ordinary contributor PRs MUST follow this template. PRs missing required sections/checklists may be closed.
+Ordinary PR content and repository changes must be prepared by the human contributor without AI or agent assistance. Explicit maintainer authorization and repository curation bots are exceptions. Do not use AI to prepare an ordinary submission.
 -->
 
 > [!IMPORTANT]
-> This pull request must be written entirely by you, the human contributor. AI and coding-agent assistance is prohibited for the PR title, description, template responses, comments, review replies, commit messages, and repository changes. Human editing of AI-generated text does not make it acceptable.
+> Ordinary contributions must be written entirely by you, the human contributor. AI and coding-agent assistance is prohibited for the PR title, description, template responses, comments, review replies, commit messages, and repository changes. Human editing of AI-generated text does not make it acceptable. Explicitly authorized maintainer work and repository curation bots are exceptions and must not claim human authorship.
+
+## Automated admission evidence (new projects only)
+
+<!--
+Keep each field on one plain line, with one occurrence of each field.
+Replace placeholders with your own evidence. Remove this block for changes that
+do not introduce a new project. Draft PRs are checked when marked ready.
+
+Project type: plugin | integration | theme | developer-tool
+AI-generated code: none | some | majority | unknown
+Majority means more than half of project code. Do not guess if unknown.
+Verification, Distinct value, and Data handling each need at least 12 words.
+Projects must be at least two calendar months old. Plugins need a stable .xpi
+release. Include supported GitHub documentation and installation URLs, or request
+a maintainer exception for other hosts. See .github/CURATION.md for the rules.
+-->
+
+Project URL: <plain HTTPS URL matching the entry>
+Project type: <choose one type>
+Documentation URL: <plain HTTPS URL to working documentation>
+Installation URL: <plain HTTPS URL to installation instructions or release>
+Verification: <describe the version, test performed, and actual outcome>
+Distinct value: <explain the practical benefit beyond Zotero and existing entries>
+Data handling: <explain data sent externally, permissions, costs, and destructive operations or why none apply>
+AI-generated code: <choose none, some, majority, or unknown>
 
 ## Types of Changes
 
@@ -50,7 +75,7 @@ Put an x in the boxes once you've completed each step. You can also fill these o
 - [ ] I have confirmed the submitted project is usable and not only a placeholder/demo repository
 - [ ] I have described the submitted project's Zotero-specific value
 
-### Human authorship checklist
+### Human authorship checklist (ordinary contributions)
 
 - [ ] I prepared this contribution without using an AI or coding agent to inspect, change, or otherwise work on this repository.
 - [ ] I wrote the PR title, description, template responses, comments, review replies, commit messages, and repository text entirely myself.

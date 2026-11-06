@@ -1,0 +1,37 @@
+name: Weekly curation
+
+on:
+  schedule:
+    - cron: '23 6 * * 1'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Report findings without changing branches or PRs
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+  pull-requests: write
+  statuses: write
+
+concurrency:
+  group: weekly-curation
+  cancel-in-progress: false
+
+jobs:
+  curate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # sanad: ref=v7.0.1
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          persist-credentials: false
+      - name: Test curation rules
+        run: python3 -m unittest discover -s tests -v
+      - name: Check entries and update cleanup PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CURATION_DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
+        run: python3 .github/scripts/curation.py weekly

@@ -6,7 +6,7 @@ on:
     paths:
       - '_README.md'
       - 'generate_readme.py'
-      - '.github/workflows/test-readme.yml'
+      - '.github/workflows/test_readme.yml'
   workflow_dispatch:
   
 jobs:

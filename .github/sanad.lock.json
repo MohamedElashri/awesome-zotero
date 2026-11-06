@@ -40,6 +40,45 @@
       "resolved_at": "2026-08-01T01:18:56Z",
       "timestamp": "2026-07-20T15:10:05Z",
       "timestamp_source": "release"
+    },
+    {
+      "file": ".github/workflows/admission.yml",
+      "node": "jobs.admit.steps[0].uses",
+      "owner": "actions",
+      "repo": "checkout",
+      "path": "",
+      "kind": "github-action",
+      "logical_ref": "v7.0.1",
+      "pinned_sha": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+      "resolved_at": "2026-08-01T01:18:56Z",
+      "timestamp": "2026-07-20T15:10:05Z",
+      "timestamp_source": "release"
+    },
+    {
+      "file": ".github/workflows/test-curation.yml",
+      "node": "jobs.test.steps[0].uses",
+      "owner": "actions",
+      "repo": "checkout",
+      "path": "",
+      "kind": "github-action",
+      "logical_ref": "v7.0.1",
+      "pinned_sha": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+      "resolved_at": "2026-08-01T01:18:56Z",
+      "timestamp": "2026-07-20T15:10:05Z",
+      "timestamp_source": "release"
+    },
+    {
+      "file": ".github/workflows/weekly-curation.yml",
+      "node": "jobs.curate.steps[0].uses",
+      "owner": "actions",
+      "repo": "checkout",
+      "path": "",
+      "kind": "github-action",
+      "logical_ref": "v7.0.1",
+      "pinned_sha": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+      "resolved_at": "2026-08-01T01:18:56Z",
+      "timestamp": "2026-07-20T15:10:05Z",
+      "timestamp_source": "release"
     }
   ]
 }

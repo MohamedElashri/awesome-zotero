@@ -1,0 +1,10 @@
+{
+  "inactive_days": 365,
+  "minimum_age_months": 2,
+  "missing_checks": 3,
+  "missing_check_interval_days": 6,
+  "minimum_readme_characters": 200,
+  "inactivity_exemptions": {},
+  "external_link_hosts": ["www.npmjs.com", "wordpress.org", "www.zotero.org"],
+  "override_label": "curation:override"
+}
