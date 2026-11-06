@@ -8,7 +8,7 @@ The repository maintainer may explicitly authorize AI assistance for a scoped
 maintenance task. That authorization overrides the restrictions below for that
 task only; it does not authorize ordinary contributors to use AI. The repository's
 deterministic curation workflows are also permitted to prepare maintenance PRs and
-admission comments under `.github/CURATION.md`.
+admission comments under `CONTRIBUTING.md`.
 
 Without explicit maintainer authorization:
 
