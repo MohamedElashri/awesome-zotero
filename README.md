@@ -302,14 +302,6 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 
 
 ### Miscellaneous
-- [KeepZotero](https://github.com/yhmtsai/KeepZotero) - - Zotero plugin to keep Zotero in the taskbar by changing close to minimize or disabling shortcuts.
-
-  ![Last Commit](https://img.shields.io/github/last-commit/yhmtsai/KeepZotero)
-![License](https://img.shields.io/github/license/yhmtsai/KeepZotero)
-![Issues](https://img.shields.io/github/issues/yhmtsai/KeepZotero)
-![Stars](https://img.shields.io/github/stars/yhmtsai/KeepZotero)
-![Forks](https://img.shields.io/github/forks/yhmtsai/KeepZotero)
-
 - [Zotero Addons](https://github.com/syt2/zotero-addons) - - Zotero add-on to list and install add-ons in Zotero.
 
   ![Last Commit](https://img.shields.io/github/last-commit/syt2/zotero-addons)
