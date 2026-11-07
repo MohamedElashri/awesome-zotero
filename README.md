@@ -106,14 +106,6 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 ![Stars](https://img.shields.io/github/stars/retorquere/zotero-pmcid-fetcher)
 ![Forks](https://img.shields.io/github/forks/retorquere/zotero-pmcid-fetcher)
 
-- [Zotero TL;DR](https://github.com/syt2/Zotero-TLDR) - - Zotero addon to automatically fetch TL;DR from Semantic Scholar for items.
-
-  ![Last Commit](https://img.shields.io/github/last-commit/syt2/Zotero-TLDR)
-![License](https://img.shields.io/github/license/syt2/Zotero-TLDR)
-![Issues](https://img.shields.io/github/issues/syt2/Zotero-TLDR)
-![Stars](https://img.shields.io/github/stars/syt2/Zotero-TLDR)
-![Forks](https://img.shields.io/github/forks/syt2/Zotero-TLDR)
-
 
 ### Customization
 - [Delitemwithatt](https://github.com/redleafnew/delitemwithatt) - - Remove attachment(s) when deleting the item(s) or collection in Zotero and JurisM.
