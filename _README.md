@@ -78,7 +78,6 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 
 ### Productivity
 - [Chartero](https://github.com/volatile-static/Chartero) - Zotero plugin to provide charts in Zotero.
-- [cmp-zotcite](https://github.com/jalvesaq/cmp-zotcite) - Zotero completion source for nvim-cmp using zotcite as backend.
 - [Zotcard](https://github.com/018/zotcard) - Card note-taking enhancement tool with card templates.
 - [Zotero Better Notes](https://github.com/windingwind/zotero-better-notes) - Everything about note management in Zotero.
 - [Zotero Docling](https://github.com/max3925vats/zotero-docling) - Convert PDF attachments to structured Markdown using the Docling document converter, with OCR and table extraction.
