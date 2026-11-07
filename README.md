@@ -298,14 +298,6 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 ![Stars](https://img.shields.io/github/stars/volatile-static/Chartero)
 ![Forks](https://img.shields.io/github/forks/volatile-static/Chartero)
 
-- [cmp-zotcite](https://github.com/jalvesaq/cmp-zotcite) - - Zotero completion source for nvim-cmp using zotcite as backend.
-
-  ![Last Commit](https://img.shields.io/github/last-commit/jalvesaq/cmp-zotcite)
-![License](https://img.shields.io/github/license/jalvesaq/cmp-zotcite)
-![Issues](https://img.shields.io/github/issues/jalvesaq/cmp-zotcite)
-![Stars](https://img.shields.io/github/stars/jalvesaq/cmp-zotcite)
-![Forks](https://img.shields.io/github/forks/jalvesaq/cmp-zotcite)
-
 - [Zotcard](https://github.com/018/zotcard) - - Card note-taking enhancement tool with card templates.
 
   ![Last Commit](https://img.shields.io/github/last-commit/018/zotcard)
