@@ -74,22 +74,6 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 ![Stars](https://img.shields.io/github/stars/MuiseDestiny/zotero-citation)
 ![Forks](https://img.shields.io/github/forks/MuiseDestiny/zotero-citation)
 
-- [Zotero-citationcounts](https://github.com/eschnett/zotero-citationcounts) - - Zotero plugin for auto-fetching citation counts from various sources.
-
-  ![Last Commit](https://img.shields.io/github/last-commit/eschnett/zotero-citationcounts)
-![License](https://img.shields.io/github/license/eschnett/zotero-citationcounts)
-![Issues](https://img.shields.io/github/issues/eschnett/zotero-citationcounts)
-![Stars](https://img.shields.io/github/stars/eschnett/zotero-citationcounts)
-![Forks](https://img.shields.io/github/forks/eschnett/zotero-citationcounts)
-
-- [Zotero DOI Manager](https://github.com/bwiernik/zotero-shortdoi) - - Zotero plugin to retrieve and manage DOIs for references.
-
-  ![Last Commit](https://img.shields.io/github/last-commit/bwiernik/zotero-shortdoi)
-![License](https://img.shields.io/github/license/bwiernik/zotero-shortdoi)
-![Issues](https://img.shields.io/github/issues/bwiernik/zotero-shortdoi)
-![Stars](https://img.shields.io/github/stars/bwiernik/zotero-shortdoi)
-![Forks](https://img.shields.io/github/forks/bwiernik/zotero-shortdoi)
-
 - [Zotero Metadata Hunter](https://github.com/federicotorrielli/zotero-metadata-hunter) - - Finds missing DOIs and abstracts, replaces preprints with their published versions, and enriches sparse items with metadata from CrossRef, DBLP, Semantic Scholar, arXiv, PubMed, and OpenAlex.
 
   ![Last Commit](https://img.shields.io/github/last-commit/federicotorrielli/zotero-metadata-hunter)
@@ -113,14 +97,6 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 ![Issues](https://img.shields.io/github/issues/retorquere/zotero-pmcid-fetcher)
 ![Stars](https://img.shields.io/github/stars/retorquere/zotero-pmcid-fetcher)
 ![Forks](https://img.shields.io/github/forks/retorquere/zotero-pmcid-fetcher)
-
-- [Zotero TL;DR](https://github.com/syt2/Zotero-TLDR) - - Zotero addon to automatically fetch TL;DR from Semantic Scholar for items.
-
-  ![Last Commit](https://img.shields.io/github/last-commit/syt2/Zotero-TLDR)
-![License](https://img.shields.io/github/license/syt2/Zotero-TLDR)
-![Issues](https://img.shields.io/github/issues/syt2/Zotero-TLDR)
-![Stars](https://img.shields.io/github/stars/syt2/Zotero-TLDR)
-![Forks](https://img.shields.io/github/forks/syt2/Zotero-TLDR)
 
 
 ### Customization
@@ -180,14 +156,6 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 ![Stars](https://img.shields.io/github/stars/northword/zotero-format-metadata)
 ![Forks](https://img.shields.io/github/forks/northword/zotero-format-metadata)
 
-- [Zotero-pdf-preview](https://github.com/windingwind/zotero-pdf-preview) - - Preview Zotero attachments in the library view.
-
-  ![Last Commit](https://img.shields.io/github/last-commit/windingwind/zotero-pdf-preview)
-![License](https://img.shields.io/github/license/windingwind/zotero-pdf-preview)
-![Issues](https://img.shields.io/github/issues/windingwind/zotero-pdf-preview)
-![Stars](https://img.shields.io/github/stars/windingwind/zotero-pdf-preview)
-![Forks](https://img.shields.io/github/forks/windingwind/zotero-pdf-preview)
-
 - [Zotero-reference](https://github.com/MuiseDestiny/zotero-reference) - - PDF references add-on for Zotero.
 
   ![Last Commit](https://img.shields.io/github/last-commit/MuiseDestiny/zotero-reference)
@@ -234,14 +202,6 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 ![Stars](https://img.shields.io/github/stars/MuiseDestiny/zotero-attanger)
 ![Forks](https://img.shields.io/github/forks/MuiseDestiny/zotero-attanger)
 
-- [Zotfile](https://github.com/jlegewie/zotfile) - - Zotero plugin to automatically rename, move, and attach PDFs (or other files) to Zotero items.
-
-  ![Last Commit](https://img.shields.io/github/last-commit/jlegewie/zotfile)
-![License](https://img.shields.io/github/license/jlegewie/zotfile)
-![Issues](https://img.shields.io/github/issues/jlegewie/zotfile)
-![Stars](https://img.shields.io/github/stars/jlegewie/zotfile)
-![Forks](https://img.shields.io/github/forks/jlegewie/zotfile)
-
 - [Zotmoov](https://github.com/wileyyugioh/zotmoov) - - Zotero plugin to automatically move attachments and link them.
 
   ![Last Commit](https://img.shields.io/github/last-commit/wileyyugioh/zotmoov)
@@ -257,14 +217,6 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 ![Issues](https://img.shields.io/github/issues/retorquere/zotero-open-pdf)
 ![Stars](https://img.shields.io/github/stars/retorquere/zotero-open-pdf)
 ![Forks](https://img.shields.io/github/forks/retorquere/zotero-open-pdf)
-
-- [Zotero-storage-scanner](https://github.com/retorquere/zotero-storage-scanner) - - Zotero plugin to remove the broken & duplicate attachment links of the bibliography.
-
-  ![Last Commit](https://img.shields.io/github/last-commit/retorquere/zotero-storage-scanner)
-![License](https://img.shields.io/github/license/retorquere/zotero-storage-scanner)
-![Issues](https://img.shields.io/github/issues/retorquere/zotero-storage-scanner)
-![Stars](https://img.shields.io/github/stars/retorquere/zotero-storage-scanner)
-![Forks](https://img.shields.io/github/forks/retorquere/zotero-storage-scanner)
 
 - [Zotero Watch Folder](https://github.com/josesiqueira/zotero-watch-folder) - - Zotero plugin to watch a folder and auto-import PDFs with metadata retrieval and content-hash deduplication, plus optional two-way collection-to-folder sync with recoverable safe-delete.
 
@@ -284,14 +236,6 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 
 
 ### Integrations
-- [lyz](https://github.com/wshanks/lyz) - - Zotero plugin intended to make working with LyX/Zotero more pleasant.
-
-  ![Last Commit](https://img.shields.io/github/last-commit/wshanks/lyz)
-![License](https://img.shields.io/github/license/wshanks/lyz)
-![Issues](https://img.shields.io/github/issues/wshanks/lyz)
-![Stars](https://img.shields.io/github/stars/wshanks/lyz)
-![Forks](https://img.shields.io/github/forks/wshanks/lyz)
-
 - [notero](https://github.com/dvanoni/notero) - - Zotero plugin for syncing items and notes into Notion.
 
   ![Last Commit](https://img.shields.io/github/last-commit/dvanoni/notero)
@@ -300,24 +244,16 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 ![Stars](https://img.shields.io/github/stars/dvanoni/notero)
 ![Forks](https://img.shields.io/github/forks/dvanoni/notero)
 
-- [Obsidian-Zotlit](https://github.com/PKM-er/obsidian-zotlit) - - ZotLit is a third-party project that aims to facilitate the integration between Obsidian.md and Zotero.
+- [Obsidian-Zotlit](https://github.com/aidenlx/zotlit) - - ZotLit is a third-party project that aims to facilitate the integration between Obsidian.md and Zotero.
 
-  ![Last Commit](https://img.shields.io/github/last-commit/PKM-er/obsidian-zotlit)
-![License](https://img.shields.io/github/license/PKM-er/obsidian-zotlit)
-![Issues](https://img.shields.io/github/issues/PKM-er/obsidian-zotlit)
-![Stars](https://img.shields.io/github/stars/PKM-er/obsidian-zotlit)
-![Forks](https://img.shields.io/github/forks/PKM-er/obsidian-zotlit)
+  ![Last Commit](https://img.shields.io/github/last-commit/aidenlx/zotlit)
+![License](https://img.shields.io/github/license/aidenlx/zotlit)
+![Issues](https://img.shields.io/github/issues/aidenlx/zotlit)
+![Stars](https://img.shields.io/github/stars/aidenlx/zotlit)
+![Forks](https://img.shields.io/github/forks/aidenlx/zotlit)
 
 
 ### Miscellaneous
-- [KeepZotero](https://github.com/yhmtsai/KeepZotero) - - Zotero plugin to keep Zotero in the taskbar by changing close to minimize or disabling shortcuts.
-
-  ![Last Commit](https://img.shields.io/github/last-commit/yhmtsai/KeepZotero)
-![License](https://img.shields.io/github/license/yhmtsai/KeepZotero)
-![Issues](https://img.shields.io/github/issues/yhmtsai/KeepZotero)
-![Stars](https://img.shields.io/github/stars/yhmtsai/KeepZotero)
-![Forks](https://img.shields.io/github/forks/yhmtsai/KeepZotero)
-
 - [Zotero Addons](https://github.com/syt2/zotero-addons) - - Zotero add-on to list and install add-ons in Zotero.
 
   ![Last Commit](https://img.shields.io/github/last-commit/syt2/zotero-addons)
@@ -325,8 +261,6 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 ![Issues](https://img.shields.io/github/issues/syt2/zotero-addons)
 ![Stars](https://img.shields.io/github/stars/syt2/zotero-addons)
 ![Forks](https://img.shields.io/github/forks/syt2/zotero-addons)
-
-
 
 - [zotero-arxiv-workflow](https://github.com/AllanChain/zotero-arxiv-workflow) - - Zotero plugin to help you manage adding and updating papers from arXiv.
 
@@ -345,14 +279,6 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 ![Issues](https://img.shields.io/github/issues/volatile-static/Chartero)
 ![Stars](https://img.shields.io/github/stars/volatile-static/Chartero)
 ![Forks](https://img.shields.io/github/forks/volatile-static/Chartero)
-
-- [cmp-zotcite](https://github.com/jalvesaq/cmp-zotcite) - - Zotero completion source for nvim-cmp using zotcite as backend.
-
-  ![Last Commit](https://img.shields.io/github/last-commit/jalvesaq/cmp-zotcite)
-![License](https://img.shields.io/github/license/jalvesaq/cmp-zotcite)
-![Issues](https://img.shields.io/github/issues/jalvesaq/cmp-zotcite)
-![Stars](https://img.shields.io/github/stars/jalvesaq/cmp-zotcite)
-![Forks](https://img.shields.io/github/forks/jalvesaq/cmp-zotcite)
 
 - [Zotcard](https://github.com/018/zotcard) - - Card note-taking enhancement tool with card templates.
 
@@ -385,14 +311,6 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 ![Issues](https://img.shields.io/github/issues/daeh/zotero-markdb-connect)
 ![Stars](https://img.shields.io/github/stars/daeh/zotero-markdb-connect)
 ![Forks](https://img.shields.io/github/forks/daeh/zotero-markdb-connect)
-
-- [Zotero mdnotes](https://github.com/argenos/zotero-mdnotes) - - Zotero plugin to export item metadata and notes as markdown files.
-
-  ![Last Commit](https://img.shields.io/github/last-commit/argenos/zotero-mdnotes)
-![License](https://img.shields.io/github/license/argenos/zotero-mdnotes)
-![Issues](https://img.shields.io/github/issues/argenos/zotero-mdnotes)
-![Stars](https://img.shields.io/github/stars/argenos/zotero-mdnotes)
-![Forks](https://img.shields.io/github/forks/argenos/zotero-mdnotes)
 
 - [Zotero-OCR](https://github.com/UB-Mannheim/zotero-ocr) - - OCR PDFs in Zotero.
 
@@ -457,14 +375,6 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 - [zotpress](https://wordpress.org/plugins/zotpress/) - - Zotpress brings publication broadcasting and scholarly blogging to WordPress through Zotero.
 
 ### AI Integrations
-- [Aria](https://github.com/lifan0127/ai-research-assistant) - - Aria is Your AI Research Assistant for zotero.
-
-  ![Last Commit](https://img.shields.io/github/last-commit/lifan0127/ai-research-assistant)
-![License](https://img.shields.io/github/license/lifan0127/ai-research-assistant)
-![Issues](https://img.shields.io/github/issues/lifan0127/ai-research-assistant)
-![Stars](https://img.shields.io/github/stars/lifan0127/ai-research-assistant)
-![Forks](https://img.shields.io/github/forks/lifan0127/ai-research-assistant)
-
 - [Awesome GPT](https://github.com/MuiseDestiny/zotero-gpt) - - Zotero plugin to provide GPT backend into Zotero using API.
 
   ![Last Commit](https://img.shields.io/github/last-commit/MuiseDestiny/zotero-gpt)
@@ -481,13 +391,13 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 ![Stars](https://img.shields.io/github/stars/jlegewie/beaver-zotero)
 ![Forks](https://img.shields.io/github/forks/jlegewie/beaver-zotero)
 
-- [Nodus](https://github.com/Drakonis96/nodus) - - Desktop research workspace that turns Zotero libraries into idea graphs, semantic search, gap analysis, and citation-grounded writing.
+- [Nodus](https://github.com/jorgepb96/nodus) - - Desktop research workspace that turns Zotero libraries into idea graphs, semantic search, gap analysis, and citation-grounded writing.
 
-  ![Last Commit](https://img.shields.io/github/last-commit/Drakonis96/nodus)
-![License](https://img.shields.io/github/license/Drakonis96/nodus)
-![Issues](https://img.shields.io/github/issues/Drakonis96/nodus)
-![Stars](https://img.shields.io/github/stars/Drakonis96/nodus)
-![Forks](https://img.shields.io/github/forks/Drakonis96/nodus)
+  ![Last Commit](https://img.shields.io/github/last-commit/jorgepb96/nodus)
+![License](https://img.shields.io/github/license/jorgepb96/nodus)
+![Issues](https://img.shields.io/github/issues/jorgepb96/nodus)
+![Stars](https://img.shields.io/github/stars/jorgepb96/nodus)
+![Forks](https://img.shields.io/github/forks/jorgepb96/nodus)
 
 - [PapersGPT](https://github.com/papersgpt/papersgpt-for-zotero) - - The Ultimate Zotero AI Plugin.
 
