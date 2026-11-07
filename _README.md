@@ -45,7 +45,6 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 - [Zotero-date-from-last-modified](https://github.com/retorquere/zotero-date-from-last-modified) - Shows when the item was last modified.
 - [Zotero-Focused-Mode](https://github.com/dschaehi/Zotero-Focused-Mode) - Distraction-free workspace for focused reading.
 - [Zotero-format-metadata](https://github.com/northword/zotero-format-metadata) - Linter for Zotero to format item metadata.
-- [Zotero-pdf-preview](https://github.com/windingwind/zotero-pdf-preview) - Preview Zotero attachments in the library view.
 - [Zotero-reference](https://github.com/MuiseDestiny/zotero-reference) - PDF references add-on for Zotero.
 - [zotero-style](https://github.com/MuiseDestiny/zotero-style) - Zotero plugin to provide ethereal Style
 - [Zutilo](https://github.com/wshanks/Zutilo) - Zotero plugin providing some additional editing features.
