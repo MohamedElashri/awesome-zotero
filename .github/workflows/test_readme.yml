@@ -1,28 +1,71 @@
 name: Test README Generation
 
 on:
+  # Code changes use ordinary PR isolation. Routine entry checks below use
+  # trusted code and read submitted Markdown only as data.
   pull_request:
-    branches: ['**']
+    paths:
+      - 'generate_readme.py'
+  pull_request_target:
+    types: [opened, synchronize, reopened, ready_for_review]
     paths:
       - '_README.md'
-      - 'generate_readme.py'
+      - 'README.md'
+      - '.github/scripts/readme_check.py'
       - '.github/workflows/test_readme.yml'
   workflow_dispatch:
-  
+    inputs:
+      pr_number:
+        description: PR to check (empty checks the trusted checkout)
+        type: string
+        default: ''
+      head_sha:
+        description: Expected PR head (skip if superseded)
+        type: string
+        default: ''
+
+permissions:
+  contents: read
+
+concurrency:
+  group: readme-${{ github.event.pull_request.number || inputs.pr_number || github.ref }}-${{ github.event_name == 'pull_request' && 'generator' || 'markdown' }}
+  cancel-in-progress: true
+
 jobs:
   test-readme:
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      statuses: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # sanad: ref=v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.base.sha || github.sha }}
+          persist-credentials: false
 
-      - name: Generate README.md (Test Only)
+      - name: Check PR Markdown using the trusted generator
+        env:
+          GH_TOKEN: ${{ github.token }}
+          README_PR_NUMBER: ${{ inputs.pr_number }}
+          README_HEAD_SHA: ${{ inputs.head_sha }}
+        run: python3 .github/scripts/readme_check.py check
+
+  test-generator:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout proposed generator in ordinary PR isolation
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # sanad: ref=v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Test the proposed generator
         run: |
           python3 generate_readme.py _README.md > README.md
 
-      - name: Show README.md output
-        run: |
-          cat README.md
-
       - name: Run Awesome Lint on Generated README
-        run: npx awesome-lint README.md
+        run: npx --yes awesome-lint@2.3.0 README.md
