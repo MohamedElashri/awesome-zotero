@@ -486,11 +486,11 @@ class CleanupRecheckTests(unittest.TestCase):
         case.api.last_commit = "2020-01-01T00:00:00Z"
         case.api.releases = []
         case.run_weekly()
-        sha = case.api.branches[c.CLEANUP_BRANCH]
+        sha = case.api.open_pulls[0]["head"]["sha"]
         case.api.failure = c.Unavailable("rate limit", 403)
         case.run_weekly()
         self.assertNotEqual(case.api.open_pulls[0].get("state"), "closed")
-        self.assertEqual(case.api.branches[c.CLEANUP_BRANCH], sha)
+        self.assertEqual(case.api.open_pulls[0]["head"]["sha"], sha)
         self.assertTrue(any(data.get("context") == "curation/admission" and data.get("state") == "pending" for _, _, data in case.api.writes))
         self.assertIn("Awaiting recheck", case.api.open_pulls[0]["body"])
         case.api.failure = None

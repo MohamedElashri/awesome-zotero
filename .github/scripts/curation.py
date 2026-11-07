@@ -9,6 +9,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
 from http.client import HTTPException
 import html
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -27,12 +28,14 @@ ROOT = Path(__file__).resolve().parents[2]
 SOURCE = "_README.md"
 STATE_BRANCH = "automation/curation-state"
 CLEANUP_BRANCH = "automation/weekly-curation"
+ENTRY_BRANCH_PREFIX = "automation/curation-entry-"
 STATE_FILE = ".github/curation-state.json"
 MARKER = "<!-- awesome-zotero:curation -->"
 COMMIT_PREFIX = "automation: curation"
 ENTRY = re.compile(r"^- \[([^\]]+)\]\((https?://[^\s)]+)\)\s+-\s+(.+)$")
 REPO = re.compile(r"^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$")
 MAX_BYTES = 2_000_000
+MAX_WRITES = 120
 
 
 def utcnow():
@@ -122,7 +125,7 @@ class GitHub:
         if not self.reporting and (time.monotonic() - self.started > 480 or
                                   self.project_started is not None and time.monotonic() - self.project_started > 90):
             raise Unavailable("Inspection time budget exhausted; awaiting recheck")
-        if self.read_count >= self.read_limit + (40 if self.reporting else 0):
+        if self.read_count >= self.read_limit + (100 if self.reporting else 0):
             raise Unavailable("Read request budget exhausted; writes are reserved for reporting")
         if not self.reporting and self.project_start is not None and self.read_count - self.project_start >= self.project_limit:
             raise Unavailable("Per-project request budget exhausted; awaiting recheck")
@@ -145,7 +148,7 @@ class GitHub:
         if method == "GET":
             self.read_budget()
         else:
-            if self.write_count >= 80:
+            if self.write_count >= MAX_WRITES:
                 raise Unavailable("Write request budget exhausted")
             self.write_count += 1
         headers = {"Accept": "application/vnd.github+json", "User-Agent": "awesome-zotero-curation"}
@@ -438,7 +441,7 @@ def render_readme(source):
 
 def branch_commit(api, repo, branch, base_sha, files):
     """Write only reserved automation branches, atomically, without force pushes."""
-    if branch not in {STATE_BRANCH, CLEANUP_BRANCH}:
+    if branch not in {STATE_BRANCH, CLEANUP_BRANCH} and not is_entry_branch(branch):
         raise ValueError("Not an automation branch")
     try:
         old = api.get(f"/repos/{repo}/git/ref/heads/{branch}")["object"]["sha"]
@@ -454,7 +457,8 @@ def branch_commit(api, repo, branch, base_sha, files):
         "base_tree": base["tree"]["sha"],
         "tree": [{"path": path, "mode": "100644", "type": "blob", "content": content}
                  for path, content in files.items()]})
-    if old and tree["sha"] == parent["tree"]["sha"]:
+    if (old and tree["sha"] == parent["tree"]["sha"]
+            and base_sha in {row["sha"] for row in parent.get("parents", [])}):
         return old
     commit = api.request(f"/repos/{repo}/git/commits", "POST", {
         "message": f"{COMMIT_PREFIX} ({branch.rsplit('/', 1)[-1]})",
@@ -472,7 +476,126 @@ def status(api, repo, sha, context, state, description):
         "target_url": f"https://github.com/{repo}/actions/runs/{os.environ.get('GITHUB_RUN_ID', '')}"})
 
 
-def weekly(api, repo, policy, dry_run):
+def is_entry_branch(branch):
+    return bool(re.fullmatch(re.escape(ENTRY_BRANCH_PREFIX) + r"[0-9a-f]{16}", branch or ""))
+
+
+def entry_record(item, occurrence):
+    return dict(name=item.name, url=item.url, description=item.description, occurrence=occurrence)
+
+
+def entry_branch(record):
+    digest = hashlib.sha256(json.dumps(record, sort_keys=True).encode()).hexdigest()[:16]
+    return ENTRY_BRANCH_PREFIX + digest
+
+
+def cleanup_plans(source, findings, unknown):
+    records, counts = {}, Counter()
+    for item in entries(source):
+        signature = (item.name, item.url, item.description)
+        records[item.index] = entry_record(item, counts[signature])
+        counts[signature] += 1
+    return {entry_branch(records[item.index]): {
+        "item": records[item.index], "action": action, "reason": reason,
+        "pending": any(row.startswith(key(item.url) + ": ") for row in unknown)
+    } for item, action, reason in findings}
+
+
+def planned_item(source, record):
+    matches = [item for item in entries(source)
+               if (item.name, item.url, item.description) ==
+               (record["name"], record["url"], record["description"])]
+    return matches[record["occurrence"]] if len(matches) > record["occurrence"] else None
+
+
+def cleanup_report(repo, default, findings, unknown):
+    body = MARKER + "\n\nWeekly curation under [the maintenance policy](https://github.com/" + repo + "/blob/" + default + "/CONTRIBUTING.md#curation-and-automated-checks).\n\n"
+    body += "| Project | Action | Evidence |\n| --- | --- | --- |\n"
+    for item, action, reason in findings:
+        body += f"| [{markdown(item.name)}]({item.url}) | {action} | {markdown(reason)} |\n"
+    body += "\nGenerated README is included. Merge requires maintainer review.\n"
+    if unknown:
+        body += "\nChecks left inconclusive (these do not cause removals):\n" + "\n".join(f"- {markdown(row)}" for row in unknown)
+    return body
+
+
+def proposal_marker(plan):
+    # Rechecks of the same evidence must not reopen a maintainer's declined PR.
+    reason = re.sub(r"across \d+ spaced checks", "across repeated spaced checks",
+                    plan["reason"].removeprefix("Awaiting recheck: "))
+    evidence = dict(plan, pending=False, reason=reason)
+    digest = hashlib.sha256(json.dumps(evidence, sort_keys=True).encode()).hexdigest()
+    return "<!-- awesome-zotero:proposal:" + digest + " -->"
+
+
+def reconcile_cleanup(api, repo, default, base, source, plans, pulls, unknown, refresh=False):
+    opened = {pr["head"]["ref"]: pr for pr in pulls if pr["state"] == "open"}
+    deferred, created = 0, 0
+    # Refresh existing proposals first. Bound new notifications and API mutations.
+    for branch, plan in sorted(plans.items(), key=lambda row: row[0] not in opened):
+        pr = opened.get(branch)
+        if not pr and any(prior["head"]["ref"] == branch and prior["state"] == "closed"
+                          and not prior.get("merged_at")
+                          and proposal_marker(plan) in (prior.get("body") or "")
+                          and "<!-- awesome-zotero:obsolete -->" not in (prior.get("body") or "")
+                          for prior in pulls):
+            continue
+        if refresh and not pr:
+            deferred += 1
+            continue
+        if (not pr and created >= 10) or api.write_count > MAX_WRITES - 12:
+            deferred += 1
+            continue
+        item = planned_item(source, plan["item"])
+        if item is None:
+            continue
+        lines = source.splitlines(keepends=True)
+        lines[item.index] = "" if plan["action"] == "Remove" else lines[item.index].replace(item.url, plan["reason"], 1)
+        updated = "".join(lines)
+        generated = render_readme(updated)
+        if not any(line.startswith("# Awesome Zotero") for line in generated.splitlines()) or len(entries(updated)) > len(entries(source)):
+            raise ValueError("Generated README failed cleanup validation")
+        sha = branch_commit(api, repo, branch, base, {SOURCE: updated, "README.md": generated})
+        pending = plan["pending"]
+        state = "pending" if pending else "success"
+        status(api, repo, sha, "curation/maintenance", state, "Awaiting maintenance recheck" if pending else "Single-entry cleanup and README generation validated")
+        status(api, repo, sha, "curation/admission", state, "Awaiting maintenance recheck" if pending else "Maintenance-only changes; no new projects introduced")
+        body = cleanup_report(repo, default, [(item, plan["action"], plan["reason"])],
+                              ["Awaiting a conclusive weekly recheck for this entry."] if pending else [])
+        body += "\n" + proposal_marker(plan) + "\n"
+        payload = {"title": ("Remove item: " if plan["action"] == "Remove" else "Fix item: ") + item.name,
+                   "body": body}
+        if pr:
+            if any(pr.get(field) != value for field, value in payload.items()):
+                api.request(f"/repos/{repo}/pulls/{pr['number']}", "PATCH", payload)
+        else:
+            api.request(f"/repos/{repo}/pulls", "POST", dict(payload, head=branch, base=default, draft=True))
+            created += 1
+    for branch, pr in opened.items():
+        if branch in plans or api.write_count > MAX_WRITES - 3:
+            continue
+        if branch == CLEANUP_BRANCH:
+            # Keep the legacy aggregate until every replacement is accounted for.
+            represented = {key(plan["item"]["url"]) for plan in plans.values()}
+            unresolved = [row for row in unknown if row.split(": ", 1)[0] not in represented
+                          and row.split(": ", 1)[0].lower() in (pr.get("body") or "").lower()]
+            if deferred or unresolved:
+                status(api, repo, pr["head"]["sha"], "curation/admission", "pending", "Awaiting individual replacement proposals or conclusive recheck")
+                continue
+            note = "Superseded by individual entry proposals; no combined cleanup will be merged."
+        else:
+            note = "No cleanup changes remain for this entry; closing this obsolete proposal."
+        api.request(f"/repos/{repo}/pulls/{pr['number']}", "PATCH", {
+            "state": "closed", "body": (pr.get("body") or "") + "\n\n<!-- awesome-zotero:obsolete -->\n" + note + "\n"})
+    if deferred:
+        note = f"Deferred {deferred} entry proposals to the next write run (notification/API budget)."
+        print(note)
+        if os.environ.get("GITHUB_STEP_SUMMARY"):
+            with Path(os.environ["GITHUB_STEP_SUMMARY"]).open("a") as summary:
+                summary.write("\n\n" + note + "\n")
+
+
+def weekly(api, repo, policy, dry_run, refresh=False):
     meta = api.get(f"/repos/{repo}")
     default = meta["default_branch"]
     base = api.get(f"/repos/{repo}/git/ref/heads/{quote(default, safe='/')}")["object"]["sha"]
@@ -487,48 +610,42 @@ def weekly(api, repo, policy, dry_run):
         if exc.status != 404:
             raise
         previous = {}
-    updated, observations, findings, unknown = maintenance(api, source, previous, policy, utcnow())
-    body = MARKER + "\n\nWeekly curation under [the maintenance policy](https://github.com/" + repo + "/blob/" + default + "/CONTRIBUTING.md#curation-and-automated-checks).\n\n"
-    body += "| Project | Action | Evidence |\n| --- | --- | --- |\n"
-    for item, action, reason in findings:
-        body += f"| [{markdown(item.name)}]({item.url}) | {action} | {markdown(reason)} |\n"
-    body += "\nGenerated README is included. No projects are executed. Merge requires maintainer review.\n"
-    if unknown:
-        body += "\nChecks left inconclusive (these do not cause removals):\n" + "\n".join(f"- {markdown(row)}" for row in unknown)
+    if refresh and "_cleanup" not in previous:
+        print("No saved individual proposals to refresh; run weekly curation first.")
+        return
+    if refresh:
+        # Reapply only saved findings to exact, unchanged entry rows. No project
+        # inspections, missing counters, or new proposals on each main update.
+        plans = {branch: dict(plan, pending=plan["pending"] or previous.get("_cleanup_policy") != policy)
+                 for branch, plan in previous.get("_cleanup", {}).items()
+                 if planned_item(source, plan["item"]) is not None
+                 and not (key(plan["item"]["url"]) in policy["inactivity_exemptions"]
+                          and plan["reason"].removeprefix("Awaiting recheck: ").startswith("No default-branch"))}
+        observations = previous
+        findings = [(planned_item(source, plan["item"]), plan["action"], plan["reason"]) for plan in plans.values()]
+        unknown = [key(plan["item"]["url"]) + ": Awaiting a conclusive weekly recheck"
+                   for plan in plans.values() if plan["pending"]]
+    else:
+        _, observations, findings, unknown = maintenance(api, source, previous, policy, utcnow())
+        plans = cleanup_plans(source, findings, unknown)
+        if plans:
+            observations["_cleanup"] = plans
+            observations["_cleanup_policy"] = policy
+    body = cleanup_report(repo, default, findings, unknown)
     print(body)
     if os.environ.get("GITHUB_STEP_SUMMARY"):
         Path(os.environ["GITHUB_STEP_SUMMARY"]).write_text(body)
     if dry_run:
         return
     api.reporting = True
+    pulls = [pr for pr in api.pages(f"/repos/{repo}/pulls?" + urlencode({"state": "all", "base": default}))
+             if (pr.get("head", {}).get("repo") or {}).get("full_name", "").casefold() == repo.casefold()
+             and (pr["head"].get("ref") == CLEANUP_BRANCH or is_entry_branch(pr["head"].get("ref")))]
+    if any(pr["state"] == "open" and (MARKER not in (pr.get("body") or "") or not is_cleanup_pr(repo, pr)) for pr in pulls):
+        raise Unavailable("Cleanup branch has an unrecognized PR; refusing to modify it")
     if observations != previous:
         branch_commit(api, repo, STATE_BRANCH, base, {STATE_FILE: json.dumps(observations, indent=2) + "\n"})
-    pulls = api.pages(f"/repos/{repo}/pulls?" + urlencode({"state": "open", "head": f"{repo.split('/')[0]}:{CLEANUP_BRANCH}", "base": default}))
-    if any(MARKER not in (pr.get("body") or "") for pr in pulls):
-        raise Unavailable("Cleanup branch has an unrecognized PR; refusing to modify it")
-    if updated == source:
-        if unknown and pulls:
-            for pr in pulls:
-                # Upgrade safety for proposals created before confirmed findings were persisted.
-                sha = pr["head"]["sha"]
-                status(api, repo, sha, "curation/admission", "pending", "Awaiting conclusive maintenance recheck")
-            return
-        for pr in pulls:
-            api.request(f"/repos/{repo}/pulls/{pr['number']}", "PATCH", {"state": "closed", "body": body + "\nNo cleanup changes remain; closing this obsolete proposal.\n"})
-        return
-    generated = render_readme(updated)
-    if not any(line.startswith("# Awesome Zotero") for line in generated.splitlines()) or len(entries(updated)) > len(entries(source)):
-        raise ValueError("Generated README failed cleanup validation")
-    sha = branch_commit(api, repo, CLEANUP_BRANCH, base, {SOURCE: updated, "README.md": generated})
-    pending = any(reason.startswith("Awaiting recheck:") for _, _, reason in findings)
-    state = "pending" if pending else "success"
-    status(api, repo, sha, "curation/maintenance", state, "Awaiting maintenance recheck" if pending else "Rules tested; cleanup and README generation validated")
-    status(api, repo, sha, "curation/admission", state, "Awaiting maintenance recheck" if pending else "Maintenance-only changes; no new projects introduced")
-    payload = {"title": "Maintain curated entries: remove stale projects and fix links", "body": body}
-    if pulls:
-        api.request(f"/repos/{repo}/pulls/{pulls[0]['number']}", "PATCH", payload)
-    else:
-        api.request(f"/repos/{repo}/pulls", "POST", dict(payload, head=CLEANUP_BRANCH, base=default, draft=True))
+    reconcile_cleanup(api, repo, default, base, source, plans, pulls, unknown, refresh)
 
 
 @dataclass
@@ -853,7 +970,7 @@ def is_cleanup_pr(repo, pr):
     head = pr.get("head") or {}
     origin = head.get("repo") or {}
     author = pr.get("user") or {}
-    return (head.get("ref") == CLEANUP_BRANCH
+    return ((head.get("ref") == CLEANUP_BRANCH or is_entry_branch(head.get("ref")))
             and (origin.get("full_name") or "").casefold() == repo.casefold()
             and author.get("type") == "Bot"
             and author.get("login") == "github-actions[bot]")
@@ -868,11 +985,15 @@ def maintenance_owns_commit(api, repo, sha, fresh=False):
     try:
         reference = read(f"/repos/{repo}/git/ref/heads/{CLEANUP_BRANCH}")
     except Unavailable as exc:
-        if exc.status == 404:
-            return False
-        raise
+        if exc.status != 404:
+            raise
+        reference = {}
     # Protect the short interval between branch publication and status creation.
-    return reference.get("object", {}).get("sha") == sha
+    if reference.get("object", {}).get("sha") == sha:
+        return True
+    references = read(f"/repos/{repo}/git/matching-refs/heads/{ENTRY_BRANCH_PREFIX}")
+    return any(is_entry_branch(row.get("ref", "").removeprefix("refs/heads/"))
+               and row.get("object", {}).get("sha") == sha for row in references)
 
 
 def admission_ownership_unavailable(api, repo, sha, error):
@@ -1022,6 +1143,8 @@ def main():
     if sys.argv[1:] == ["weekly"]:
         dry_run = os.environ.get("CURATION_DRY_RUN", "true").lower() != "false"
         weekly(api, repo, policy, dry_run)
+    elif sys.argv[1:] == ["refresh"]:
+        weekly(api, repo, policy, False, refresh=True)
     elif sys.argv[1:] == ["pending"]:
         numbers = pending_admission(api, repo, policy)
         with open(os.environ["GITHUB_OUTPUT"], "a") as output:
@@ -1030,7 +1153,7 @@ def main():
         event = {"pull_request": {"number": int(os.environ["CURATION_PR_NUMBER"])}} if os.environ.get("CURATION_PR_NUMBER") else json.loads(Path(os.environ["GITHUB_EVENT_PATH"]).read_text())
         admission(api, repo, event, policy)
     else:
-        raise SystemExit("Usage: curation.py weekly|pending|admission")
+        raise SystemExit("Usage: curation.py weekly|refresh|pending|admission")
 
 
 if __name__ == "__main__":
