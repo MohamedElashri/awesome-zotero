@@ -68,7 +68,7 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 ### Integrations
 - [lyz](https://github.com/wshanks/lyz) - Zotero plugin intended to make working with LyX/Zotero more pleasant.
 - [notero](https://github.com/dvanoni/notero) - Zotero plugin for syncing items and notes into Notion.
-- [Obsidian-Zotlit](https://github.com/PKM-er/obsidian-zotlit) - ZotLit is a third-party project that aims to facilitate the integration between Obsidian.md and Zotero.
+- [Obsidian-Zotlit](https://github.com/aidenlx/zotlit) - ZotLit is a third-party project that aims to facilitate the integration between Obsidian.md and Zotero.
 
 ### Miscellaneous
 - [KeepZotero](https://github.com/yhmtsai/KeepZotero) - Zotero plugin to keep Zotero in the taskbar by changing close to minimize or disabling shortcuts.
