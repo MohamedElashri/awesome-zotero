@@ -65,7 +65,6 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 - [Zoplicate](https://github.com/ChenglongMa/zoplicate) - Detect and manage duplicate items in Zotero.
 
 ### Integrations
-- [lyz](https://github.com/wshanks/lyz) - Zotero plugin intended to make working with LyX/Zotero more pleasant.
 - [notero](https://github.com/dvanoni/notero) - Zotero plugin for syncing items and notes into Notion.
 - [Obsidian-Zotlit](https://github.com/PKM-er/obsidian-zotlit) - ZotLit is a third-party project that aims to facilitate the integration between Obsidian.md and Zotero.
 

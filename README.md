@@ -268,14 +268,6 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 
 
 ### Integrations
-- [lyz](https://github.com/wshanks/lyz) - - Zotero plugin intended to make working with LyX/Zotero more pleasant.
-
-  ![Last Commit](https://img.shields.io/github/last-commit/wshanks/lyz)
-![License](https://img.shields.io/github/license/wshanks/lyz)
-![Issues](https://img.shields.io/github/issues/wshanks/lyz)
-![Stars](https://img.shields.io/github/stars/wshanks/lyz)
-![Forks](https://img.shields.io/github/forks/wshanks/lyz)
-
 - [notero](https://github.com/dvanoni/notero) - - Zotero plugin for syncing items and notes into Notion.
 
   ![Last Commit](https://img.shields.io/github/last-commit/dvanoni/notero)
