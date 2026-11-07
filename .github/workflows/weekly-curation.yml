@@ -9,6 +9,7 @@ on:
       - 'generate_readme.py'
       - '.github/curation.json'
       - '.github/scripts/curation*.py'
+      - '.github/scripts/readme_check.py'
       - '.github/workflows/weekly-curation.yml'
   schedule:
     - cron: '23 6 * * 1'
@@ -20,6 +21,7 @@ on:
         default: true
 
 permissions:
+  actions: write
   contents: write
   pull-requests: write
   statuses: write
@@ -45,3 +47,8 @@ jobs:
           CURATION_DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
           CURATION_MODE: ${{ github.event_name == 'push' && 'refresh' || 'weekly' }}
         run: python3 .github/scripts/curation.py "$CURATION_MODE"
+      - name: Dispatch README checks automatically for curation PRs
+        if: github.event_name != 'workflow_dispatch' || !inputs.dry_run
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 .github/scripts/readme_check.py dispatch
