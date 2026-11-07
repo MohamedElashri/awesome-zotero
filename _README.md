@@ -58,7 +58,6 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 
 ### File Management
 - [Zotero-attanger](https://github.com/MuiseDestiny/zotero-attanger) - Attachment Manager for Zotero.
-- [Zotfile](https://github.com/jlegewie/zotfile) - Zotero plugin to automatically rename, move, and attach PDFs (or other files) to Zotero items.
 - [Zotmoov](https://github.com/wileyyugioh/zotmoov) - Zotero plugin to automatically move attachments and link them.
 - [Zotero-open-pdf](https://github.com/retorquere/zotero-open-pdf) - Open PDFs in external PDF viewer from Zotero.
 - [Zotero-storage-scanner](https://github.com/retorquere/zotero-storage-scanner) - Zotero plugin to remove the broken & duplicate attachment links of the bibliography.
@@ -66,7 +65,6 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 - [Zoplicate](https://github.com/ChenglongMa/zoplicate) - Detect and manage duplicate items in Zotero.
 
 ### Integrations
-- [lyz](https://github.com/wshanks/lyz) - Zotero plugin intended to make working with LyX/Zotero more pleasant.
 - [notero](https://github.com/dvanoni/notero) - Zotero plugin for syncing items and notes into Notion.
 - [Obsidian-Zotlit](https://github.com/PKM-er/obsidian-zotlit) - ZotLit is a third-party project that aims to facilitate the integration between Obsidian.md and Zotero.
 
@@ -95,7 +93,6 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 - [zotpress](https://wordpress.org/plugins/zotpress/) - Zotpress brings publication broadcasting and scholarly blogging to WordPress through Zotero.
 
 ### AI Integrations
-- [Aria](https://github.com/lifan0127/ai-research-assistant) - Aria is Your AI Research Assistant for zotero
 - [Awesome GPT](https://github.com/MuiseDestiny/zotero-gpt) - Zotero plugin to provide GPT backend into Zotero using API.
 - [Beaver](https://github.com/jlegewie/beaver-zotero/) - Academic research assistant with native Zotero integration. Instantly searches through all your documents and explains complex concepts as you read.
 - [Nodus](https://github.com/jorgepb96/nodus) - Desktop research workspace that turns Zotero libraries into idea graphs, semantic search, gap analysis, and citation-grounded writing.

@@ -226,14 +226,6 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 ![Stars](https://img.shields.io/github/stars/MuiseDestiny/zotero-attanger)
 ![Forks](https://img.shields.io/github/forks/MuiseDestiny/zotero-attanger)
 
-- [Zotfile](https://github.com/jlegewie/zotfile) - - Zotero plugin to automatically rename, move, and attach PDFs (or other files) to Zotero items.
-
-  ![Last Commit](https://img.shields.io/github/last-commit/jlegewie/zotfile)
-![License](https://img.shields.io/github/license/jlegewie/zotfile)
-![Issues](https://img.shields.io/github/issues/jlegewie/zotfile)
-![Stars](https://img.shields.io/github/stars/jlegewie/zotfile)
-![Forks](https://img.shields.io/github/forks/jlegewie/zotfile)
-
 - [Zotmoov](https://github.com/wileyyugioh/zotmoov) - - Zotero plugin to automatically move attachments and link them.
 
   ![Last Commit](https://img.shields.io/github/last-commit/wileyyugioh/zotmoov)
@@ -276,14 +268,6 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 
 
 ### Integrations
-- [lyz](https://github.com/wshanks/lyz) - - Zotero plugin intended to make working with LyX/Zotero more pleasant.
-
-  ![Last Commit](https://img.shields.io/github/last-commit/wshanks/lyz)
-![License](https://img.shields.io/github/license/wshanks/lyz)
-![Issues](https://img.shields.io/github/issues/wshanks/lyz)
-![Stars](https://img.shields.io/github/stars/wshanks/lyz)
-![Forks](https://img.shields.io/github/forks/wshanks/lyz)
-
 - [notero](https://github.com/dvanoni/notero) - - Zotero plugin for syncing items and notes into Notion.
 
   ![Last Commit](https://img.shields.io/github/last-commit/dvanoni/notero)
@@ -431,14 +415,6 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 - [zotpress](https://wordpress.org/plugins/zotpress/) - - Zotpress brings publication broadcasting and scholarly blogging to WordPress through Zotero.
 
 ### AI Integrations
-- [Aria](https://github.com/lifan0127/ai-research-assistant) - - Aria is Your AI Research Assistant for zotero.
-
-  ![Last Commit](https://img.shields.io/github/last-commit/lifan0127/ai-research-assistant)
-![License](https://img.shields.io/github/license/lifan0127/ai-research-assistant)
-![Issues](https://img.shields.io/github/issues/lifan0127/ai-research-assistant)
-![Stars](https://img.shields.io/github/stars/lifan0127/ai-research-assistant)
-![Forks](https://img.shields.io/github/forks/lifan0127/ai-research-assistant)
-
 - [Awesome GPT](https://github.com/MuiseDestiny/zotero-gpt) - - Zotero plugin to provide GPT backend into Zotero using API.
 
   ![Last Commit](https://img.shields.io/github/last-commit/MuiseDestiny/zotero-gpt)
