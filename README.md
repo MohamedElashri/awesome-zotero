@@ -226,14 +226,6 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 ![Stars](https://img.shields.io/github/stars/MuiseDestiny/zotero-attanger)
 ![Forks](https://img.shields.io/github/forks/MuiseDestiny/zotero-attanger)
 
-- [Zotfile](https://github.com/jlegewie/zotfile) - - Zotero plugin to automatically rename, move, and attach PDFs (or other files) to Zotero items.
-
-  ![Last Commit](https://img.shields.io/github/last-commit/jlegewie/zotfile)
-![License](https://img.shields.io/github/license/jlegewie/zotfile)
-![Issues](https://img.shields.io/github/issues/jlegewie/zotfile)
-![Stars](https://img.shields.io/github/stars/jlegewie/zotfile)
-![Forks](https://img.shields.io/github/forks/jlegewie/zotfile)
-
 - [Zotmoov](https://github.com/wileyyugioh/zotmoov) - - Zotero plugin to automatically move attachments and link them.
 
   ![Last Commit](https://img.shields.io/github/last-commit/wileyyugioh/zotmoov)
