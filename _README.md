@@ -32,7 +32,6 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 - [Jasminum](https://github.com/l0o0/jasminum) - A Zotero add-on to retrieve CNKI meta.
 - [Scite-zotero-plugin](https://github.com/scitedotai/scite-zotero-plugin) - Add citations from Scite to Zotero.
 - [Zotero-citation](https://github.com/MuiseDestiny/zotero-citation) - Make Zotero's citation in Word easier and clearer.
-- [Zotero-citationcounts](https://github.com/eschnett/zotero-citationcounts) - Zotero plugin for auto-fetching citation counts from various sources.
 - [Zotero Metadata Hunter](https://github.com/federicotorrielli/zotero-metadata-hunter) - Finds missing DOIs and abstracts, replaces preprints with their published versions, and enriches sparse items with metadata from CrossRef, DBLP, Semantic Scholar, arXiv, PubMed, and OpenAlex.
 - [Zotero-inspire](https://github.com/fkguo/zotero-inspire) - Fetch publication information from INSPIRE-HEP and add it to Zotero.
 - [Zotero-pmcid-fetcher](https://github.com/retorquere/zotero-pmcid-fetcher) - Fetch PMCID/PMID for items with a DOI.
@@ -46,7 +45,6 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 - [Zotero-date-from-last-modified](https://github.com/retorquere/zotero-date-from-last-modified) - Shows when the item was last modified.
 - [Zotero-Focused-Mode](https://github.com/dschaehi/Zotero-Focused-Mode) - Distraction-free workspace for focused reading.
 - [Zotero-format-metadata](https://github.com/northword/zotero-format-metadata) - Linter for Zotero to format item metadata.
-- [Zotero-pdf-preview](https://github.com/windingwind/zotero-pdf-preview) - Preview Zotero attachments in the library view.
 - [Zotero-reference](https://github.com/MuiseDestiny/zotero-reference) - PDF references add-on for Zotero.
 - [zotero-style](https://github.com/MuiseDestiny/zotero-style) - Zotero plugin to provide ethereal Style
 - [Zutilo](https://github.com/wshanks/Zutilo) - Zotero plugin providing some additional editing features.
@@ -58,7 +56,6 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 
 ### File Management
 - [Zotero-attanger](https://github.com/MuiseDestiny/zotero-attanger) - Attachment Manager for Zotero.
-- [Zotfile](https://github.com/jlegewie/zotfile) - Zotero plugin to automatically rename, move, and attach PDFs (or other files) to Zotero items.
 - [Zotmoov](https://github.com/wileyyugioh/zotmoov) - Zotero plugin to automatically move attachments and link them.
 - [Zotero-open-pdf](https://github.com/retorquere/zotero-open-pdf) - Open PDFs in external PDF viewer from Zotero.
 - [Zotero-storage-scanner](https://github.com/retorquere/zotero-storage-scanner) - Zotero plugin to remove the broken & duplicate attachment links of the bibliography.
@@ -66,7 +63,6 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 - [Zoplicate](https://github.com/ChenglongMa/zoplicate) - Detect and manage duplicate items in Zotero.
 
 ### Integrations
-- [lyz](https://github.com/wshanks/lyz) - Zotero plugin intended to make working with LyX/Zotero more pleasant.
 - [notero](https://github.com/dvanoni/notero) - Zotero plugin for syncing items and notes into Notion.
 - [Obsidian-Zotlit](https://github.com/PKM-er/obsidian-zotlit) - ZotLit is a third-party project that aims to facilitate the integration between Obsidian.md and Zotero.
 
@@ -95,7 +91,6 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 - [zotpress](https://wordpress.org/plugins/zotpress/) - Zotpress brings publication broadcasting and scholarly blogging to WordPress through Zotero.
 
 ### AI Integrations
-- [Aria](https://github.com/lifan0127/ai-research-assistant) - Aria is Your AI Research Assistant for zotero
 - [Awesome GPT](https://github.com/MuiseDestiny/zotero-gpt) - Zotero plugin to provide GPT backend into Zotero using API.
 - [Beaver](https://github.com/jlegewie/beaver-zotero/) - Academic research assistant with native Zotero integration. Instantly searches through all your documents and explains complex concepts as you read.
 - [Nodus](https://github.com/jorgepb96/nodus) - Desktop research workspace that turns Zotero libraries into idea graphs, semantic search, gap analysis, and citation-grounded writing.
