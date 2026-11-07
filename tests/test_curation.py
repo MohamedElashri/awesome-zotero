@@ -586,11 +586,11 @@ class WeeklyIntegrationTests(unittest.TestCase):
         self.run_weekly()
         self.assertEqual(self.api.writes, [])
 
-    def test_cleanup_creates_single_draft_with_source_and_generated_readme(self):
+    def test_cleanup_opens_ready_for_review_with_source_and_generated_readme(self):
         self.api.source += ITEM
         self.run_weekly()
         self.assertEqual(len(self.api.open_pulls), 1)
-        self.assertTrue(self.api.open_pulls[0]["draft"])
+        self.assertFalse(self.api.open_pulls[0]["draft"])
         tree = self.api.trees[self.api.commits[self.api.open_pulls[0]["head"]["sha"]]["tree"]["sha"]]
         files = {row["path"]: row["content"] for row in tree["tree"]}
         self.assertEqual(files["_README.md"], BASE + ITEM)

@@ -26,7 +26,7 @@ instead and must not attest to human authorship.
 
 - New projects must be at least **two calendar months old**, documented, and usable. Complete the PR template with tested project/Zotero versions; plugin releases receive static artifact and compatibility checks.
 - Definite violations are explained and closed. Fixable omissions get **48 hours** and daily rechecks; network failures remain inconclusive.
-- Weekly cleanup opens **one draft PR per entry** for entries inactive for **365 days**, archived projects, persistently missing projects/downloads, and duplicates. Maintainers decide inclusion and merge removals.
+- Weekly cleanup opens **one PR per entry, ready for review** for entries inactive for **365 days**, archived projects, persistently missing projects/downloads, and duplicates. Maintainers decide inclusion and merge removals.
 - Settings and inactivity exceptions live in [`.github/curation.json`](.github/curation.json). The `curation:override` label bypasses admission checks only. Passing automation does not guarantee inclusion.
 
 ## Tool quality policy
