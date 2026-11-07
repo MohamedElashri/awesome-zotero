@@ -32,7 +32,6 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 - [Jasminum](https://github.com/l0o0/jasminum) - A Zotero add-on to retrieve CNKI meta.
 - [Scite-zotero-plugin](https://github.com/scitedotai/scite-zotero-plugin) - Add citations from Scite to Zotero.
 - [Zotero-citation](https://github.com/MuiseDestiny/zotero-citation) - Make Zotero's citation in Word easier and clearer.
-- [Zotero-citationcounts](https://github.com/eschnett/zotero-citationcounts) - Zotero plugin for auto-fetching citation counts from various sources.
 - [Zotero Metadata Hunter](https://github.com/federicotorrielli/zotero-metadata-hunter) - Finds missing DOIs and abstracts, replaces preprints with their published versions, and enriches sparse items with metadata from CrossRef, DBLP, Semantic Scholar, arXiv, PubMed, and OpenAlex.
 - [Zotero-inspire](https://github.com/fkguo/zotero-inspire) - Fetch publication information from INSPIRE-HEP and add it to Zotero.
 - [Zotero-pmcid-fetcher](https://github.com/retorquere/zotero-pmcid-fetcher) - Fetch PMCID/PMID for items with a DOI.
@@ -46,7 +45,6 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 - [Zotero-date-from-last-modified](https://github.com/retorquere/zotero-date-from-last-modified) - Shows when the item was last modified.
 - [Zotero-Focused-Mode](https://github.com/dschaehi/Zotero-Focused-Mode) - Distraction-free workspace for focused reading.
 - [Zotero-format-metadata](https://github.com/northword/zotero-format-metadata) - Linter for Zotero to format item metadata.
-- [Zotero-pdf-preview](https://github.com/windingwind/zotero-pdf-preview) - Preview Zotero attachments in the library view.
 - [Zotero-reference](https://github.com/MuiseDestiny/zotero-reference) - PDF references add-on for Zotero.
 - [zotero-style](https://github.com/MuiseDestiny/zotero-style) - Zotero plugin to provide ethereal Style
 - [Zutilo](https://github.com/wshanks/Zutilo) - Zotero plugin providing some additional editing features.
@@ -58,7 +56,6 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 
 ### File Management
 - [Zotero-attanger](https://github.com/MuiseDestiny/zotero-attanger) - Attachment Manager for Zotero.
-- [Zotfile](https://github.com/jlegewie/zotfile) - Zotero plugin to automatically rename, move, and attach PDFs (or other files) to Zotero items.
 - [Zotmoov](https://github.com/wileyyugioh/zotmoov) - Zotero plugin to automatically move attachments and link them.
 - [Zotero-open-pdf](https://github.com/retorquere/zotero-open-pdf) - Open PDFs in external PDF viewer from Zotero.
 - [Zotero Watch Folder](https://github.com/josesiqueira/zotero-watch-folder) - Zotero plugin to watch a folder and auto-import PDFs with metadata retrieval and content-hash deduplication, plus optional two-way collection-to-folder sync with recoverable safe-delete.

@@ -74,14 +74,6 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 ![Stars](https://img.shields.io/github/stars/MuiseDestiny/zotero-citation)
 ![Forks](https://img.shields.io/github/forks/MuiseDestiny/zotero-citation)
 
-- [Zotero-citationcounts](https://github.com/eschnett/zotero-citationcounts) - - Zotero plugin for auto-fetching citation counts from various sources.
-
-  ![Last Commit](https://img.shields.io/github/last-commit/eschnett/zotero-citationcounts)
-![License](https://img.shields.io/github/license/eschnett/zotero-citationcounts)
-![Issues](https://img.shields.io/github/issues/eschnett/zotero-citationcounts)
-![Stars](https://img.shields.io/github/stars/eschnett/zotero-citationcounts)
-![Forks](https://img.shields.io/github/forks/eschnett/zotero-citationcounts)
-
 - [Zotero Metadata Hunter](https://github.com/federicotorrielli/zotero-metadata-hunter) - - Finds missing DOIs and abstracts, replaces preprints with their published versions, and enriches sparse items with metadata from CrossRef, DBLP, Semantic Scholar, arXiv, PubMed, and OpenAlex.
 
   ![Last Commit](https://img.shields.io/github/last-commit/federicotorrielli/zotero-metadata-hunter)
@@ -172,14 +164,6 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 ![Stars](https://img.shields.io/github/stars/northword/zotero-format-metadata)
 ![Forks](https://img.shields.io/github/forks/northword/zotero-format-metadata)
 
-- [Zotero-pdf-preview](https://github.com/windingwind/zotero-pdf-preview) - - Preview Zotero attachments in the library view.
-
-  ![Last Commit](https://img.shields.io/github/last-commit/windingwind/zotero-pdf-preview)
-![License](https://img.shields.io/github/license/windingwind/zotero-pdf-preview)
-![Issues](https://img.shields.io/github/issues/windingwind/zotero-pdf-preview)
-![Stars](https://img.shields.io/github/stars/windingwind/zotero-pdf-preview)
-![Forks](https://img.shields.io/github/forks/windingwind/zotero-pdf-preview)
-
 - [Zotero-reference](https://github.com/MuiseDestiny/zotero-reference) - - PDF references add-on for Zotero.
 
   ![Last Commit](https://img.shields.io/github/last-commit/MuiseDestiny/zotero-reference)
@@ -225,14 +209,6 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 ![Issues](https://img.shields.io/github/issues/MuiseDestiny/zotero-attanger)
 ![Stars](https://img.shields.io/github/stars/MuiseDestiny/zotero-attanger)
 ![Forks](https://img.shields.io/github/forks/MuiseDestiny/zotero-attanger)
-
-- [Zotfile](https://github.com/jlegewie/zotfile) - - Zotero plugin to automatically rename, move, and attach PDFs (or other files) to Zotero items.
-
-  ![Last Commit](https://img.shields.io/github/last-commit/jlegewie/zotfile)
-![License](https://img.shields.io/github/license/jlegewie/zotfile)
-![Issues](https://img.shields.io/github/issues/jlegewie/zotfile)
-![Stars](https://img.shields.io/github/stars/jlegewie/zotfile)
-![Forks](https://img.shields.io/github/forks/jlegewie/zotfile)
 
 - [Zotmoov](https://github.com/wileyyugioh/zotmoov) - - Zotero plugin to automatically move attachments and link them.
 
