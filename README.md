@@ -82,14 +82,6 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 ![Stars](https://img.shields.io/github/stars/eschnett/zotero-citationcounts)
 ![Forks](https://img.shields.io/github/forks/eschnett/zotero-citationcounts)
 
-- [Zotero DOI Manager](https://github.com/bwiernik/zotero-shortdoi) - - Zotero plugin to retrieve and manage DOIs for references.
-
-  ![Last Commit](https://img.shields.io/github/last-commit/bwiernik/zotero-shortdoi)
-![License](https://img.shields.io/github/license/bwiernik/zotero-shortdoi)
-![Issues](https://img.shields.io/github/issues/bwiernik/zotero-shortdoi)
-![Stars](https://img.shields.io/github/stars/bwiernik/zotero-shortdoi)
-![Forks](https://img.shields.io/github/forks/bwiernik/zotero-shortdoi)
-
 - [Zotero Metadata Hunter](https://github.com/federicotorrielli/zotero-metadata-hunter) - - Finds missing DOIs and abstracts, replaces preprints with their published versions, and enriches sparse items with metadata from CrossRef, DBLP, Semantic Scholar, arXiv, PubMed, and OpenAlex.
 
   ![Last Commit](https://img.shields.io/github/last-commit/federicotorrielli/zotero-metadata-hunter)
