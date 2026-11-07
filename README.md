@@ -370,14 +370,6 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 ![Stars](https://img.shields.io/github/stars/daeh/zotero-markdb-connect)
 ![Forks](https://img.shields.io/github/forks/daeh/zotero-markdb-connect)
 
-- [Zotero mdnotes](https://github.com/argenos/zotero-mdnotes) - - Zotero plugin to export item metadata and notes as markdown files.
-
-  ![Last Commit](https://img.shields.io/github/last-commit/argenos/zotero-mdnotes)
-![License](https://img.shields.io/github/license/argenos/zotero-mdnotes)
-![Issues](https://img.shields.io/github/issues/argenos/zotero-mdnotes)
-![Stars](https://img.shields.io/github/stars/argenos/zotero-mdnotes)
-![Forks](https://img.shields.io/github/forks/argenos/zotero-mdnotes)
-
 - [Zotero-OCR](https://github.com/UB-Mannheim/zotero-ocr) - - OCR PDFs in Zotero.
 
   ![Last Commit](https://img.shields.io/github/last-commit/UB-Mannheim/zotero-ocr)
