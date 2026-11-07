@@ -71,15 +71,24 @@ class ReadmeCheckTests(unittest.TestCase):
     def test_passed_and_failed_checks_do_not_repeat_for_unchanged_heads(self):
         for state in ("success", "failure"):
             with self.subTest(state=state):
-                self.api.statuses = [{"context": r.CONTEXT, "state": state}]
+                self.api.statuses = [{"context": r.CONTEXT, "state": state,
+                                      "description": f"Result [{r.signature()}]"}]
                 self.dispatch()
                 self.assertEqual(self.api.writes, [])
+
+    def test_changed_validator_rules_automatically_recheck_cached_results(self):
+        self.api.statuses = [{"context": r.CONTEXT, "state": "failure",
+                              "description": "Old validator [outdated]"}]
+        self.dispatch()
+        self.assertEqual(len(self.api.writes), 2)
+        self.assertTrue(self.api.statuses[0]["description"].endswith(f"[{r.signature()}]"))
 
     def test_stale_pending_and_error_checks_can_retry(self):
         for state in ("pending", "error"):
             with self.subTest(state=state):
                 self.api.writes.clear()
                 self.api.statuses = [{"context": r.CONTEXT, "state": state,
+                                      "description": f"Queued [{r.signature()}]",
                                       "created_at": c.iso(NOW - timedelta(minutes=21))}]
                 self.dispatch()
                 self.assertEqual(len(self.api.writes), 2)
@@ -140,7 +149,7 @@ class ReadmeCheckTests(unittest.TestCase):
             self.assertEqual(args[:3], ["npx", "--yes", r.LINTER])
             self.assertEqual(Path(args[3]).read_text(), "generated Markdown")
             self.assertEqual(Path(args[3]).parent, r.ROOT)
-            self.assertTrue(Path(args[3]).name.startswith(".readme-check-"))
+            self.assertRegex(Path(args[3]).name, r"^readme-check-[0-9a-f]{32}\.md$")
             self.assertEqual(kwargs["cwd"], r.ROOT)
             self.assertNotIn("GH_TOKEN", kwargs["env"])
             self.assertNotIn("GITHUB_TOKEN", kwargs["env"])
