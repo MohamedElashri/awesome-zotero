@@ -258,14 +258,6 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 ![Stars](https://img.shields.io/github/stars/retorquere/zotero-open-pdf)
 ![Forks](https://img.shields.io/github/forks/retorquere/zotero-open-pdf)
 
-- [Zotero-storage-scanner](https://github.com/retorquere/zotero-storage-scanner) - - Zotero plugin to remove the broken & duplicate attachment links of the bibliography.
-
-  ![Last Commit](https://img.shields.io/github/last-commit/retorquere/zotero-storage-scanner)
-![License](https://img.shields.io/github/license/retorquere/zotero-storage-scanner)
-![Issues](https://img.shields.io/github/issues/retorquere/zotero-storage-scanner)
-![Stars](https://img.shields.io/github/stars/retorquere/zotero-storage-scanner)
-![Forks](https://img.shields.io/github/forks/retorquere/zotero-storage-scanner)
-
 - [Zotero Watch Folder](https://github.com/josesiqueira/zotero-watch-folder) - - Zotero plugin to watch a folder and auto-import PDFs with metadata retrieval and content-hash deduplication, plus optional two-way collection-to-folder sync with recoverable safe-delete.
 
   ![Last Commit](https://img.shields.io/github/last-commit/josesiqueira/zotero-watch-folder)
