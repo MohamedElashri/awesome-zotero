@@ -74,14 +74,6 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 ![Stars](https://img.shields.io/github/stars/MuiseDestiny/zotero-citation)
 ![Forks](https://img.shields.io/github/forks/MuiseDestiny/zotero-citation)
 
-- [Zotero-citationcounts](https://github.com/eschnett/zotero-citationcounts) - - Zotero plugin for auto-fetching citation counts from various sources.
-
-  ![Last Commit](https://img.shields.io/github/last-commit/eschnett/zotero-citationcounts)
-![License](https://img.shields.io/github/license/eschnett/zotero-citationcounts)
-![Issues](https://img.shields.io/github/issues/eschnett/zotero-citationcounts)
-![Stars](https://img.shields.io/github/stars/eschnett/zotero-citationcounts)
-![Forks](https://img.shields.io/github/forks/eschnett/zotero-citationcounts)
-
 - [Zotero DOI Manager](https://github.com/bwiernik/zotero-shortdoi) - - Zotero plugin to retrieve and manage DOIs for references.
 
   ![Last Commit](https://img.shields.io/github/last-commit/bwiernik/zotero-shortdoi)
