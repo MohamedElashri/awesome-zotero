@@ -68,7 +68,6 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 
 ### Miscellaneous
 - [Zotero Addons](https://github.com/syt2/zotero-addons) - Zotero add-on to list and install add-ons in Zotero.
-- [zotero-addons](https://github.com/syt2/zotero-addons) -  Zotero Add-on Market, browse, install, and review plugins within Zotero 
 - [zotero-arxiv-workflow](https://github.com/AllanChain/zotero-arxiv-workflow) - Zotero plugin to help you manage adding and updating papers from arXiv.
 
 ### Productivity
