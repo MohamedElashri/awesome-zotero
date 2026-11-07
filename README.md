@@ -481,13 +481,13 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 ![Stars](https://img.shields.io/github/stars/jlegewie/beaver-zotero)
 ![Forks](https://img.shields.io/github/forks/jlegewie/beaver-zotero)
 
-- [Nodus](https://github.com/Drakonis96/nodus) - - Desktop research workspace that turns Zotero libraries into idea graphs, semantic search, gap analysis, and citation-grounded writing.
+- [Nodus](https://github.com/jorgepb96/nodus) - - Desktop research workspace that turns Zotero libraries into idea graphs, semantic search, gap analysis, and citation-grounded writing.
 
-  ![Last Commit](https://img.shields.io/github/last-commit/Drakonis96/nodus)
-![License](https://img.shields.io/github/license/Drakonis96/nodus)
-![Issues](https://img.shields.io/github/issues/Drakonis96/nodus)
-![Stars](https://img.shields.io/github/stars/Drakonis96/nodus)
-![Forks](https://img.shields.io/github/forks/Drakonis96/nodus)
+  ![Last Commit](https://img.shields.io/github/last-commit/jorgepb96/nodus)
+![License](https://img.shields.io/github/license/jorgepb96/nodus)
+![Issues](https://img.shields.io/github/issues/jorgepb96/nodus)
+![Stars](https://img.shields.io/github/stars/jorgepb96/nodus)
+![Forks](https://img.shields.io/github/forks/jorgepb96/nodus)
 
 - [PapersGPT](https://github.com/papersgpt/papersgpt-for-zotero) - - The Ultimate Zotero AI Plugin.
 
