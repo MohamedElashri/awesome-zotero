@@ -1,0 +1,396 @@
+{
+  "retorquere/zotero-better-bibtex": {
+    "xpi_seen": true
+  },
+  "boan-anbo/cite-non-english": {
+    "xpi_seen": true
+  },
+  "inciteful-xyz/inciteful-zotero-plugin": {
+    "xpi_seen": true
+  },
+  "l0o0/jasminum": {
+    "xpi_seen": true
+  },
+  "scitedotai/scite-zotero-plugin": {
+    "xpi_seen": true
+  },
+  "muisedestiny/zotero-citation": {
+    "xpi_seen": true
+  },
+  "eschnett/zotero-citationcounts": {
+    "xpi_seen": true,
+    "confirmed": {
+      "reason": "No default-branch commits or published releases since 2022-04-05 (365 day policy)",
+      "replacement": null
+    }
+  },
+  "bwiernik/zotero-shortdoi": {
+    "xpi_seen": true,
+    "confirmed": {
+      "reason": "No default-branch commits or published releases since 2024-08-09 (365 day policy)",
+      "replacement": null
+    }
+  },
+  "federicotorrielli/zotero-metadata-hunter": {
+    "xpi_seen": true
+  },
+  "fkguo/zotero-inspire": {
+    "xpi_seen": true
+  },
+  "retorquere/zotero-pmcid-fetcher": {
+    "xpi_seen": true
+  },
+  "syt2/zotero-tldr": {
+    "confirmed": {
+      "reason": "Repository archived or disabled",
+      "replacement": null
+    }
+  },
+  "redleafnew/delitemwithatt": {
+    "xpi_seen": true
+  },
+  "l0o0/tara": {
+    "xpi_seen": true
+  },
+  "windingwind/zotero-actions-tags": {
+    "xpi_seen": true
+  },
+  "github-young/zotero-better-authors": {
+    "xpi_seen": true
+  },
+  "retorquere/zotero-date-from-last-modified": {
+    "xpi_seen": true
+  },
+  "dschaehi/zotero-focused-mode": {
+    "xpi_seen": true
+  },
+  "northword/zotero-format-metadata": {
+    "xpi_seen": true
+  },
+  "windingwind/zotero-pdf-preview": {
+    "confirmed": {
+      "reason": "Repository archived or disabled",
+      "replacement": null
+    }
+  },
+  "muisedestiny/zotero-reference": {
+    "xpi_seen": true
+  },
+  "muisedestiny/zotero-style": {
+    "xpi_seen": true
+  },
+  "wshanks/zutilo": {
+    "xpi_seen": true
+  },
+  "introfini/mcp-server-zotero-dev": {
+    "xpi_seen": true
+  },
+  "muisedestiny/zotero-attanger": {
+    "xpi_seen": true
+  },
+  "jlegewie/zotfile": {
+    "xpi_seen": true,
+    "confirmed": {
+      "reason": "No default-branch commits or published releases since 2024-04-16 (365 day policy)",
+      "replacement": null
+    }
+  },
+  "wileyyugioh/zotmoov": {
+    "xpi_seen": true
+  },
+  "retorquere/zotero-open-pdf": {
+    "xpi_seen": true
+  },
+  "retorquere/zotero-storage-scanner": {
+    "confirmed": {
+      "reason": "Repository archived or disabled",
+      "replacement": null
+    }
+  },
+  "josesiqueira/zotero-watch-folder": {
+    "xpi_seen": true
+  },
+  "chenglongma/zoplicate": {
+    "xpi_seen": true
+  },
+  "wshanks/lyz": {
+    "xpi_seen": true,
+    "confirmed": {
+      "reason": "No default-branch commits or published releases since 2021-09-06 (365 day policy)",
+      "replacement": null
+    }
+  },
+  "dvanoni/notero": {
+    "xpi_seen": true
+  },
+  "pkm-er/obsidian-zotlit": {
+    "xpi_seen": true,
+    "confirmed": {
+      "reason": null,
+      "replacement": "https://github.com/aidenlx/zotlit"
+    }
+  },
+  "yhmtsai/keepzotero": {
+    "xpi_seen": true,
+    "confirmed": {
+      "reason": "No default-branch commits or published releases since 2025-04-13 (365 day policy)",
+      "replacement": null
+    }
+  },
+  "syt2/zotero-addons": {
+    "xpi_seen": true
+  },
+  "allanchain/zotero-arxiv-workflow": {
+    "xpi_seen": true
+  },
+  "volatile-static/chartero": {
+    "xpi_seen": true
+  },
+  "jalvesaq/cmp-zotcite": {
+    "confirmed": {
+      "reason": "Repository archived or disabled",
+      "replacement": null
+    }
+  },
+  "018/zotcard": {
+    "xpi_seen": true
+  },
+  "windingwind/zotero-better-notes": {
+    "xpi_seen": true
+  },
+  "max3925vats/zotero-docling": {
+    "xpi_seen": true
+  },
+  "daeh/zotero-markdb-connect": {
+    "xpi_seen": true
+  },
+  "argenos/zotero-mdnotes": {
+    "confirmed": {
+      "reason": "Repository archived or disabled",
+      "replacement": null
+    }
+  },
+  "ub-mannheim/zotero-ocr": {
+    "xpi_seen": true
+  },
+  "xujialiu/zotero-openreader": {
+    "xpi_seen": true
+  },
+  "dominic-dallosto/zotero-reading-list": {
+    "xpi_seen": true
+  },
+  "janbaykara/zotero-syllabus": {
+    "xpi_seen": true
+  },
+  "egh/zotxt": {
+    "xpi_seen": true
+  },
+  "windingwind/zotero-pdf-translate": {
+    "xpi_seen": true
+  },
+  "lifan0127/ai-research-assistant": {
+    "xpi_seen": true,
+    "confirmed": {
+      "reason": "No default-branch commits or published releases since 2025-04-01 (365 day policy)",
+      "replacement": null
+    }
+  },
+  "muisedestiny/zotero-gpt": {
+    "xpi_seen": true
+  },
+  "jlegewie/beaver-zotero": {
+    "xpi_seen": true
+  },
+  "drakonis96/nodus": {
+    "xpi_seen": true,
+    "confirmed": {
+      "reason": null,
+      "replacement": "https://github.com/jorgepb96/nodus"
+    }
+  },
+  "papersgpt/papersgpt-for-zotero": {
+    "xpi_seen": true
+  },
+  "dralkh/seerai": {
+    "xpi_seen": true
+  },
+  "54yyyu/zotero-mcp": {
+    "xpi_seen": true
+  },
+  "introfini/zotseek": {
+    "xpi_seen": true
+  },
+  "tefkah/zotero-night": {
+    "xpi_seen": true
+  },
+  "_cleanup": {
+    "automation/curation-entry-761b4d8c397259d4": {
+      "item": {
+        "name": "Zotero-citationcounts",
+        "url": "https://github.com/eschnett/zotero-citationcounts",
+        "description": "Zotero plugin for auto-fetching citation counts from various sources.",
+        "occurrence": 0
+      },
+      "action": "Remove",
+      "reason": "No default-branch commits or published releases since 2022-04-05 (365 day policy)",
+      "pending": false
+    },
+    "automation/curation-entry-16c6cd737c111cfb": {
+      "item": {
+        "name": "Zotero DOI Manager",
+        "url": "https://github.com/bwiernik/zotero-shortdoi",
+        "description": "Zotero plugin to retrieve and manage DOIs for references.",
+        "occurrence": 0
+      },
+      "action": "Remove",
+      "reason": "No default-branch commits or published releases since 2024-08-09 (365 day policy)",
+      "pending": false
+    },
+    "automation/curation-entry-9dbe024c2a1cb364": {
+      "item": {
+        "name": "Zotero TL;DR",
+        "url": "https://github.com/syt2/Zotero-TLDR",
+        "description": "Zotero addon to automatically fetch TL;DR from Semantic Scholar for items.",
+        "occurrence": 0
+      },
+      "action": "Remove",
+      "reason": "Repository archived or disabled",
+      "pending": false
+    },
+    "automation/curation-entry-15264bc8f2b7e934": {
+      "item": {
+        "name": "Zotero-pdf-preview",
+        "url": "https://github.com/windingwind/zotero-pdf-preview",
+        "description": "Preview Zotero attachments in the library view.",
+        "occurrence": 0
+      },
+      "action": "Remove",
+      "reason": "Repository archived or disabled",
+      "pending": false
+    },
+    "automation/curation-entry-38852e1bbe13b741": {
+      "item": {
+        "name": "Zotfile",
+        "url": "https://github.com/jlegewie/zotfile",
+        "description": "Zotero plugin to automatically rename, move, and attach PDFs (or other files) to Zotero items.",
+        "occurrence": 0
+      },
+      "action": "Remove",
+      "reason": "No default-branch commits or published releases since 2024-04-16 (365 day policy)",
+      "pending": false
+    },
+    "automation/curation-entry-c0505c89da8edfe7": {
+      "item": {
+        "name": "Zotero-storage-scanner",
+        "url": "https://github.com/retorquere/zotero-storage-scanner",
+        "description": "Zotero plugin to remove the broken & duplicate attachment links of the bibliography.",
+        "occurrence": 0
+      },
+      "action": "Remove",
+      "reason": "Repository archived or disabled",
+      "pending": false
+    },
+    "automation/curation-entry-65d1868d0ca54ced": {
+      "item": {
+        "name": "lyz",
+        "url": "https://github.com/wshanks/lyz",
+        "description": "Zotero plugin intended to make working with LyX/Zotero more pleasant.",
+        "occurrence": 0
+      },
+      "action": "Remove",
+      "reason": "No default-branch commits or published releases since 2021-09-06 (365 day policy)",
+      "pending": false
+    },
+    "automation/curation-entry-ec8032dbef26f5da": {
+      "item": {
+        "name": "Obsidian-Zotlit",
+        "url": "https://github.com/PKM-er/obsidian-zotlit",
+        "description": "ZotLit is a third-party project that aims to facilitate the integration between Obsidian.md and Zotero.",
+        "occurrence": 0
+      },
+      "action": "Update URL",
+      "reason": "https://github.com/aidenlx/zotlit",
+      "pending": false
+    },
+    "automation/curation-entry-aa775f5597df5b33": {
+      "item": {
+        "name": "KeepZotero",
+        "url": "https://github.com/yhmtsai/KeepZotero",
+        "description": "Zotero plugin to keep Zotero in the taskbar by changing close to minimize or disabling shortcuts.",
+        "occurrence": 0
+      },
+      "action": "Remove",
+      "reason": "No default-branch commits or published releases since 2025-04-13 (365 day policy)",
+      "pending": false
+    },
+    "automation/curation-entry-9bfeeeedc70884e1": {
+      "item": {
+        "name": "zotero-addons",
+        "url": "https://github.com/syt2/zotero-addons",
+        "description": "Zotero Add-on Market, browse, install, and review plugins within Zotero ",
+        "occurrence": 0
+      },
+      "action": "Remove",
+      "reason": "Duplicate project URL",
+      "pending": false
+    },
+    "automation/curation-entry-486df9b232bb43bf": {
+      "item": {
+        "name": "cmp-zotcite",
+        "url": "https://github.com/jalvesaq/cmp-zotcite",
+        "description": "Zotero completion source for nvim-cmp using zotcite as backend.",
+        "occurrence": 0
+      },
+      "action": "Remove",
+      "reason": "Repository archived or disabled",
+      "pending": false
+    },
+    "automation/curation-entry-906d17dea24f8319": {
+      "item": {
+        "name": "Zotero mdnotes",
+        "url": "https://github.com/argenos/zotero-mdnotes",
+        "description": "Zotero plugin to export item metadata and notes as markdown files.",
+        "occurrence": 0
+      },
+      "action": "Remove",
+      "reason": "Repository archived or disabled",
+      "pending": false
+    },
+    "automation/curation-entry-d40ec7490c4b5096": {
+      "item": {
+        "name": "Aria",
+        "url": "https://github.com/lifan0127/ai-research-assistant",
+        "description": "Aria is Your AI Research Assistant for zotero",
+        "occurrence": 0
+      },
+      "action": "Remove",
+      "reason": "No default-branch commits or published releases since 2025-04-01 (365 day policy)",
+      "pending": false
+    },
+    "automation/curation-entry-68b81d9d681a31f3": {
+      "item": {
+        "name": "Nodus",
+        "url": "https://github.com/Drakonis96/nodus",
+        "description": "Desktop research workspace that turns Zotero libraries into idea graphs, semantic search, gap analysis, and citation-grounded writing.",
+        "occurrence": 0
+      },
+      "action": "Update URL",
+      "reason": "https://github.com/jorgepb96/nodus",
+      "pending": false
+    }
+  },
+  "_cleanup_policy": {
+    "inactive_days": 365,
+    "minimum_age_months": 2,
+    "missing_checks": 3,
+    "missing_check_interval_days": 6,
+    "minimum_readme_characters": 200,
+    "correction_hours": 48,
+    "maximum_daily_rechecks": 10,
+    "maximum_read_requests": 600,
+    "maximum_project_requests": 24,
+    "maximum_asset_bytes": 26214400,
+    "inactivity_exemptions": {},
+    "override_label": "curation:override"
+  }
+}
