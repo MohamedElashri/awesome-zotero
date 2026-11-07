@@ -449,14 +449,6 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 - [zotpress](https://wordpress.org/plugins/zotpress/) - - Zotpress brings publication broadcasting and scholarly blogging to WordPress through Zotero.
 
 ### AI Integrations
-- [Aria](https://github.com/lifan0127/ai-research-assistant) - - Aria is Your AI Research Assistant for zotero.
-
-  ![Last Commit](https://img.shields.io/github/last-commit/lifan0127/ai-research-assistant)
-![License](https://img.shields.io/github/license/lifan0127/ai-research-assistant)
-![Issues](https://img.shields.io/github/issues/lifan0127/ai-research-assistant)
-![Stars](https://img.shields.io/github/stars/lifan0127/ai-research-assistant)
-![Forks](https://img.shields.io/github/forks/lifan0127/ai-research-assistant)
-
 - [Awesome GPT](https://github.com/MuiseDestiny/zotero-gpt) - - Zotero plugin to provide GPT backend into Zotero using API.
 
   ![Last Commit](https://img.shields.io/github/last-commit/MuiseDestiny/zotero-gpt)
