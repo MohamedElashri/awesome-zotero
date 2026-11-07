@@ -310,8 +310,6 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 ![Stars](https://img.shields.io/github/stars/syt2/zotero-addons)
 ![Forks](https://img.shields.io/github/forks/syt2/zotero-addons)
 
-
-
 - [zotero-arxiv-workflow](https://github.com/AllanChain/zotero-arxiv-workflow) - - Zotero plugin to help you manage adding and updating papers from arXiv.
 
   ![Last Commit](https://img.shields.io/github/last-commit/AllanChain/zotero-arxiv-workflow)
