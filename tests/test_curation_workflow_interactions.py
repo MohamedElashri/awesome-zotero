@@ -1,6 +1,7 @@
 """Exercise ownership and state transitions across weekly/event/daily workflows."""
 
 import copy
+import json
 import unittest
 from unittest.mock import Mock, patch
 
@@ -113,12 +114,14 @@ class MaintenanceStatusOwnershipTests(unittest.TestCase):
         api = FakeAPI()
         api.pr = copy.deepcopy(case.api.open_pulls[0])
         api.before, api.after = case.api.source, BASE
+        text = api.text
+        api.text = lambda repo, path, ref: json.dumps(case.api.state) if path == c.STATE_FILE else text(repo, path, ref)
         api.writes = case.api.writes
         get, request = api.get, api.request
         pull_path = "/repos/list/repo/pulls/50"
         api.get = lambda path: copy.deepcopy(api.pr) if path == pull_path else get(path)
         api.request = lambda path, method="GET", data=None: copy.deepcopy(api.pr) if path == pull_path and method == "GET" else request(path, method, data)
-        with patch.object(c, "utcnow", return_value=NOW):
+        with patch.object(c, "utcnow", return_value=NOW), patch.object(c, "verify_cleanup_tree", return_value="base"):
             c.admission(api, "list/repo", {"pull_request": {"number": 50}}, POLICY)
         api.pages = Mock(return_value=[copy.deepcopy(api.pr)])
         self.assertEqual(c.pending_admission(api, "list/repo", POLICY), [])

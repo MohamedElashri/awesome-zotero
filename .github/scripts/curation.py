@@ -101,6 +101,10 @@ class Unavailable(Exception):
         self.status = status
 
 
+class CleanupMismatch(Unavailable):
+    """A cleanup head contains changes beyond its trusted saved proposal."""
+
+
 class SafeRedirect(HTTPRedirectHandler):
     def __init__(self, hosts):
         self.hosts = hosts
@@ -439,7 +443,7 @@ def render_readme(source):
         return subprocess.check_output([sys.executable, str(ROOT / "generate_readme.py"), str(path)], text=True)
 
 
-def branch_commit(api, repo, branch, base_sha, files):
+def branch_commit(api, repo, branch, base_sha, files, verify_existing=None):
     """Write only reserved automation branches, atomically, without force pushes."""
     if branch not in {STATE_BRANCH, CLEANUP_BRANCH} and not is_entry_branch(branch):
         raise ValueError("Not an automation branch")
@@ -447,7 +451,9 @@ def branch_commit(api, repo, branch, base_sha, files):
         old = api.get(f"/repos/{repo}/git/ref/heads/{branch}")["object"]["sha"]
         parent = api.get(f"/repos/{repo}/git/commits/{old}")
         if not parent["message"].startswith(COMMIT_PREFIX):
-            raise Unavailable(f"Reserved branch {branch} contains a non-automation commit; refusing to overwrite")
+            if verify_existing is None:
+                raise CleanupMismatch(f"Reserved branch {branch} contains a non-automation commit; refusing to overwrite")
+            verify_existing(old, parent)
     except Unavailable as exc:
         if exc.status != 404:
             raise
@@ -508,6 +514,63 @@ def planned_item(source, record):
     return matches[record["occurrence"]] if len(matches) > record["occurrence"] else None
 
 
+def cleanup_files(source, plan):
+    item = planned_item(source, plan["item"])
+    if item is None:
+        raise CleanupMismatch("The proposed entry is absent or edited; awaiting maintenance recheck")
+    lines = source.splitlines(keepends=True)
+    if plan["action"] == "Remove":
+        lines[item.index] = ""
+    elif plan["action"] == "Update URL":
+        lines[item.index] = lines[item.index].replace(item.url, plan["reason"], 1)
+    else:
+        raise CleanupMismatch("Unrecognized maintenance action")
+    updated = "".join(lines)
+    generated = render_readme(updated)
+    if not any(line.startswith("# Awesome Zotero") for line in generated.splitlines()) or len(entries(updated)) > len(entries(source)):
+        raise ValueError("Generated README failed cleanup validation")
+    return {SOURCE: updated, "README.md": generated}
+
+
+def blob_sha(content):
+    data = content.encode("utf-8")
+    return hashlib.sha1(f"blob {len(data)}\0".encode() + data).hexdigest()
+
+
+def updated_tree_sha(rows, files):
+    """Compute Git's complete root-tree ID without writing objects or refs."""
+    tree = {row["path"]: dict(row) for row in rows}
+    for path, content in files.items():
+        if "/" in path:
+            raise ValueError("Cleanup validation only supports root files")
+        tree[path] = {"path": path, "mode": "100644", "type": "blob", "sha": blob_sha(content)}
+    ordered = sorted(tree.values(), key=lambda row: row["path"].encode() + (b"/" if row["type"] == "tree" else b""))
+    data = b"".join(row["mode"].lstrip("0").encode() + b" " + row["path"].encode() + b"\0" + bytes.fromhex(row["sha"])
+                    for row in ordered)
+    return hashlib.sha1(f"tree {len(data)}\0".encode() + data).hexdigest()
+
+
+def verify_cleanup_tree(api, repo, base, sha, plan, commit=None):
+    """Allow an Update-branch merge only if its entire tree is the saved edit.
+
+    Use the common ancestor on main so intervening trusted main changes are
+    retained. Extra files, altered entries, or hand-edited README output fail.
+    No PR code is executed and no Git objects or branches are written.
+    """
+    comparison = api.get(f"/repos/{repo}/compare/{base}...{sha}")
+    ancestor = comparison["merge_base_commit"]["sha"]
+    source = api.text(repo, SOURCE, ancestor)
+    files = cleanup_files(source, plan)
+    original = api.get(f"/repos/{repo}/git/commits/{ancestor}")
+    tree = api.get(f"/repos/{repo}/git/trees/{original['tree']['sha']}")
+    if tree.get("truncated"):
+        raise Unavailable("Base tree is incomplete; awaiting maintenance recheck")
+    commit = commit or api.get(f"/repos/{repo}/git/commits/{sha}")
+    if updated_tree_sha(tree["tree"], files) != commit["tree"]["sha"]:
+        raise CleanupMismatch("Cleanup tree differs from the saved single-entry proposal; preserving branch for review")
+    return ancestor
+
+
 def cleanup_report(repo, default, findings, unknown):
     body = MARKER + "\n\nWeekly curation under [the maintenance policy](https://github.com/" + repo + "/blob/" + default + "/CONTRIBUTING.md#curation-and-automated-checks).\n\n"
     body += "| Project | Action | Evidence |\n| --- | --- | --- |\n"
@@ -530,7 +593,7 @@ def proposal_marker(plan):
 
 def reconcile_cleanup(api, repo, default, base, source, plans, pulls, unknown, refresh=False):
     opened = {pr["head"]["ref"]: pr for pr in pulls if pr["state"] == "open"}
-    deferred, created = 0, 0
+    deferred, created, errors = 0, 0, []
     # Refresh existing proposals first. Bound new notifications and API mutations.
     for branch, plan in sorted(plans.items(), key=lambda row: row[0] not in opened):
         pr = opened.get(branch)
@@ -549,13 +612,17 @@ def reconcile_cleanup(api, repo, default, base, source, plans, pulls, unknown, r
         item = planned_item(source, plan["item"])
         if item is None:
             continue
-        lines = source.splitlines(keepends=True)
-        lines[item.index] = "" if plan["action"] == "Remove" else lines[item.index].replace(item.url, plan["reason"], 1)
-        updated = "".join(lines)
-        generated = render_readme(updated)
-        if not any(line.startswith("# Awesome Zotero") for line in generated.splitlines()) or len(entries(updated)) > len(entries(source)):
-            raise ValueError("Generated README failed cleanup validation")
-        sha = branch_commit(api, repo, branch, base, {SOURCE: updated, "README.md": generated})
+        try:
+            files = cleanup_files(source, plan)
+            sha = branch_commit(api, repo, branch, base, files,
+                                verify_existing=lambda old, commit: verify_cleanup_tree(api, repo, base, old, plan, commit))
+        except Unavailable as exc:
+            errors.append(f"{branch}: {exc}")
+            if pr:
+                for context in ("curation/maintenance", "curation/admission"):
+                    status(api, repo, pr["head"]["sha"], context,
+                           "failure" if isinstance(exc, CleanupMismatch) else "error", str(exc))
+            continue
         pending = plan["pending"]
         state = "pending" if pending else "success"
         status(api, repo, sha, "curation/maintenance", state, "Awaiting maintenance recheck" if pending else "Single-entry cleanup and README generation validated")
@@ -579,7 +646,7 @@ def reconcile_cleanup(api, repo, default, base, source, plans, pulls, unknown, r
             represented = {key(plan["item"]["url"]) for plan in plans.values()}
             unresolved = [row for row in unknown if row.split(": ", 1)[0] not in represented
                           and row.split(": ", 1)[0].lower() in (pr.get("body") or "").lower()]
-            if deferred or unresolved:
+            if deferred or errors or unresolved:
                 status(api, repo, pr["head"]["sha"], "curation/admission", "pending", "Awaiting individual replacement proposals or conclusive recheck")
                 continue
             note = "Superseded by individual entry proposals; no combined cleanup will be merged."
@@ -593,6 +660,8 @@ def reconcile_cleanup(api, repo, default, base, source, plans, pulls, unknown, r
         if os.environ.get("GITHUB_STEP_SUMMARY"):
             with Path(os.environ["GITHUB_STEP_SUMMARY"]).open("a") as summary:
                 summary.write("\n\n" + note + "\n")
+    if errors:
+        raise Unavailable("Other cleanup proposals were processed; branches needing review/retry: " + "; ".join(errors))
 
 
 def weekly(api, repo, policy, dry_run, refresh=False):
@@ -962,10 +1031,11 @@ def admission_verdict(api, before, after, body, policy, now):
 
 
 def is_cleanup_pr(repo, pr):
-    """Only the repository's own Actions-authored reserved branch is exempt.
+    """Recognize the repository's own Actions-authored reserved cleanup PRs.
 
-    Weekly curation owns its statuses. A fork, body marker, or branch name alone
-    cannot claim this role, and admission overrides cannot waive maintenance.
+    Admission validates their saved proposal instead of new-project evidence.
+    A fork, marker, or branch name alone cannot claim this role, and admission
+    overrides cannot waive maintenance validation.
     """
     head = pr.get("head") or {}
     origin = head.get("repo") or {}
@@ -1001,6 +1071,33 @@ def admission_ownership_unavailable(api, repo, sha, error):
            "Maintenance ownership unavailable; awaiting recheck: " + str(error))
 
 
+def cleanup_admission(api, repo, pr, policy):
+    """Repair the required status after a maintainer uses Update branch."""
+    api.reporting = True
+    sha, branch = pr["head"]["sha"], pr["head"]["ref"]
+    try:
+        saved = json.loads(api.text(repo, STATE_FILE, STATE_BRANCH))
+        plan = saved.get("_cleanup", {}).get(branch)
+        if not plan or entry_branch(plan["item"]) != branch:
+            raise Unavailable("No matching saved cleanup proposal; awaiting weekly recheck")
+        verify_cleanup_tree(api, repo, pr["base"]["sha"], sha, plan)
+        pending = (plan["pending"] or saved.get("_cleanup_policy") != policy or
+                   key(plan["item"]["url"]) in policy["inactivity_exemptions"] and
+                   plan["reason"].removeprefix("Awaiting recheck: ").startswith("No default-branch"))
+        state = "pending" if pending else "success"
+        description = "Awaiting maintenance recheck" if pending else "Exact saved cleanup and generated README validated"
+    except CleanupMismatch as exc:
+        state, description = "failure", str(exc)
+    except (Unavailable, ValueError, KeyError, TypeError) as exc:
+        state, description = "error", "Maintenance validation unavailable; awaiting recheck: " + str(exc)
+    # Do not publish a verdict for a head that changed while it was inspected.
+    current = api.request(f"/repos/{repo}/pulls/{pr['number']}")
+    if current["state"] != "open" or current.get("draft") or current["head"]["sha"] != sha or not is_cleanup_pr(repo, current):
+        return
+    for context in ("curation/maintenance", "curation/admission"):
+        status(api, repo, sha, context, state, description)
+
+
 def admission(api, repo, event, policy):
     api.reporting = False
     number = event["pull_request"]["number"]
@@ -1008,6 +1105,8 @@ def admission(api, repo, event, policy):
     if pr["state"] != "open" or pr.get("draft"):
         return
     if is_cleanup_pr(repo, pr):
+        if is_entry_branch(pr["head"].get("ref")):
+            cleanup_admission(api, repo, pr, policy)
         return
     sha = pr["head"]["sha"]
     try:

@@ -483,6 +483,8 @@ class WeeklyAPI(FakeAPI):
         self.branches = {"main": "base"}
         self.commits = {"base": {"message": "Existing source", "tree": {"sha": "base-tree"}}}
         self.trees = {}
+        self.tree_rows = {}
+        self.sources = {}
         self.open_pulls = []
 
     @property
@@ -492,6 +494,20 @@ class WeeklyAPI(FakeAPI):
     def get(self, path):
         if path == "/repos/list/repo":
             return {"default_branch": "main"}
+        if "/pulls/" in path:
+            return copy.deepcopy(next(pr for pr in self.open_pulls if pr["number"] == int(path.rsplit("/", 1)[1])))
+        if "/compare/" in path:
+            base, head = path.rsplit("/", 1)[1].split("...")
+            queue = [head]
+            while queue:
+                ancestor = queue.pop(0)
+                if ancestor == base or ancestor in self.sources:
+                    return {"merge_base_commit": {"sha": ancestor}}
+                queue.extend(row["sha"] for row in self.commits[ancestor].get("parents", []))
+            raise AssertionError("No common ancestor")
+        if "/git/trees/" in path:
+            sha = path.rsplit("/", 1)[1]
+            return {"tree": self.tree_rows.get(sha, [{"path": "unchanged.txt", "mode": "100644", "type": "blob", "sha": c.blob_sha(sha)}])}
         if "/git/ref/heads/" in path:
             branch = path.split("/git/ref/heads/")[1]
             if branch not in self.branches:
@@ -506,6 +522,8 @@ class WeeklyAPI(FakeAPI):
             if self.state is None:
                 raise c.Unavailable("Missing state", 404)
             return json.dumps(self.state)
+        if ref != self.branches["main"] and ref in self.sources:
+            return self.sources[ref]
         self.assert_source_request(path, ref)
         return self.source
 
@@ -519,12 +537,21 @@ class WeeklyAPI(FakeAPI):
         return super().pages(path)
 
     def request(self, path, method="GET", data=None):
+        if method == "GET":
+            return self.get(path)
         self.writes.append((path, method, copy.deepcopy(data)))
         if path.endswith("/git/trees"):
-            sha = hashlib.sha256(json.dumps(data, sort_keys=True).encode()).hexdigest()
+            rows = {row["path"]: row for row in self.get("/git/trees/" + data["base_tree"])["tree"]}
+            files = {row["path"]: row["content"] for row in data["tree"]}
+            sha = (hashlib.sha256(json.dumps(data, sort_keys=True).encode()).hexdigest()
+                   if any("/" in name for name in files) else c.updated_tree_sha(list(rows.values()), files))
+            for name, content in files.items():
+                rows[name] = {"path": name, "mode": "100644", "type": "blob", "sha": c.blob_sha(content)}
+            self.tree_rows[sha] = list(rows.values())
             self.trees[sha] = data
             return {"sha": sha}
         if path.endswith("/git/commits"):
+            self.sources.setdefault(data["parents"][0], self.source)
             sha = f"commit-{len(self.commits)}"
             self.commits[sha] = {"message": data["message"], "tree": {"sha": data["tree"]},
                                  "parents": [{"sha": parent} for parent in data["parents"]]}
