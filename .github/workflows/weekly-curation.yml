@@ -48,7 +48,7 @@ jobs:
           CURATION_MODE: ${{ github.event_name == 'push' && 'refresh' || 'weekly' }}
         run: python3 .github/scripts/curation.py "$CURATION_MODE"
       - name: Dispatch README checks automatically for curation PRs
-        if: github.event_name != 'workflow_dispatch' || !inputs.dry_run
+        if: ${{ !cancelled() && (github.event_name != 'workflow_dispatch' || !inputs.dry_run) }}
         env:
           GH_TOKEN: ${{ github.token }}
         run: python3 .github/scripts/readme_check.py dispatch
