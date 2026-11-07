@@ -244,13 +244,13 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 ![Stars](https://img.shields.io/github/stars/dvanoni/notero)
 ![Forks](https://img.shields.io/github/forks/dvanoni/notero)
 
-- [Obsidian-Zotlit](https://github.com/PKM-er/obsidian-zotlit) - - ZotLit is a third-party project that aims to facilitate the integration between Obsidian.md and Zotero.
+- [Obsidian-Zotlit](https://github.com/aidenlx/zotlit) - - ZotLit is a third-party project that aims to facilitate the integration between Obsidian.md and Zotero.
 
-  ![Last Commit](https://img.shields.io/github/last-commit/PKM-er/obsidian-zotlit)
-![License](https://img.shields.io/github/license/PKM-er/obsidian-zotlit)
-![Issues](https://img.shields.io/github/issues/PKM-er/obsidian-zotlit)
-![Stars](https://img.shields.io/github/stars/PKM-er/obsidian-zotlit)
-![Forks](https://img.shields.io/github/forks/PKM-er/obsidian-zotlit)
+  ![Last Commit](https://img.shields.io/github/last-commit/aidenlx/zotlit)
+![License](https://img.shields.io/github/license/aidenlx/zotlit)
+![Issues](https://img.shields.io/github/issues/aidenlx/zotlit)
+![Stars](https://img.shields.io/github/stars/aidenlx/zotlit)
+![Forks](https://img.shields.io/github/forks/aidenlx/zotlit)
 
 
 ### Miscellaneous
