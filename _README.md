@@ -32,7 +32,6 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 - [Jasminum](https://github.com/l0o0/jasminum) - A Zotero add-on to retrieve CNKI meta.
 - [Scite-zotero-plugin](https://github.com/scitedotai/scite-zotero-plugin) - Add citations from Scite to Zotero.
 - [Zotero-citation](https://github.com/MuiseDestiny/zotero-citation) - Make Zotero's citation in Word easier and clearer.
-- [Zotero-citationcounts](https://github.com/eschnett/zotero-citationcounts) - Zotero plugin for auto-fetching citation counts from various sources.
 - [Zotero Metadata Hunter](https://github.com/federicotorrielli/zotero-metadata-hunter) - Finds missing DOIs and abstracts, replaces preprints with their published versions, and enriches sparse items with metadata from CrossRef, DBLP, Semantic Scholar, arXiv, PubMed, and OpenAlex.
 - [Zotero-inspire](https://github.com/fkguo/zotero-inspire) - Fetch publication information from INSPIRE-HEP and add it to Zotero.
 - [Zotero-pmcid-fetcher](https://github.com/retorquere/zotero-pmcid-fetcher) - Fetch PMCID/PMID for items with a DOI.
