@@ -63,6 +63,8 @@ class FakeAPI:
         self.files = [{"filename": "_README.md"}]
 
     def get(self, path):
+        if "/git/matching-refs/" in path:
+            return []
         if path == "/repos/list/repo/pulls/12":
             return copy.deepcopy(self.pr)
         if "/releases/tags/" in path:
@@ -483,6 +485,10 @@ class WeeklyAPI(FakeAPI):
         self.trees = {}
         self.open_pulls = []
 
+    @property
+    def write_count(self):
+        return len(self.writes)
+
     def get(self, path):
         if path == "/repos/list/repo":
             return {"default_branch": "main"}
@@ -503,14 +509,13 @@ class WeeklyAPI(FakeAPI):
         self.assert_source_request(path, ref)
         return self.source
 
-    @staticmethod
-    def assert_source_request(path, ref):
-        if (path, ref) != ("_README.md", "base"):
+    def assert_source_request(self, path, ref):
+        if (path, ref) != ("_README.md", self.branches["main"]):
             raise AssertionError(f"Unexpected source request: {path}, {ref}")
 
     def pages(self, path):
         if "/pulls?" in path:
-            return self.open_pulls
+            return copy.deepcopy(self.open_pulls)
         return super().pages(path)
 
     def request(self, path, method="GET", data=None):
@@ -521,7 +526,8 @@ class WeeklyAPI(FakeAPI):
             return {"sha": sha}
         if path.endswith("/git/commits"):
             sha = f"commit-{len(self.commits)}"
-            self.commits[sha] = {"message": data["message"], "tree": {"sha": data["tree"]}}
+            self.commits[sha] = {"message": data["message"], "tree": {"sha": data["tree"]},
+                                 "parents": [{"sha": parent} for parent in data["parents"]]}
             return {"sha": sha}
         if path.endswith("/git/refs"):
             branch = data["ref"].removeprefix("refs/heads/")
@@ -532,16 +538,20 @@ class WeeklyAPI(FakeAPI):
             branch = path.split("/git/refs/heads/")[1]
             self.branches[branch] = data["sha"]
             self.save_state(branch, data["sha"])
+            for pr in self.open_pulls:
+                if pr["head"]["ref"] == branch:
+                    pr["head"]["sha"] = data["sha"]
             return {}
         if path.endswith("/pulls"):
-            self.open_pulls.append(dict(data, number=50, state="open",
+            number = 50 + len(self.open_pulls)
+            self.open_pulls.append(dict(data, number=number, state="open",
                                        user={"type": "Bot", "login": "github-actions[bot]"},
                                        head={"ref": data["head"], "sha": self.branches[data["head"]],
                                              "repo": {"full_name": "list/repo"}},
                                        base={"ref": data["base"], "sha": self.branches[data["base"]]}))
-            return {"number": 50}
-        if path.endswith("/pulls/50"):
-            self.open_pulls[0].update(data)
+            return {"number": number}
+        if "/pulls/" in path:
+            next(pr for pr in self.open_pulls if pr["number"] == int(path.rsplit("/", 1)[1])).update(data)
             return {}
         if "/statuses/" in path:
             return {}
@@ -557,13 +567,14 @@ class WeeklyIntegrationTests(unittest.TestCase):
     def setUp(self):
         self.api = WeeklyAPI()
 
-    def run_weekly(self, dry_run=False):
+    def run_weekly(self, dry_run=False, refresh=False):
+        self.api.writes = []
         with patch.object(c.subprocess, "check_output", wraps=c.subprocess.check_output) as command:
             # Let the actual trusted generator run; substitute only the checkout SHA.
             wrapped = command._mock_wraps
-            command.side_effect = lambda args, **kwargs: "base\n" if args[:2] == ["git", "rev-parse"] else wrapped(args, **kwargs)
+            command.side_effect = lambda args, **kwargs: self.api.branches["main"] + "\n" if args[:2] == ["git", "rev-parse"] else wrapped(args, **kwargs)
             with patch.object(c, "utcnow", return_value=NOW), patch("sys.stdout", new=io.StringIO()):
-                c.weekly(self.api, "list/repo", POLICY, dry_run)
+                c.weekly(self.api, "list/repo", POLICY, dry_run, refresh)
 
     def test_dry_run_has_no_remote_writes_even_when_state_and_cleanup_change(self):
         self.api.source += ITEM
@@ -580,7 +591,7 @@ class WeeklyIntegrationTests(unittest.TestCase):
         self.run_weekly()
         self.assertEqual(len(self.api.open_pulls), 1)
         self.assertTrue(self.api.open_pulls[0]["draft"])
-        tree = self.api.trees[self.api.commits[self.api.branches[c.CLEANUP_BRANCH]]["tree"]["sha"]]
+        tree = self.api.trees[self.api.commits[self.api.open_pulls[0]["head"]["sha"]]["tree"]["sha"]]
         files = {row["path"]: row["content"] for row in tree["tree"]}
         self.assertEqual(files["_README.md"], BASE + ITEM)
         self.assertIn("github/last-commit/owner/tool", files["README.md"])
@@ -592,11 +603,11 @@ class WeeklyIntegrationTests(unittest.TestCase):
     def test_next_run_updates_existing_pr_without_duplicate_commits(self):
         self.api.source += ITEM
         self.run_weekly()
-        first = self.api.branches[c.CLEANUP_BRANCH]
+        first = self.api.open_pulls[0]["head"]["sha"]
         self.api.state = {"owner/tool": {"xpi_seen": True}}
         self.run_weekly()
         self.assertEqual(len(self.api.open_pulls), 1)
-        self.assertEqual(self.api.branches[c.CLEANUP_BRANCH], first)
+        self.assertEqual(self.api.open_pulls[0]["head"]["sha"], first)
 
     def test_recovered_project_closes_obsolete_proposal(self):
         self.api.last_commit = "2020-01-01T00:00:00Z"
@@ -611,15 +622,14 @@ class WeeklyIntegrationTests(unittest.TestCase):
         self.api.source += ITEM
         self.run_weekly()
         self.api.commits["base"]["tree"]["sha"] = "new-default-tree"
-        self.api.last_commit = "2020-01-01T00:00:00Z"
-        self.api.releases = []
         self.run_weekly()
-        tree = self.api.trees[self.api.commits[self.api.branches[c.CLEANUP_BRANCH]]["tree"]["sha"]]
+        tree = self.api.trees[self.api.commits[self.api.open_pulls[0]["head"]["sha"]]["tree"]["sha"]]
         self.assertEqual(tree["base_tree"], "new-default-tree")
         self.assertEqual(len(self.api.open_pulls), 1)
 
     def test_no_edits_to_unrecognized_cleanup_pr(self):
-        self.api.open_pulls = [{"number": 50, "body": "Human work"}]
+        self.api.open_pulls = [{"number": 50, "state": "open", "body": "Human work",
+                               "head": {"ref": c.CLEANUP_BRANCH, "repo": {"full_name": "list/repo"}}}]
         self.api.releases = []
         with self.assertRaises(c.Unavailable):
             self.run_weekly()

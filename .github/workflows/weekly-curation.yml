@@ -1,6 +1,15 @@
 name: Weekly curation
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - '_README.md'
+      - 'README.md'
+      - 'generate_readme.py'
+      - '.github/curation.json'
+      - '.github/scripts/curation*.py'
+      - '.github/workflows/weekly-curation.yml'
   schedule:
     - cron: '23 6 * * 1'
   workflow_dispatch:
@@ -30,8 +39,9 @@ jobs:
           persist-credentials: false
       - name: Test curation rules
         run: python3 -m unittest discover -s tests -v
-      - name: Check entries and update cleanup PR
+      - name: Check entries and update individual cleanup PRs
         env:
           GH_TOKEN: ${{ github.token }}
           CURATION_DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
-        run: python3 .github/scripts/curation.py weekly
+          CURATION_MODE: ${{ github.event_name == 'push' && 'refresh' || 'weekly' }}
+        run: python3 .github/scripts/curation.py "$CURATION_MODE"
