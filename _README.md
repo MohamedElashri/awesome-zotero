@@ -35,7 +35,6 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 - [Zotero Metadata Hunter](https://github.com/federicotorrielli/zotero-metadata-hunter) - Finds missing DOIs and abstracts, replaces preprints with their published versions, and enriches sparse items with metadata from CrossRef, DBLP, Semantic Scholar, arXiv, PubMed, and OpenAlex.
 - [Zotero-inspire](https://github.com/fkguo/zotero-inspire) - Fetch publication information from INSPIRE-HEP and add it to Zotero.
 - [Zotero-pmcid-fetcher](https://github.com/retorquere/zotero-pmcid-fetcher) - Fetch PMCID/PMID for items with a DOI.
-- [Zotero TL;DR](https://github.com/syt2/Zotero-TLDR) - Zotero addon to automatically fetch TL;DR from Semantic Scholar for items.
 
 ### Customization
 - [Delitemwithatt](https://github.com/redleafnew/delitemwithatt) - Remove attachment(s) when deleting the item(s) or collection in Zotero and JurisM.
