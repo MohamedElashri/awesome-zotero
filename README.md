@@ -172,14 +172,6 @@ Your help is much appreciated. If you want to add something or fix a problem, lo
 ![Stars](https://img.shields.io/github/stars/northword/zotero-format-metadata)
 ![Forks](https://img.shields.io/github/forks/northword/zotero-format-metadata)
 
-- [Zotero-pdf-preview](https://github.com/windingwind/zotero-pdf-preview) - - Preview Zotero attachments in the library view.
-
-  ![Last Commit](https://img.shields.io/github/last-commit/windingwind/zotero-pdf-preview)
-![License](https://img.shields.io/github/license/windingwind/zotero-pdf-preview)
-![Issues](https://img.shields.io/github/issues/windingwind/zotero-pdf-preview)
-![Stars](https://img.shields.io/github/stars/windingwind/zotero-pdf-preview)
-![Forks](https://img.shields.io/github/forks/windingwind/zotero-pdf-preview)
-
 - [Zotero-reference](https://github.com/MuiseDestiny/zotero-reference) - - PDF references add-on for Zotero.
 
   ![Last Commit](https://img.shields.io/github/last-commit/MuiseDestiny/zotero-reference)
