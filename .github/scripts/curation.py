@@ -569,7 +569,7 @@ def reconcile_cleanup(api, repo, default, base, source, plans, pulls, unknown, r
             if any(pr.get(field) != value for field, value in payload.items()):
                 api.request(f"/repos/{repo}/pulls/{pr['number']}", "PATCH", payload)
         else:
-            api.request(f"/repos/{repo}/pulls", "POST", dict(payload, head=branch, base=default, draft=True))
+            api.request(f"/repos/{repo}/pulls", "POST", dict(payload, head=branch, base=default, draft=False))
             created += 1
     for branch, pr in opened.items():
         if branch in plans or api.write_count > MAX_WRITES - 3:

@@ -102,7 +102,7 @@ class MaintenanceStatusOwnershipTests(unittest.TestCase):
                     c.admission(api, "list/repo", {"pull_request": {"number": 12}}, POLICY)
                 self.assertTrue(any(data == {"state": "closed"} for _, _, data in api.writes))
 
-    def test_weekly_failure_then_ready_event_then_daily_selection_remains_pending(self):
+    def test_weekly_failure_then_admission_event_then_daily_selection_remains_pending(self):
         case = fixtures.WeeklyIntegrationTests()
         case.setUp()
         case.api.last_commit = "2020-01-01T00:00:00Z"
@@ -112,7 +112,6 @@ class MaintenanceStatusOwnershipTests(unittest.TestCase):
         case.run_weekly()
         api = FakeAPI()
         api.pr = copy.deepcopy(case.api.open_pulls[0])
-        api.pr["draft"] = False  # A human marks the bot's PR ready for review.
         api.before, api.after = case.api.source, BASE
         api.writes = case.api.writes
         get, request = api.get, api.request

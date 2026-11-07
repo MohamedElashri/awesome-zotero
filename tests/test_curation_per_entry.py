@@ -48,7 +48,7 @@ class PerEntryTests(unittest.TestCase):
             self.assertIn(retained, files[c.SOURCE])
             self.assertEqual(files["README.md"], c.render_readme(files[c.SOURCE]))
             self.assertEqual(len(c.entries(files[c.SOURCE])), 1)
-            self.assertTrue(pr["draft"])
+            self.assertFalse(pr["draft"])
             self.assertTrue(c.is_cleanup_pr("list/repo", pr))
             self.assertTrue(c.is_entry_branch(pr["head"]["ref"]))
             self.assertEqual(pr["body"].count("| Remove |"), 1)
